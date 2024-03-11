@@ -69,7 +69,6 @@ const CampusModal = ({ isOpen, onClose }) => {
   };
   return (
     <>
-      <div className="flex flex-wrap gap-3"></div>
       <Modal backdrop="blur" isOpen={isOpen} onClose={onClose}>
         <ModalContent>
           {(onClose) => (

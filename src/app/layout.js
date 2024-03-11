@@ -18,8 +18,8 @@ export const metadata = {
 export default async function RootLayout({ children }) {
   const session = await getServerSession(authOptions);
   return (
-    <html lang="en" suppressHydrationWarning={true}>
-      <body className={inter.className}>
+    <html lang="en">
+      <body suppressHydrationWarning={true} className={inter.className}>
         <Providers session={session}>
           <Navbar />
           <main className="w-full min-h-screen overflow-hidden bg-cover bg-gradient-to-tr from-gray-100 to-indigo-50 dark:bg-gradient-to-tr dark:from-gray-900 dark:to-slate-900">

@@ -25,7 +25,7 @@ export default function Navbar() {
   };
 
   const handleScroll = () => {
-    if (window.scrollY >= window.innerHeight - 600) {
+    if (window.scrollY >= window.innerHeight - 700) {
       setIsScrolling(true);
     } else {
       setIsScrolling(false);
@@ -158,23 +158,21 @@ function NavbarScroll({ isScrolling, session, handleOpen }) {
       animate={isScrolling ? "animate" : "initial"}
       exit="exit"
       variants={NavAnimations}
-      className="fixed z-10 flex justify-between px-4 py-2 rounded-full nav-bg-blur left-1/2 top-10"
+      className="fixed z-10 flex justify-between px-4 py-2 rounded-full nav-bg-blur left-1/2 top-10 bg-slate-200 dark:bg-slate-800"
     >
       <ul className="flex items-center">
-        <li className="px-2 text-white hover:text-neutral-500 text-md">
-          <Link className="hover:text-neutral-300" href={"/"} scroll={true}>
+        <li className="px-2 text-black dark:text-white hover:text-neutral-600 dark:hover:text-neutral-300 text-md">
+          <Link href={"/"} scroll={true}>
             Home
           </Link>
         </li>
-        <li className="px-2 text-white hover:text-neutral-500 text-md">
-          <div className="hover:text-neutral-300 cursor-pointer" onClick={handleOpen}>
+        <li className="px-2 text-black dark:text-white hover:text-neutral-600 dark:hover:text-neutral-300 text-md">
+          <div className="cursor-pointer" onClick={handleOpen}>
             Explore
           </div>
         </li>
-        <li className="px-2 text-white text-md">
-          <Link className="hover:text-neutral-300" href={"/contact"}>
-            Contact
-          </Link>
+        <li className="px-2 text-black dark:text-white text-md hover:text-neutral-600 dark:hover:text-neutral-300">
+          <Link href={"/contact"}>Contact</Link>
         </li>
         <li className="px-2 text-white text-md">
           <ModeToggle />
