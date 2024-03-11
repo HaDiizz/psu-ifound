@@ -20,10 +20,6 @@ const LeafletMap = (params) => {
   const [openTableDrawer, setOpenTableDrawer] = useState(false);
   const [position, setPosition] = useState(null);
   const [form, setForm] = useState({
-    title: "",
-    detail: "",
-    location: "",
-    subLocation: "",
     lat: 0,
     lng: 0,
   });
@@ -89,7 +85,6 @@ const LeafletMap = (params) => {
         open={openFormDrawer}
         setOpen={setOpenFormDrawer}
         form={form}
-        setForm={setForm}
       />
       <TableDrawer
         open={openTableDrawer}

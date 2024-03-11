@@ -30,8 +30,8 @@ const MapEvents = ({
       setPosition(e.latlng);
       setForm({
         ...form,
-        lat: e.latlng.lat,
-        lng: e.latlng.lng,
+        lat: Number(e.latlng.lat),
+        lng: Number(e.latlng.lng),
       });
       setOpenFormDrawer(true);
     },

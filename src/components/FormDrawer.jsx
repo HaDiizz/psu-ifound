@@ -4,21 +4,52 @@ import Drawer from "@mui/material/Drawer";
 import { Input, Button } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import LoginButtonSection from "./LoginButtonSection";
+import { addPost } from "@/lib/actions";
+import FormButton from "./FormButton";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { FormFoundItemSchema } from "@/lib/schema";
 
-export default function FormDrawer({ open, setOpen, form, setForm }) {
+export default function FormDrawer({ open, setOpen, form }) {
   const { data: session } = useSession();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: zodResolver(FormFoundItemSchema),
+    defaultValues: {
+      title: "",
+      detail: "",
+      location: "",
+      subLocation: "",
+      contact: "",
+      lat: 0,
+      lng: 0,
+    },
+  });
 
-  function handleOnchange(e) {
-    const { name, value } = e.target;
-    setForm({
-      ...form,
-      [name]: value,
-    });
-  }
+  const onSubmit = async (data, e) => {
+    data = { ...data, lat: Number(form.lat), lng: Number(form.lng) };
+    const formData = new FormData();
+    for (const [key, value] of Object.entries(data)) {
+      if (value !== undefined && value !== null) {
+        formData.append(key, value);
+      }
+    }
+    const result = await addPost(formData);
+    if (result?.success) {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await reset();
+      await setOpen(false);
+      return;
+    }
 
-  function handleSubmit(e) {
-    e.preventDefault();
-  }
+    if (result?.error) {
+      return;
+    }
+  };
 
   const DrawerList = (
     <Box
@@ -27,70 +58,85 @@ export default function FormDrawer({ open, setOpen, form, setForm }) {
       }}
       role="presentation"
     >
-      <div className="grid gap-y-9 p-3">
+      <div className="grid gap-y-5 p-3">
         {session ? (
           <>
-            <span className="dark:text-white font-semibold">Report</span>
-            <form className="grid gap-y-8 p-3" onSubmit={handleSubmit}>
+            <span className="dark:text-white font-semibold pt-5 pl-3">
+              Report
+            </span>
+            <form
+              className="grid gap-y-5 p-3"
+              onSubmit={handleSubmit(onSubmit)}
+            >
               <Input
+                {...register("title")}
+                defaultValue=""
                 className="dark:text-white"
                 type="text"
                 label="Title"
                 variant="bordered"
-                name="title"
-                value={form.title}
-                onChange={(e) => handleOnchange(e)}
+                isInvalid={errors.title?.message}
+                errorMessage={errors.title?.message}
               />
               <Input
+                {...register("detail")}
+                defaultValue=""
                 className="dark:text-white"
                 type="text"
                 label="Detail"
                 variant="bordered"
-                name="detail"
-                value={form.detail}
-                onChange={(e) => handleOnchange(e)}
+                isInvalid={errors.detail?.message}
+                errorMessage={errors.detail?.message}
               />
               <Input
+                {...register("location")}
+                defaultValue=""
                 className="dark:text-white"
                 type="text"
                 label="Location"
                 variant="bordered"
-                name="location"
-                value={form.location}
-                onChange={(e) => handleOnchange(e)}
+                isInvalid={errors.location?.message}
+                errorMessage={errors.location?.message}
               />
               <Input
+                {...register("subLocation")}
+                defaultValue=""
                 className="dark:text-white"
-                type="text"
                 label="Sub Location"
                 variant="bordered"
-                name="subLocation"
-                value={form.subLocation}
-                onChange={(e) => handleOnchange(e)}
+                isInvalid={errors.subLocation?.message}
+                errorMessage={errors.subLocation?.message}
               />
               <Input
-                disabled={true}
+                {...register("contact")}
+                defaultValue=""
                 className="dark:text-white"
-                type="text"
+                label="Contact"
+                variant="bordered"
+                isInvalid={errors.contact?.message}
+                errorMessage={errors.contact?.message}
+              />
+              <Input
+                {...register("lat", { value: Number(form.lat) })}
+                readOnly={true}
+                className="dark:text-white"
                 label="Latitude"
                 variant="bordered"
-                name="lat"
-                value={form.lat}
-                onChange={(e) => handleOnchange(e)}
+                isInvalid={errors.lat?.message}
+                errorMessage={errors.lat?.message}
+                value={Number(form.lat)}
               />
               <Input
-                disabled={true}
+                {...register("lng", { value: Number(form.lng) })}
+                readOnly={true}
                 className="dark:text-white"
-                type="text"
                 label="Longitude"
                 variant="bordered"
-                name="lng"
-                value={form.lng}
-                onChange={(e) => handleOnchange(e)}
+                isInvalid={errors.lng?.message}
+                errorMessage={errors.lng?.message}
+                value={Number(form.lng)}
               />
-              <Button color="primary" variant="ghost" type="submit">
-                Submit
-              </Button>
+              <FormButton isSubmitting={isSubmitting} />
             </form>
           </>
         ) : (
@@ -102,7 +148,14 @@ export default function FormDrawer({ open, setOpen, form, setForm }) {
 
   return (
     <div>
-      <Drawer anchor={"right"} open={open} onClose={() => setOpen(false)}>
+      <Drawer
+        anchor={"right"}
+        open={open}
+        onClose={() => {
+          setOpen(false);
+          reset();
+        }}
+      >
         {DrawerList}
       </Drawer>
     </div>

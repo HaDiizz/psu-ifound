@@ -20,6 +20,9 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en">
       <body suppressHydrationWarning={true} className={inter.className}>
+        <div className="main">
+          <div className="gradient"></div>
+        </div>
         <Providers session={session}>
           <Navbar />
           <main className="w-full min-h-screen overflow-hidden bg-cover bg-gradient-to-tr from-gray-100 to-indigo-50 dark:bg-gradient-to-tr dark:from-gray-900 dark:to-slate-900">

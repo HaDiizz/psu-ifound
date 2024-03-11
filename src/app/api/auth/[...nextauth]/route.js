@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
-import clientPromise from "@/lib/mongo";
+import clientPromise from "@/lib/mongoClient";
 import { extractEmail } from "@/utils/emailValidation";
 import axios from "axios";
 
@@ -54,7 +54,6 @@ export const authOptions = {
             studyLevelName: response?.data[0]?.studyLevelName || "",
           };
         } catch (error) {
-          // console.log(error.response);
           if (error.response.status === 404) {
             return {
               id: profile.sub,
