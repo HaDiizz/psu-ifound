@@ -113,6 +113,7 @@ function NavbarFixed({ session, handleOpen }) {
                   width={50}
                   height={50}
                   alt="avatar"
+                  priority
                 />
                 {session.user.username}
               </Button>
@@ -190,6 +191,7 @@ function NavbarScroll({ isScrolling, session, handleOpen }) {
                       width={50}
                       height={50}
                       alt="avatar"
+                      priority
                     />
                     {session.user.username}
                   </Button>

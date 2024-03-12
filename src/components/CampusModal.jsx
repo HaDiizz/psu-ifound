@@ -24,14 +24,14 @@ import ErrorImageRobot from "@/assets/images/error.png";
 const fetcher = (url) =>
   axios
     .get(url, {
-      headers: { credential: process.env.NEXT_PUBLIC_PSU_OPEN_API_SECRET_KEY },
+      headers: { credential: process.env.PSU_OPEN_API_SECRET_KEY },
     })
     .then((res) => res.data);
 
 const CampusModal = ({ isOpen, onClose }) => {
   const router = useRouter();
   const { data, error, isLoading } = useSWR(
-    `${process.env.NEXT_PUBLIC_PSU_OPEN_API_URL}/Central/GetCampus`,
+    `${process.env.PSU_OPEN_API_URL}/Central/GetCampus`,
     fetcher
   );
 
@@ -80,10 +80,12 @@ const CampusModal = ({ isOpen, onClose }) => {
                 {error ? (
                   <div className="flex flex-col justify-center place-content-center items-center">
                     <Image
+                      style={{ width: "5rem", height: "8.8rem" }}
                       src={ErrorImageRobot}
                       alt="logo"
-                      width={100}
-                      height={100}
+                      width={"auto"}
+                      height={"auto"}
+                      priority
                     />
                     <p>Something went wrong!</p>
                   </div>

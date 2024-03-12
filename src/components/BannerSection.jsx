@@ -57,6 +57,7 @@ const BannerSection = () => {
           alt="banner globe"
           width="auto"
           height="auto"
+          priority
         />
       </div>
     </div>
