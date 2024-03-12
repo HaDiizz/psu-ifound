@@ -51,11 +51,12 @@ const BannerSection = () => {
           </div>
         </div>
         <Image
+          style={{ width: "25rem", height: "25rem" }}
           className="hidden md:block"
           src={GlobeImage}
           alt="banner globe"
-          width={400}
-          height={400}
+          width="auto"
+          height="auto"
         />
       </div>
     </div>

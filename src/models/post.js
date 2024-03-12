@@ -35,6 +35,10 @@ const postSchema = new Schema(
       default: "unclaimed",
       enum: ["claimed", "unclaimed"],
     },
+    image: {
+      public_id: { type: String, required: true },
+      url: { type: String, required: true },
+    },
     user: { type: mongoose.Types.ObjectId, ref: "user" },
     userList: [{ type: mongoose.Types.ObjectId, ref: "user" }],
   },
