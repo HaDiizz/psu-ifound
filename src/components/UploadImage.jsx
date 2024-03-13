@@ -42,7 +42,7 @@ const UploadImage = ({ file, setFile, register, errors }) => {
       <div
         {...getRootProps({
           className:
-            "pl-10 pr-10 pt-4 pb-4 border border-neutral-200 rounded-md cursor-pointer",
+            "pl-10 pr-10 pt-5 pb-5 border border-neutral-200 rounded-md cursor-pointer dark:hover:bg-slate-800 hover:bg-slate-100",
         })}
       >
         {file.length > 0 ? (
@@ -73,7 +73,7 @@ const UploadImage = ({ file, setFile, register, errors }) => {
               {...register("image", { value: file })}
               value={file}
             />
-            <div className="flex flex-col items-center justify-center gap-4 text-center dark:text-white">
+            <div className="flex flex-col items-center justify-center gap-4 text-center dark:text-white text-sm">
               <ArrowUpFromLine className="w-5 h-5 fill-current" />
               {isDragActive ? (
                 <p>Drop the files here ...</p>

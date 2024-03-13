@@ -1,5 +1,6 @@
 export const columns = [
   { name: "ID", uid: "_id", sortable: true },
+  { name: "IMAGE", uid: "image" },
   { name: "NAME", uid: "name", sortable: true },
   { name: "EMAIL", uid: "email", sortable: true },
   { name: "USERNAME", uid: "username", sortable: true },
@@ -25,6 +26,8 @@ export const dataReports = [
     title: "TEST TITLE",
     location: "SCI",
     subLocation: "ตึกฟักทอง",
+    url:
+      "https://lh3.googleusercontent.com/a/ACg8ocLF5_Nit2z3vaD9mSl8MMUkHhexZvI6SrH7gajTWakm=s96-c",
   },
   {
     _id: "2",
@@ -35,6 +38,8 @@ export const dataReports = [
     title: "TEST TITLE",
     location: "SCI",
     subLocation: "ตึกฟักทอง",
+    url:
+      "https://lh3.googleusercontent.com/a/ACg8ocLF5_Nit2z3vaD9mSl8MMUkHhexZvI6SrH7gajTWakm=s96-c",
   },
   {
     _id: "3",
@@ -45,5 +50,7 @@ export const dataReports = [
     title: "CHICK",
     location: "ENG",
     subLocation: "COM R",
+    url:
+      "http://res.cloudinary.com/dklebdons/image/upload/v1710250523/PSU_iFound/rhxmdworq7inacvdftyk.jpg",
   },
 ];

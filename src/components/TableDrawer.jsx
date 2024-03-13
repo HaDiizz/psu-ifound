@@ -19,6 +19,10 @@ import {
   DropdownMenu,
   DropdownTrigger,
   Input,
+  Image,
+  Modal,
+  ModalContent,
+  useDisclosure,
 } from "@nextui-org/react";
 import { IoIosCloseCircle } from "react-icons/io";
 import { FaChevronDown, FaEye } from "react-icons/fa";
@@ -30,6 +34,7 @@ import { capitalize } from "@/utils/capitalize";
 import { dataReports, columns, statusOptions } from "@/utils/data";
 
 const INITIAL_VISIBLE_COLUMNS = [
+  "image",
   "name",
   "title",
   "location",
@@ -45,6 +50,8 @@ const statusColorMap = {
 export default function TableDrawer({ open, setOpen, flyTo }) {
   const { data: session } = useSession();
 
+  const [previewImage, setPreviewImage] = useState("");
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [page, setPage] = useState(1);
   const [filterValue, setFilterValue] = useState("");
   const [selectedKeys, setSelectedKeys] = useState(new Set([]));
@@ -106,10 +113,34 @@ export default function TableDrawer({ open, setOpen, flyTo }) {
     });
   }, [sortDescriptor, items]);
 
+  const handlePreviewImage = async (url) => {
+    await setOpen(false);
+    await onOpen();
+    await setPreviewImage(url);
+  };
+
   const renderCell = useCallback((data, columnKey) => {
     const cellValue = data[columnKey];
 
     switch (columnKey) {
+      case "image":
+        return (
+          <div
+            onClick={() => handlePreviewImage(data.url)}
+            className="flex justify-center items-center overflow-hidden rounded-lg cursor-pointer"
+            style={{ width: "80px", height: "90px" }}
+          >
+            <Image
+              referrerPolicy="no-referrer"
+              className="object-cover w-full h-full rounded-md"
+              width={100}
+              height={100}
+              src={data.url}
+              alt="thumbnail"
+              loading="lazy"
+            />
+          </div>
+        );
       case "name":
         return (
           <User
@@ -391,7 +422,36 @@ export default function TableDrawer({ open, setOpen, flyTo }) {
   }));
 
   return (
-    <div>
+    <>
+      <Modal
+        placement="center"
+        hideCloseButton
+        backdrop="opaque"
+        isOpen={isOpen}
+        onClose={async () => {
+          await onClose();
+          await setOpen(true);
+        }}
+        classNames={{
+          backdrop:
+            "bg-gradient-to-t from-zinc-900 to-zinc-900/10 backdrop-opacity-20",
+        }}
+      >
+        <ModalContent>
+          <>
+            <Image
+              referrerPolicy="no-referrer"
+              className="block w-full h-full"
+              showSkeleton
+              src={previewImage}
+              width="auto"
+              height="auto"
+              alt="thumbnail"
+              loading="lazy"
+            />
+          </>
+        </ModalContent>
+      </Modal>
       <Drawer
         variant="persistent"
         hideBackdrop={true}
@@ -411,6 +471,6 @@ export default function TableDrawer({ open, setOpen, flyTo }) {
         </DrawerHeader>
         {DrawerList}
       </Drawer>
-    </div>
+    </>
   );
 }
