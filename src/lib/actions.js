@@ -10,8 +10,17 @@ import fs from "fs/promises";
 
 export const addPost = async (formData) => {
   const session = await getServerSession(authOptions);
-  const { title, detail, location, subLocation, contact, lat, lng, image } =
-    Object.fromEntries(formData);
+  const {
+    title,
+    detail,
+    location,
+    subLocation,
+    contact,
+    lat,
+    lng,
+    image,
+    campusId,
+  } = Object.fromEntries(formData);
 
   try {
     await connectDB();
@@ -27,6 +36,7 @@ export const addPost = async (formData) => {
       lat,
       lng,
       contact,
+      campId: campusId,
       user: session.user?.id,
       image: {
         public_id: res.public_id,
@@ -35,11 +45,7 @@ export const addPost = async (formData) => {
     });
 
     await newPost.save();
-    revalidatePath("/01/explore");
-    revalidatePath("/02/explore");
-    revalidatePath("/03/explore");
-    revalidatePath("/04/explore");
-    revalidatePath("/05/explore");
+    revalidatePath(`/${campusId}/explore`);
     return { success: true, message: "Created successful" };
   } catch (err) {
     console.log(err);

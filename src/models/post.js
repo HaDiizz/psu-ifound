@@ -2,6 +2,11 @@ import mongoose, { Schema, models } from "mongoose";
 
 const postSchema = new Schema(
   {
+    campId: {
+      type: String,
+      required: true,
+      enum: ["01", "02", "03", "04", "05"],
+    },
     title: {
       type: String,
       required: true,

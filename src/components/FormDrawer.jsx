@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
-import { Input, Button } from "@nextui-org/react";
+import { Input, Select, SelectItem } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import LoginButtonSection from "./LoginButtonSection";
 import { addPost } from "@/lib/actions";
@@ -12,7 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FormFoundItemSchema } from "@/lib/schema";
 import UploadImage from "./UploadImage";
 
-export default function FormDrawer({ open, setOpen, form }) {
+export default function FormDrawer({ open, setOpen, form, campusId }) {
   const [file, setFile] = useState("");
   const { data: session } = useSession();
   const {
@@ -32,6 +32,7 @@ export default function FormDrawer({ open, setOpen, form }) {
       lat: 0,
       lng: 0,
       image: undefined,
+      campusId: "",
     },
   });
 
@@ -63,7 +64,8 @@ export default function FormDrawer({ open, setOpen, form }) {
 
   useEffect(() => {
     setValue("image", file);
-  }, [setValue, file]);
+    setValue("campusId", campusId);
+  }, [setValue, file, campusId]);
 
   const DrawerList = (
     <Box
@@ -83,6 +85,33 @@ export default function FormDrawer({ open, setOpen, form }) {
                 <FormButton isSubmitting={isSubmitting} />
               </div>
               <div className="grid gap-y-5 pt-[3rem]">
+                <Select
+                  {...register("campusId")}
+                  variant="bordered"
+                  label="Campus"
+                  placeholder="Select campus"
+                  defaultSelectedKeys={[campusId]}
+                  className="max-w-xs"
+                  errorMessage={errors.campusId?.message}
+                  isInvalid={errors.campusId?.message}
+                  onSelectionChange={(e) => setValue(e.currentKey)}
+                >
+                  <SelectItem key={"01"} value="01">
+                    Hatyai Campus
+                  </SelectItem>
+                  <SelectItem key={"02"} value="02">
+                    Pattani Campus
+                  </SelectItem>
+                  <SelectItem key={"03"} value="03">
+                    Phuket Campus
+                  </SelectItem>
+                  <SelectItem key={"04"} value="04">
+                    SuratThani Campus
+                  </SelectItem>
+                  <SelectItem key={"05"} value="05">
+                    Trang Campus
+                  </SelectItem>
+                </Select>
                 <Input
                   {...register("title")}
                   defaultValue=""

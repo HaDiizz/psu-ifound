@@ -9,6 +9,7 @@ const ACCEPTED_IMAGE_MIME_TYPES = [
 ];
 
 export const FormFoundItemSchema = z.object({
+  campusId: z.string().nonempty("Campus is required."),
   title: z
     .string()
     .nonempty("Title is required.")

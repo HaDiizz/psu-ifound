@@ -85,6 +85,7 @@ const LeafletMap = (params) => {
         open={openFormDrawer}
         setOpen={setOpenFormDrawer}
         form={form}
+        campusId={params.campusId}
       />
       <TableDrawer
         open={openTableDrawer}

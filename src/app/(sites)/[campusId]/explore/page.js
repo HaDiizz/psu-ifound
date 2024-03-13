@@ -21,7 +21,7 @@ const page = async ({ params }) => {
 
   return (
     <div className="container pt-[5rem]">
-      <LeafletMap lat={lat} lng={lng} />
+      <LeafletMap lat={lat} lng={lng} campusId={params.campusId} />
     </div>
   );
 };
