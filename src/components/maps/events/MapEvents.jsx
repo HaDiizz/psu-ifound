@@ -1,19 +1,20 @@
 "use client";
 import React, { useMemo } from "react";
-import { Marker, Popup, useMapEvents } from "react-leaflet";
+import { Marker, useMapEvents } from "react-leaflet";
 import MarkerIcon from "@/assets/images/red-marker-3d.png";
 
-const LocationMarker = ({ position }) => {
+const LocationMarker = ({ position, setPosition }) => {
   return position === null ? null : (
     <Marker
+      eventHandlers={{
+        click: () => setPosition(null),
+      }}
       position={position}
       icon={L.icon({
         iconSize: [30, 30],
         iconUrl: MarkerIcon.src,
       })}
-    >
-      <Popup>I am here</Popup>
-    </Marker>
+    ></Marker>
   );
 };
 
@@ -37,7 +38,10 @@ const MapEvents = ({
     },
   });
 
-  return useMemo(() => <LocationMarker position={position} />, [position]);
+  return useMemo(
+    () => <LocationMarker position={position} setPosition={setPosition} />,
+    [position, setPosition]
+  );
 };
 
 export default MapEvents;

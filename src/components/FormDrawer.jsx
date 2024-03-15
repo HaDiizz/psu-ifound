@@ -4,13 +4,13 @@ import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import { Input, Select, SelectItem } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
-import LoginButtonSection from "./LoginButtonSection";
 import { addPost } from "@/lib/actions";
 import FormButton from "./FormButton";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormFoundItemSchema } from "@/lib/schema";
 import UploadImage from "./UploadImage";
+import Link from "next/link";
 
 export default function FormDrawer({ open, setOpen, form, campusId }) {
   const [file, setFile] = useState("");
@@ -190,7 +190,11 @@ export default function FormDrawer({ open, setOpen, form, campusId }) {
             </form>
           </>
         ) : (
-          <LoginButtonSection />
+          <div className="pt-[4rem] grid gap-4 dark:text-white">
+            <span className="text-4xl font-bold text-inherit text-center">PSU iFound</span>
+            <span className="font-bold text-sm pt-8">Please sign in to unlock the available features.</span>
+            <Link className="underline text-sm" href="/login">Click here to signIn</Link>
+          </div>
         )}
       </div>
     </Box>

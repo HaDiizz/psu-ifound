@@ -6,15 +6,17 @@ import L from "leaflet";
 import FormDrawer from "../FormDrawer";
 import Box from "@mui/material/Box";
 import { FaTable } from "react-icons/fa";
-import { Button } from "@nextui-org/react";
+import { Button, useDisclosure } from "@nextui-org/react";
 import TableDrawer from "../TableDrawer";
 import RedMarker from "@/assets/images/search-marker.png";
 import MapLayers from "./layers/MapLayers";
 import MapEvents from "./events/MapEvents";
-import MarkerIcon from "@/assets/images/red-marker-3d.png";
 import GreenMarker from "@/assets/images/found-marker.png";
+import DetailModal from "../DetailModal";
 
 const LeafletMap = (params) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [itemId, setItemId] = useState("");
   const mapRef = useRef(null);
   const [openFormDrawer, setOpenFormDrawer] = useState(false);
   const [openTableDrawer, setOpenTableDrawer] = useState(false);
@@ -29,7 +31,13 @@ const LeafletMap = (params) => {
   }
 
   const flyTo = (lat, lng) => {
-    mapRef.current.flyTo([lat, lng], 18);
+    mapRef?.current?.flyTo([lat, lng], 18);
+  };
+
+  const handleOpenDetailModal = async (id, latitude, longitude) => {
+    await flyTo(latitude, longitude);
+    await setItemId(id);
+    await onOpen();
   };
 
   return (
@@ -41,18 +49,34 @@ const LeafletMap = (params) => {
         style={{ height: "100vh" }}
       >
         <MapLayers />
-        <Marker
-          eventHandlers={{
-            click: () => flyTo(params?.lat, params?.lng),
-          }}
-          position={[params?.lat, params?.lng]}
-          icon={L.icon({
-            iconSize: [35, 35],
-            iconUrl: RedMarker.src,
-          })}
-        >
-          <Popup>TEST123</Popup>
-        </Marker>
+        {params?.posts.map((post) => (
+          <Marker
+            key={post._id}
+            eventHandlers={{
+              click: () => flyTo(post?.lat, post?.lng),
+            }}
+            position={[post?.lat, post?.lng]}
+            icon={L.icon({
+              iconSize: [35, 35],
+              iconUrl:
+                post.status === "unclaimed" ? RedMarker.src : GreenMarker.src,
+            })}
+          >
+            <Popup>
+              <div className="grid">
+                <span className="text-md font-bold capitalize">
+                  {post.title}
+                </span>
+                <span
+                  className="underline text-small capitalize text-default-400 cursor-pointer"
+                  onClick={() => handleOpenDetailModal(post._id, post.lat, post.lng)}
+                >
+                  ดูรายละเอียดเพิ่มเติม
+                </span>
+              </div>
+            </Popup>
+          </Marker>
+        ))}
         <MapEvents
           setPosition={setPosition}
           position={position}
@@ -91,7 +115,11 @@ const LeafletMap = (params) => {
         open={openTableDrawer}
         setOpen={setOpenTableDrawer}
         flyTo={flyTo}
+        posts={params.posts}
+        setItemId={setItemId}
+        handleOpenDetailModal={handleOpenDetailModal}
       />
+      <DetailModal isOpen={isOpen} onClose={onClose} itemId={itemId} />
     </>
   );
 };

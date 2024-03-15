@@ -2,12 +2,13 @@ export const columns = [
   { name: "ID", uid: "_id", sortable: true },
   { name: "IMAGE", uid: "image" },
   { name: "NAME", uid: "name", sortable: true },
-  { name: "EMAIL", uid: "email", sortable: true },
-  { name: "USERNAME", uid: "username", sortable: true },
   { name: "TITLE", uid: "title", sortable: true },
+  { name: "DETAIL", uid: "detail", sortable: true },
+  { name: "CONTACT", uid: "contact", sortable: true },
   { name: "LOCATION", uid: "location", sortable: true },
   { name: "SUB LOCATION", uid: "subLocation", sortable: true },
   { name: "STATUS", uid: "status", sortable: true },
+  { name: "CREATED AT", uid: "createdAt", sortable: true },
   { name: "ACTIONS", uid: "actions" },
 ];
 

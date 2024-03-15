@@ -31,7 +31,8 @@ import { useSession } from "next-auth/react";
 import { useCallback, useMemo, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { capitalize } from "@/utils/capitalize";
-import { dataReports, columns, statusOptions } from "@/utils/data";
+import { columns, statusOptions } from "@/utils/data";
+import moment from "moment";
 
 const INITIAL_VISIBLE_COLUMNS = [
   "image",
@@ -40,6 +41,7 @@ const INITIAL_VISIBLE_COLUMNS = [
   "location",
   "status",
   "actions",
+  "createdAt",
 ];
 
 const statusColorMap = {
@@ -47,7 +49,13 @@ const statusColorMap = {
   unclaimed: "danger",
 };
 
-export default function TableDrawer({ open, setOpen, flyTo }) {
+export default function TableDrawer({
+  open,
+  setOpen,
+  flyTo,
+  posts,
+  handleOpenDetailModal,
+}) {
   const { data: session } = useSession();
 
   const [previewImage, setPreviewImage] = useState("");
@@ -76,23 +84,23 @@ export default function TableDrawer({ open, setOpen, flyTo }) {
   }, [visibleColumns]);
 
   const filteredItems = useMemo(() => {
-    let filteredUsers = [...dataReports];
+    let filteredPosts = [...posts];
 
     if (hasSearchFilter) {
-      filteredUsers = filteredUsers.filter((user) =>
-        user.fullName.toLowerCase().includes(filterValue.toLowerCase())
+      filteredPosts = filteredPosts.filter((post) =>
+        post.user.fullName.toLowerCase().includes(filterValue.toLowerCase())
       );
     }
     if (
       statusFilter !== "all" &&
       Array.from(statusFilter).length !== statusOptions.length
     ) {
-      filteredUsers = filteredUsers.filter((user) =>
-        Array.from(statusFilter).includes(user.status)
+      filteredPosts = filteredPosts.filter((post) =>
+        Array.from(statusFilter).includes(post.status)
       );
     }
-    return filteredUsers;
-  }, [dataReports, filterValue, statusFilter]);
+    return filteredPosts;
+  }, [posts, filterValue, statusFilter]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -123,10 +131,21 @@ export default function TableDrawer({ open, setOpen, flyTo }) {
     const cellValue = data[columnKey];
 
     switch (columnKey) {
+      case "createdAt":
+        return (
+          <div className="flex flex-col">
+            <p className="text-bold text-small capitalize">
+              {moment(data.createdAt).fromNow()}
+            </p>
+            <p className="text-bold text-tiny capitalize text-default-400">
+              {moment(data.createdAt).format("llll")}
+            </p>
+          </div>
+        );
       case "image":
         return (
           <div
-            onClick={() => handlePreviewImage(data.url)}
+            onClick={() => handlePreviewImage(data.image.url)}
             className="flex justify-center items-center overflow-hidden rounded-lg cursor-pointer"
             style={{ width: "80px", height: "90px" }}
           >
@@ -135,7 +154,7 @@ export default function TableDrawer({ open, setOpen, flyTo }) {
               className="object-cover w-full h-full rounded-md"
               width={100}
               height={100}
-              src={data.url}
+              src={data.image.url}
               alt="thumbnail"
               loading="lazy"
             />
@@ -144,11 +163,11 @@ export default function TableDrawer({ open, setOpen, flyTo }) {
       case "name":
         return (
           <User
-            avatarProps={{ radius: "lg", src: session.user.picture }}
-            description={data.email}
-            name={data.fullName}
+            avatarProps={{ radius: "lg", src: data.user.picture }}
+            description={data.user.email}
+            name={data.user.fullName}
           >
-            {data.username}
+            {data.user.username}
           </User>
         );
       case "location":
@@ -184,12 +203,18 @@ export default function TableDrawer({ open, setOpen, flyTo }) {
               <span className="text-lg text-orange-400 cursor-pointer active:opacity-50">
                 <MdMyLocation
                   size={20}
-                  onClick={() => flyTo(7.009758593468585, 100.49543666837964)}
+                  onClick={() => flyTo(data.lat, data.lng)}
                 />
               </span>
             </Tooltip>
             <Tooltip content="Detail">
-              <span className="text-lg text-violet-400 cursor-pointer active:opacity-50">
+              <span
+                className="text-lg text-violet-400 cursor-pointer active:opacity-50"
+                onClick={() => {
+                  setOpen(false)
+                  handleOpenDetailModal(data._id, data.lat, data.lng);
+                }}
+              >
                 <FaEye size={20} />
               </span>
             </Tooltip>
@@ -218,7 +243,6 @@ export default function TableDrawer({ open, setOpen, flyTo }) {
   }, []);
 
   const onSearchChange = useCallback((value) => {
-    console.log(value);
     if (value) {
       setFilterValue(value);
       setPage(1);
@@ -298,7 +322,7 @@ export default function TableDrawer({ open, setOpen, flyTo }) {
         </div>
         <div className="flex justify-between items-center">
           <span className="text-default-400 text-small">
-            Total {dataReports.length} items
+            Total {posts.length} items
           </span>
           <label className="flex items-center text-default-400 text-small">
             Rows per page:
@@ -319,7 +343,7 @@ export default function TableDrawer({ open, setOpen, flyTo }) {
     statusFilter,
     visibleColumns,
     onRowsPerPageChange,
-    dataReports.length,
+    posts.length,
     onSearchChange,
     hasSearchFilter,
   ]);

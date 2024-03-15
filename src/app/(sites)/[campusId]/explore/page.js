@@ -1,3 +1,4 @@
+import axios from "@/lib/axios";
 import dynamic from "next/dynamic";
 const LeafletMap = dynamic(() => import("@/components/maps/LeafletMap"), {
   ssr: false,
@@ -19,9 +20,13 @@ const page = async ({ params }) => {
     lng = campusCoordinates[params.campusId].lng;
   }
 
+  const { data } = await axios(`/post/campus/${params.campusId}`, {
+    next: { revalidate: 3600 },
+  });
+
   return (
     <div className="container pt-[5rem]">
-      <LeafletMap lat={lat} lng={lng} campusId={params.campusId} />
+      <LeafletMap lat={lat} lng={lng} campusId={params.campusId} posts={data} />
     </div>
   );
 };
