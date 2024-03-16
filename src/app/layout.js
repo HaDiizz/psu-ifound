@@ -4,6 +4,7 @@ import Providers from "@/providers/providers";
 import Navbar from "@/components/Navbar";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { Toaster } from "react-hot-toast";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,6 +26,7 @@ export default async function RootLayout({ children }) {
         </div>
         <Providers session={session}>
           <Navbar />
+          <Toaster position="bottom-left" reverseOrder={false} />
           <main className="w-full min-h-screen overflow-hidden bg-cover bg-gradient-to-tr from-gray-100 to-indigo-50 dark:bg-gradient-to-tr dark:from-gray-900 dark:to-slate-900">
             {children}
           </main>

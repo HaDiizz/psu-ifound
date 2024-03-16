@@ -163,7 +163,7 @@ export default function TableDrawer({
       case "name":
         return (
           <User
-            avatarProps={{ radius: "lg", src: data.user.picture }}
+            // avatarProps={{ radius: "lg", src: data.user.picture }}
             description={data.user.email}
             name={data.user.fullName}
           >
@@ -211,7 +211,7 @@ export default function TableDrawer({
               <span
                 className="text-lg text-violet-400 cursor-pointer active:opacity-50"
                 onClick={() => {
-                  setOpen(false)
+                  setOpen(false);
                   handleOpenDetailModal(data._id, data.lat, data.lng);
                 }}
               >

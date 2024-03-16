@@ -17,8 +17,17 @@ import {
   Image,
   Chip,
   User,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  Avatar,
+  AvatarGroup,
+  Tooltip,
 } from "@nextui-org/react";
 import axios from "@/lib/axios";
+import ClaimItem from "./ClaimItem";
+import { useSession } from "next-auth/react";
+import toast from "react-hot-toast";
 
 const fetcher = (url) => axios.get(url).then((res) => res.data);
 
@@ -28,7 +37,21 @@ const statusColorMap = {
 };
 
 const DetailModal = ({ isOpen, onClose, itemId }) => {
-  const { data, isLoading } = useSWR(`/post/${itemId}`, fetcher);
+  const { data, isLoading, mutate } = useSWR(`/post/${itemId}`, fetcher);
+  const { data: session } = useSession();
+
+  const handleClaimItem = async () => {
+    await onClose();
+    try {
+      const response = await axios.put(`/post/${itemId}`, {
+        status: data?.status,
+      });
+      toast.success(`${response?.data?.message}`);
+      await mutate();
+    } catch (error) {
+      toast.error(`${error?.response?.data?.message}`);
+    }
+  };
   return (
     <>
       <Modal
@@ -113,7 +136,7 @@ const DetailModal = ({ isOpen, onClose, itemId }) => {
                                   <User
                                     avatarProps={{
                                       radius: "lg",
-                                      src: data.user.picture,
+                                      // src: data?.user?.picture,
                                       size: "sm",
                                     }}
                                     description={data.user.email}
@@ -121,6 +144,23 @@ const DetailModal = ({ isOpen, onClose, itemId }) => {
                                   >
                                     {data.user.username}
                                   </User>
+                                </TableCell>
+                              </TableRow>
+                              <TableRow key="6">
+                                <TableCell>List of Claimants</TableCell>
+                                <TableCell>
+                                  <AvatarGroup isBordered max={4}>
+                                    {data?.userList.map((user) => (
+                                      <Tooltip
+                                        key={user._id}
+                                        placement="bottom"
+                                        content={user.fullName}
+                                        color="primary"
+                                      >
+                                        <Avatar src={user.picture} size="sm" />
+                                      </Tooltip>
+                                    ))}
+                                  </AvatarGroup>
                                 </TableCell>
                               </TableRow>
                             </TableBody>
@@ -135,11 +175,26 @@ const DetailModal = ({ isOpen, onClose, itemId }) => {
                 <Button color="danger" variant="light" onPress={onClose}>
                   Close
                 </Button>
-                {data?.status !== "claimed" && (
-                  <Button color="warning" variant="light" onPress={onClose}>
-                    Claim
-                  </Button>
-                )}
+                {data?.status !== "claimed" ? (
+                  data?.userList.some(
+                    (user) => user._id === session.user.id
+                  ) ? (
+                    <Button color="success" variant="light">
+                      You have been claimed
+                    </Button>
+                  ) : (
+                    <Popover placement="top-start" backdrop="blur">
+                      <PopoverTrigger>
+                        <Button color="warning" variant="light">
+                          Claim
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent>
+                        <ClaimItem handleClaimItem={handleClaimItem} />
+                      </PopoverContent>
+                    </Popover>
+                  )
+                ) : null}
               </ModalFooter>
             </>
           )}

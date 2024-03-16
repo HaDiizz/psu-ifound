@@ -22,6 +22,7 @@ const nextConfig = {
   env: {
     PSU_OPEN_API_SECRET_KEY: process.env.PSU_OPEN_API_SECRET_KEY,
     PSU_OPEN_API_URL: process.env.PSU_OPEN_API_URL,
+    ACCESS_TOKEN_MAP_TILE: process.env.ACCESS_TOKEN_MAP_TILE,
   },
 };
 
