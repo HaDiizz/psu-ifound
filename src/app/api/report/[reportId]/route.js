@@ -1,18 +1,18 @@
-import Post from "@/models/post";
+import Report from "@/models/report";
 import connectDB from "@/lib/connectDB";
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
 
 export const GET = async (request, context) => {
-  const { postId } = context.params;
+  const { reportId } = context.params;
   try {
     await connectDB();
-    const post = await Post.findOne({ _id: postId }).populate(
+    const report = await Report.findOne({ _id: reportId }).populate(
       "user userList",
       "picture username fullName email"
     );
-    return NextResponse.json(post);
+    return NextResponse.json(report);
   } catch (err) {
     console.log(err);
     NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
@@ -24,7 +24,7 @@ export const PUT = async (request, context) => {
   if (!session) {
     return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
   }
-  const { postId } = await context.params;
+  const { reportId } = await context.params;
   const { status } = await request.json();
   try {
     await connectDB();
@@ -34,21 +34,21 @@ export const PUT = async (request, context) => {
         { status: 400 }
       );
     }
-    const post = await Post.findById(postId);
-    if (post.user.toString() === session.user.id.toString()) {
+    const report = await Report.findById(reportId);
+    if (report.user.toString() === session.user.id.toString()) {
       return NextResponse.json(
-        { message: "You can not claim your own post." },
+        { message: "You can not claim your own report." },
         { status: 400 }
       );
     }
-    if (post.userList.includes(session.user.id)) {
+    if (report.userList.includes(session.user.id)) {
       return NextResponse.json(
         { message: "You have been claimed the item already." },
         { status: 400 }
       );
     }
-    post.userList.push(session.user.id);
-    await post.save();
+    report.userList.push(session.user.id);
+    await report.save();
     return NextResponse.json({
       message: "You have been claimed the item successful.",
     });

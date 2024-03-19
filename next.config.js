@@ -1,23 +1,26 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
+    domains: ["res.cloudinary.com", "lh3.googleusercontent.com", "avatars.githubusercontent.com"],
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'res.cloudinary.com',
-        pathname: '**',
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        port: "",
+        pathname: "**",
       },
       {
         protocol: "https",
         hostname: "lh3.googleusercontent.com",
-        pathname: '**',
       },
       {
         protocol: "https",
         hostname: "avatars.githubusercontent.com",
-        pathname: '**',
       },
     ],
+  },
+  compiler: {
+    styledComponents: true,
   },
   env: {
     PSU_OPEN_API_SECRET_KEY: process.env.PSU_OPEN_API_SECRET_KEY,
@@ -26,4 +29,4 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;

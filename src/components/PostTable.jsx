@@ -1,7 +1,4 @@
 "use client";
-import Box from "@mui/material/Box";
-import Drawer from "@mui/material/Drawer";
-import { styled } from "@mui/material/styles";
 import {
   Table,
   TableHeader,
@@ -25,13 +22,14 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { IoIosCloseCircle } from "react-icons/io";
-import { FaChevronDown, FaEye } from "react-icons/fa";
+import { FaChevronDown, FaEye, FaPlus } from "react-icons/fa";
 import { MdMyLocation } from "react-icons/md";
 import { useCallback, useMemo, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { capitalize } from "@/utils/capitalize";
-import { columns, statusReportOptions } from "@/utils/data";
+import { columns, statusPostOptions, dataReports } from "@/utils/data";
 import moment from "moment";
+import { useRouter } from "next/navigation";
 
 const INITIAL_VISIBLE_COLUMNS = [
   "image",
@@ -44,17 +42,12 @@ const INITIAL_VISIBLE_COLUMNS = [
 ];
 
 const statusColorMap = {
-  claimed: "success",
-  unclaimed: "danger",
+  notfound: "danger",
+  found: "success",
 };
 
-export default function TableDrawer({
-  open,
-  setOpen,
-  flyTo,
-  reports,
-  handleOpenDetailModal,
-}) {
+export default function PostTable({}) {
+  const router = useRouter();
   const [previewImage, setPreviewImage] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [page, setPage] = useState(1);
@@ -81,23 +74,23 @@ export default function TableDrawer({
   }, [visibleColumns]);
 
   const filteredItems = useMemo(() => {
-    let filteredReports = [...reports];
+    let filteredPosts = [...dataReports];
 
     if (hasSearchFilter) {
-      filteredReports = filteredReports.filter((report) =>
-        report.user.fullName.toLowerCase().includes(filterValue.toLowerCase())
+      filteredPosts = filteredPosts.filter((post) =>
+        post.user.fullName.toLowerCase().includes(filterValue.toLowerCase())
       );
     }
     if (
       statusFilter !== "all" &&
-      Array.from(statusFilter).length !== statusReportOptions.length
+      Array.from(statusFilter).length !== statusPostOptions.length
     ) {
-      filteredReports = filteredReports.filter((report) =>
-        Array.from(statusFilter).includes(report.status)
+      filteredPosts = filteredPosts.filter((post) =>
+        Array.from(statusFilter).includes(post.status)
       );
     }
-    return filteredReports;
-  }, [reports, filterValue, statusFilter]);
+    return filteredPosts;
+  }, [dataReports, filterValue, statusFilter]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -119,7 +112,6 @@ export default function TableDrawer({
   }, [sortDescriptor, items]);
 
   const handlePreviewImage = async (url) => {
-    await setOpen(false);
     await onOpen();
     await setPreviewImage(url);
   };
@@ -159,11 +151,7 @@ export default function TableDrawer({
         );
       case "name":
         return (
-          <User
-            // avatarProps={{ radius: "lg", src: data.user.picture }}
-            description={data.user.email}
-            name={data.user.fullName}
-          >
+          <User description={data.user.email} name={data.user.fullName}>
             {data.user.username}
           </User>
         );
@@ -185,31 +173,31 @@ export default function TableDrawer({
       case "status":
         return (
           <Chip
-            className="capitalize"
+            className="capitalize border-none gap-1 text-default-600"
             color={statusColorMap[data.status]}
             size="sm"
-            variant="flat"
+            variant="dot"
           >
-            {cellValue}
+            {statusPostOptions.find((option) => option.uid === cellValue).name}
           </Chip>
         );
       case "actions":
         return (
           <div className="relative flex items-center gap-2">
-            <Tooltip content="Locate">
+            {/* <Tooltip content="Locate">
               <span className="text-lg text-orange-400 cursor-pointer active:opacity-50">
                 <MdMyLocation
                   size={20}
                   onClick={() => flyTo(data.lat, data.lng)}
                 />
               </span>
-            </Tooltip>
+            </Tooltip> */}
             <Tooltip content="Detail">
               <span
                 className="text-lg text-violet-400 cursor-pointer active:opacity-50"
                 onClick={() => {
-                  setOpen(false);
-                  handleOpenDetailModal(data._id, data.lat, data.lng);
+                  router.push(`/${data.campId}/explore/lost/detail/${data._id}`);
+                  // handleOpenDetailModal(data._id, data.lat, data.lng);
                 }}
               >
                 <FaEye size={20} />
@@ -284,7 +272,7 @@ export default function TableDrawer({
                 selectionMode="multiple"
                 onSelectionChange={setStatusFilter}
               >
-                {statusReportOptions.map((status) => (
+                {statusPostOptions.map((status) => (
                   <DropdownItem key={status.uid} className="capitalize">
                     {capitalize(status.name)}
                   </DropdownItem>
@@ -315,11 +303,14 @@ export default function TableDrawer({
                 ))}
               </DropdownMenu>
             </Dropdown>
+            <Button color="primary" endContent={<FaPlus />}>
+              เพิ่มรายการตามหาของหายของคุณ
+            </Button>
           </div>
         </div>
         <div className="flex justify-between items-center">
           <span className="text-default-400 text-small">
-            Total {reports.length} items
+            Total {dataReports.length} items
           </span>
           <label className="flex items-center text-default-400 text-small">
             Rows per page:
@@ -340,14 +331,14 @@ export default function TableDrawer({
     statusFilter,
     visibleColumns,
     onRowsPerPageChange,
-    reports.length,
+    dataReports.length,
     onSearchChange,
     hasSearchFilter,
   ]);
 
   const bottomContent = useMemo(() => {
     return (
-      <div className="py-2 px-2 flex justify-between items-center">
+      <div className="py-2 px-2 flex justify-between items-center z-30">
         <span className="w-[30%] text-small text-default-400">
           {selectedKeys === "all"
             ? "All items selected"
@@ -384,64 +375,6 @@ export default function TableDrawer({
     );
   }, [selectedKeys, items.length, page, pages, hasSearchFilter]);
 
-  const DrawerList = (
-    <Box
-      sx={{
-        height: 250,
-      }}
-    >
-      <div className="grid gap-y-9 p-3">
-        <Table
-          removeWrapper
-          aria-label="location table"
-          className="dark:text-white"
-          isHeaderSticky
-          bottomContent={bottomContent}
-          bottomContentPlacement="outside"
-          classNames={{
-            wrapper: "max-h-[382px]",
-          }}
-          // selectedKeys={selectedKeys}
-          // selectionMode="multiple"
-          sortDescriptor={sortDescriptor}
-          topContent={topContent}
-          topContentPlacement="outside"
-          // onSelectionChange={setSelectedKeys}
-          onSortChange={setSortDescriptor}
-        >
-          <TableHeader columns={headerColumns}>
-            {(column) => (
-              <TableColumn
-                key={column.uid}
-                align={column.uid === "actions" ? "center" : "start"}
-                allowsSorting={column.sortable}
-              >
-                {column.name}
-              </TableColumn>
-            )}
-          </TableHeader>
-          <TableBody emptyContent={"No data found"} items={sortedItems}>
-            {(item) => (
-              <TableRow key={item._id}>
-                {(columnKey) => (
-                  <TableCell>{renderCell(item, columnKey)}</TableCell>
-                )}
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
-    </Box>
-  );
-
-  const DrawerHeader = styled("div")(({ theme }) => ({
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: theme.spacing(0, 3),
-    ...theme.mixins.toolbar,
-  }));
-
   return (
     <>
       <Modal
@@ -451,7 +384,6 @@ export default function TableDrawer({
         isOpen={isOpen}
         onClose={async () => {
           await onClose();
-          await setOpen(true);
         }}
         classNames={{
           backdrop:
@@ -473,25 +405,45 @@ export default function TableDrawer({
           </>
         </ModalContent>
       </Modal>
-      <Drawer
-        variant="persistent"
-        hideBackdrop={true}
-        anchor={"bottom"}
-        open={open}
+      <Table
+        removeWrapper
+        aria-label="post table"
+        className="dark:text-white"
+        isHeaderSticky
+        bottomContent={bottomContent}
+        bottomContentPlacement="outside"
+        // classNames={{
+        //   wrapper: "max-h-[382px]",
+        // }}
+        // selectedKeys={selectedKeys}
+        // selectionMode="multiple"
+        sortDescriptor={sortDescriptor}
+        topContent={topContent}
+        topContentPlacement="outside"
+        // onSelectionChange={setSelectedKeys}
+        onSortChange={setSortDescriptor}
       >
-        <DrawerHeader>
-          <div className="dark:text-white font-semibold text-2xl">List</div>
-          <Button
-            isIconOnly
-            color="danger"
-            aria-label="Close"
-            onClick={() => setOpen(false)}
-          >
-            <IoIosCloseCircle size={25} />
-          </Button>
-        </DrawerHeader>
-        {DrawerList}
-      </Drawer>
+        <TableHeader columns={headerColumns}>
+          {(column) => (
+            <TableColumn
+              key={column.uid}
+              align={column.uid === "actions" ? "center" : "start"}
+              allowsSorting={column.sortable}
+            >
+              {column.name}
+            </TableColumn>
+          )}
+        </TableHeader>
+        <TableBody emptyContent={"No data found"} items={sortedItems}>
+          {(item) => (
+            <TableRow key={item._id}>
+              {(columnKey) => (
+                <TableCell>{renderCell(item, columnKey)}</TableCell>
+              )}
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
     </>
   );
 }

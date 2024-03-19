@@ -1,6 +1,6 @@
 "use server";
 import { revalidatePath } from "next/cache";
-import Post from "@/models/post";
+import Report from "@/models/report";
 import connectDB from "./connectDB";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
@@ -8,7 +8,7 @@ import { uploadImageToCloudinary } from "./cloudinary";
 import { bufferFile } from "@/utils/bufferFile";
 import fs from "fs/promises";
 
-export const addPost = async (formData) => {
+export const addReport = async (formData) => {
   const session = await getServerSession(authOptions);
   const {
     title,
@@ -28,7 +28,7 @@ export const addPost = async (formData) => {
     const res = await uploadImageToCloudinary(fileData);
     await fs.unlink(fileData.filepath);
     await new Promise((resolve) => setTimeout(resolve, 2000));
-    const newPost = await new Post({
+    const newReport = await new Report({
       title,
       detail,
       location,
@@ -44,11 +44,15 @@ export const addPost = async (formData) => {
       },
     });
 
-    await newPost.save();
+    await newReport.save();
     revalidatePath(`/${campusId}/explore`);
     return { success: true, message: "Created successful" };
   } catch (err) {
     console.log(err);
     return { error: true, message: "Something went wrong, try again later." };
   }
+};
+
+export const createComment = async (formData) => {
+  const { content, postId } = formData;
 };

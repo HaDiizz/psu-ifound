@@ -37,13 +37,13 @@ const statusColorMap = {
 };
 
 const DetailModal = ({ isOpen, onClose, itemId }) => {
-  const { data, isLoading, mutate } = useSWR(`/post/${itemId}`, fetcher);
+  const { data, isLoading, mutate } = useSWR(`/report/${itemId}`, fetcher);
   const { data: session } = useSession();
 
   const handleClaimItem = async () => {
     await onClose();
     try {
-      const response = await axios.put(`/post/${itemId}`, {
+      const response = await axios.put(`/report/${itemId}`, {
         status: data?.status,
       });
       toast.success(`${response?.data?.message}`);

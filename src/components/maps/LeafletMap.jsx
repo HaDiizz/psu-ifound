@@ -49,27 +49,27 @@ const LeafletMap = (params) => {
         style={{ height: "100vh" }}
       >
         <MapLayers />
-        {params?.posts.map((post) => (
+        {params?.reports.map((report) => (
           <Marker
-            key={post._id}
+            key={report._id}
             eventHandlers={{
-              click: () => flyTo(post?.lat, post?.lng),
+              click: () => flyTo(report?.lat, report?.lng),
             }}
-            position={[post?.lat, post?.lng]}
+            position={[report?.lat, report?.lng]}
             icon={L.icon({
               iconSize: [35, 35],
               iconUrl:
-                post.status === "unclaimed" ? RedMarker.src : GreenMarker.src,
+                report.status === "unclaimed" ? RedMarker.src : GreenMarker.src,
             })}
           >
             <Popup>
               <div className="grid">
                 <span className="text-md font-bold capitalize">
-                  {post.title}
+                  {report.title}
                 </span>
                 <span
                   className="underline text-small capitalize text-default-400 cursor-pointer"
-                  onClick={() => handleOpenDetailModal(post._id, post.lat, post.lng)}
+                  onClick={() => handleOpenDetailModal(report._id, report.lat, report.lng)}
                 >
                   ดูรายละเอียดเพิ่มเติม
                 </span>
@@ -115,7 +115,7 @@ const LeafletMap = (params) => {
         open={openTableDrawer}
         setOpen={setOpenTableDrawer}
         flyTo={flyTo}
-        posts={params.posts}
+        reports={params.reports}
         setItemId={setItemId}
         handleOpenDetailModal={handleOpenDetailModal}
       />

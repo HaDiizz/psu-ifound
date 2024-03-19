@@ -1,6 +1,6 @@
 import mongoose, { Schema, models } from "mongoose";
 
-const postSchema = new Schema(
+const reportSchema = new Schema(
   {
     campId: {
       type: String,
@@ -17,28 +17,39 @@ const postSchema = new Schema(
     },
     location: {
       type: String,
+      required: true,
     },
-    subLocation: {},
+    subLocation: {
+      type: String,
+    },
     contact: {
       type: String,
+      required: true,
+    },
+    lat: {
+      type: Number,
+      required: true,
+    },
+    lng: {
+      type: Number,
       required: true,
     },
     status: {
       type: String,
       required: true,
-      default: "notfound",
-      enum: ["found", "notfound"],
+      default: "unclaimed",
+      enum: ["claimed", "unclaimed"],
     },
     image: {
       public_id: { type: String, required: true },
       url: { type: String, required: true },
     },
     user: { type: mongoose.Types.ObjectId, ref: "user" },
-    comments: [{ type: mongoose.Types.ObjectId, ref: "comment" }],
+    userList: [{ type: mongoose.Types.ObjectId, ref: "user" }],
   },
   { timestamps: true }
 );
 
-const Post = models.post || mongoose.model("post", postSchema);
+const Report = models.report || mongoose.model("report", reportSchema);
 
-export default Post;
+export default Report;

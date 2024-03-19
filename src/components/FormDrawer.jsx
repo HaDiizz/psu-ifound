@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import { Input, Select, SelectItem } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
-import { addPost } from "@/lib/actions";
+import { addReport } from "@/lib/actions";
 import FormButton from "./FormButton";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -49,7 +49,7 @@ export default function FormDrawer({ open, setOpen, form, campusId }) {
         }
       }
     }
-    const result = await addPost(formData);
+    const result = await addReport(formData);
     if (result?.success) {
       await reset();
       await setOpen(false);
