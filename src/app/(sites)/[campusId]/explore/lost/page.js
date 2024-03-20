@@ -1,9 +1,13 @@
 import PostTable from "@/components/PostTable";
+import axios from "@/lib/axios";
 
-const Page = () => {
+const Page = async ({ params }) => {
+  const { data } = await axios(`/post/campus/${params.campusId}`, {
+    next: { revalidate: 3600 },
+  });
   return (
     <div className="container pt-[10rem]">
-      <PostTable />
+      <PostTable campusId={params.campusId} posts={data} />
     </div>
   );
 };

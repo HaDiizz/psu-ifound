@@ -54,3 +54,37 @@ export const FormFoundItemSchema = z.object({
       "Only .jpg, .jpeg, .png and .webp formats are supported."
     ),
 });
+
+export const FormLostItemSchema = z.object({
+  campusId: z.string().nonempty("Campus is required."),
+  title: z
+    .string()
+    .nonempty("Title is required.")
+    .max(100, { message: "Maximum length is 100 characters." }),
+  detail: z
+    .string()
+    .nonempty("Detail is required.")
+    .max(150, { message: "Maximum length is 150 characters." }),
+  location: z
+    .string()
+    .max(100, { message: "Maximum length is 100 characters." }),
+  subLocation: z
+    .string()
+    .max(100, { message: "Maximum length is 100 characters." }),
+  contact: z
+    .string()
+    .nonempty("Contact is required.")
+    .max(50, { message: "Maximum length is 50 characters." }),
+  image: z
+    .any()
+    .refine((file) => {
+      return file?.length == 1;
+    }, "Image is required.")
+    .refine((file) => {
+      return file?.[0]?.size <= MAX_FILE_SIZE;
+    }, `Max image size is 2MB.`)
+    .refine(
+      (file) => ACCEPTED_IMAGE_MIME_TYPES.includes(file?.[0]?.type),
+      "Only .jpg, .jpeg, .png and .webp formats are supported."
+    ),
+});

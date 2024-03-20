@@ -3,14 +3,11 @@ import moment from "moment";
 import Image from "next/image";
 import { Chip } from "@nextui-org/react";
 
-const DetailSection = () => {
+const DetailSection = ({ post }) => {
   return (
     <>
       <div className="pt-7 pb-5">
-        <span className="leading-none text-4xl font-bold">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam,
-          veritatis?\
-        </span>
+        <span className="leading-none text-4xl font-bold">{post.title}</span>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-12 gap-3 place-items-center">
         <div
@@ -21,9 +18,7 @@ const DetailSection = () => {
             className="object-cover w-full h-full rounded-md"
             width={100}
             height={100}
-            src={
-              "http://res.cloudinary.com/dklebdons/image/upload/v1710250523/PSU_iFound/rhxmdworq7inacvdftyk.jpg"
-            }
+            src={post.image.url}
             alt="thumbnail"
           />
         </div>
@@ -31,44 +26,40 @@ const DetailSection = () => {
           <div className="flex gap-x-10 pb-5">
             <div className="flex flex-col">
               <p className="text-bold text-small capitalize">
-                {moment("2024-03-12T13:35:22.425Z").fromNow()}
+                {moment(post.createdAt).fromNow()}
               </p>
               <p className="text-bold text-tiny capitalize text-default-400">
-                {moment("2024-03-12T13:35:22.425Z").format("llll")}
+                {moment(post.createdAt).format("llll")}
               </p>
             </div>
             <div className="flex flex-col">
               <span className="text-bold text-small capitalize">Posted by</span>
               <p className="text-bold text-tiny capitalize text-default-400">
-                Nattapol Singhad
+                {post.user.fullName}
               </p>
             </div>
           </div>
           <div className="grid gap-y-5">
             <div className="flex flex-col gap-y-2">
               <span className="font-bold">Detail</span>
-              <span className="indent-4 text-sm font-light">
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Iste
-                nulla voluptatem praesentium ex ipsa unde. Alias voluptatibus
-                sapiente soluta aperiam.
-              </span>
+              <span className="indent-4 text-sm font-light">{post.detail}</span>
             </div>
             <div className="flex flex-col gap-y-2">
               <span className="font-bold">Location</span>
               <span className="indent-4 text-sm font-light">
-                หอสมุดคุณหญิงหลง
+                {post.location}
               </span>
             </div>
             <div className="flex flex-col gap-y-2">
               <span className="font-bold">Sub Location</span>
               <span className="indent-4 text-sm font-light">
-                หอสมุดคุณหญิงหลง ชั้นสาม
+                {post.subLocation}
               </span>
             </div>
             <div className="flex flex-col gap-y-2">
               <span className="font-bold">Contact</span>
               <span className="indent-4 text-sm font-light">
-                tanapat@gmail.com
+                {post.contact}
               </span>
             </div>
             <div className="flex flex-col gap-y-2">
@@ -76,11 +67,11 @@ const DetailSection = () => {
               <span className="text-sm pl-3">
                 <Chip
                   className="capitalize border-none gap-1 text-default-600"
-                  color={"danger"}
+                  color={post.status !== "notfound" ? "success" : "danger"}
                   size="sm"
                   variant="flat"
                 >
-                  Not Found
+                  {post.status !== "notfound" ? "Found" : "Not Found"}
                 </Chip>
               </span>
             </div>

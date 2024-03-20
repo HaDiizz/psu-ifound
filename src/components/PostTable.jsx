@@ -21,15 +21,17 @@ import {
   ModalContent,
   useDisclosure,
 } from "@nextui-org/react";
-import { IoIosCloseCircle } from "react-icons/io";
 import { FaChevronDown, FaEye, FaPlus } from "react-icons/fa";
-import { MdMyLocation } from "react-icons/md";
 import { useCallback, useMemo, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { capitalize } from "@/utils/capitalize";
-import { columns, statusPostOptions, dataReports } from "@/utils/data";
+import { columns, statusPostOptions } from "@/utils/data";
 import moment from "moment";
 import { useRouter } from "next/navigation";
+import AddPostModal from "./AddPostModal";
+import { AiFillEdit } from "react-icons/ai";
+import { MdDelete } from "react-icons/md";
+import { useSession } from "next-auth/react";
 
 const INITIAL_VISIBLE_COLUMNS = [
   "image",
@@ -46,7 +48,9 @@ const statusColorMap = {
   found: "success",
 };
 
-export default function PostTable({}) {
+export default function PostTable({ campusId, posts }) {
+  const { data: session } = useSession();
+  const [isOpenAddModal, setIsOpenAddModal] = useState(false);
   const router = useRouter();
   const [previewImage, setPreviewImage] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -74,7 +78,7 @@ export default function PostTable({}) {
   }, [visibleColumns]);
 
   const filteredItems = useMemo(() => {
-    let filteredPosts = [...dataReports];
+    let filteredPosts = [...posts];
 
     if (hasSearchFilter) {
       filteredPosts = filteredPosts.filter((post) =>
@@ -90,7 +94,7 @@ export default function PostTable({}) {
       );
     }
     return filteredPosts;
-  }, [dataReports, filterValue, statusFilter]);
+  }, [posts, filterValue, statusFilter]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -158,16 +162,20 @@ export default function PostTable({}) {
       case "location":
         return (
           <div className="flex flex-col">
-            <p className="text-bold text-small capitalize">{data.location}</p>
+            <p className="text-bold text-small capitalize">
+              {data.location || "-"}
+            </p>
             <p className="text-bold text-tiny capitalize text-default-400">
-              {data.subLocation}
+              {data.subLocation || "-"}
             </p>
           </div>
         );
       case "title":
         return (
           <div className="flex flex-col">
-            <p className="text-bold text-small capitalize">{data.title}</p>
+            <p className="text-bold text-small capitalize">
+              {data.title || "-"}
+            </p>
           </div>
         );
       case "status":
@@ -184,25 +192,47 @@ export default function PostTable({}) {
       case "actions":
         return (
           <div className="relative flex items-center gap-2">
-            {/* <Tooltip content="Locate">
-              <span className="text-lg text-orange-400 cursor-pointer active:opacity-50">
-                <MdMyLocation
-                  size={20}
-                  onClick={() => flyTo(data.lat, data.lng)}
-                />
-              </span>
-            </Tooltip> */}
-            <Tooltip content="Detail">
+            <Tooltip content="View">
               <span
-                className="text-lg text-violet-400 cursor-pointer active:opacity-50"
+                className="text-lg text-default-400 cursor-pointer active:opacity-50"
                 onClick={() => {
-                  router.push(`/${data.campId}/explore/lost/detail/${data._id}`);
-                  // handleOpenDetailModal(data._id, data.lat, data.lng);
+                  router.push(
+                    `/${data.campId}/explore/lost/detail/${data._id}`
+                  );
                 }}
               >
                 <FaEye size={20} />
               </span>
             </Tooltip>
+            {session &&
+              data.user._id.toString() === session.user.id.toString() && (
+                <>
+                  <Tooltip content="Edit">
+                    <span
+                      className="text-lg text-default-400 cursor-pointer active:opacity-50"
+                      onClick={() => {
+                        // router.push(
+                        //   `/${data.campId}/explore/lost/detail/${data._id}`
+                        // );
+                      }}
+                    >
+                      <AiFillEdit size={20} />
+                    </span>
+                  </Tooltip>
+                  <Tooltip content="Delete" color="danger">
+                    <span
+                      className="text-lg text-red-500 cursor-pointer active:opacity-50"
+                      onClick={() => {
+                        // router.push(
+                        //   `/${data.campId}/explore/lost/detail/${data._id}`
+                        // );
+                      }}
+                    >
+                      <MdDelete size={20} />
+                    </span>
+                  </Tooltip>
+                </>
+              )}
           </div>
         );
       default:
@@ -303,14 +333,18 @@ export default function PostTable({}) {
                 ))}
               </DropdownMenu>
             </Dropdown>
-            <Button color="primary" endContent={<FaPlus />}>
+            <Button
+              color="primary"
+              endContent={<FaPlus />}
+              onPress={() => setIsOpenAddModal(true)}
+            >
               เพิ่มรายการตามหาของหายของคุณ
             </Button>
           </div>
         </div>
         <div className="flex justify-between items-center">
           <span className="text-default-400 text-small">
-            Total {dataReports.length} items
+            Total {posts.length} items
           </span>
           <label className="flex items-center text-default-400 text-small">
             Rows per page:
@@ -331,7 +365,7 @@ export default function PostTable({}) {
     statusFilter,
     visibleColumns,
     onRowsPerPageChange,
-    dataReports.length,
+    posts.length,
     onSearchChange,
     hasSearchFilter,
   ]);
@@ -405,16 +439,22 @@ export default function PostTable({}) {
           </>
         </ModalContent>
       </Modal>
+      <AddPostModal
+        isOpen={isOpenAddModal}
+        setIsOpen={setIsOpenAddModal}
+        campusId={campusId}
+      />
       <Table
-        removeWrapper
+        fullWidth={true}
+        // removeWrapper
         aria-label="post table"
         className="dark:text-white"
         isHeaderSticky
         bottomContent={bottomContent}
         bottomContentPlacement="outside"
-        // classNames={{
-        //   wrapper: "max-h-[382px]",
-        // }}
+        classNames={{
+          wrapper: "max-h-[382px]",
+        }}
         // selectedKeys={selectedKeys}
         // selectionMode="multiple"
         sortDescriptor={sortDescriptor}
