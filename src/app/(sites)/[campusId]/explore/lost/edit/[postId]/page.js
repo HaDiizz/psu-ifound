@@ -1,13 +1,20 @@
 import BackButton from "@/components/BackButton";
 import axios from "@/lib/axios";
 import EditPost from "@/components/EditPost";
+import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 const Page = async ({ params }) => {
-  const { data } = await axios.get(`/post/${params.postId}`);
+  const session = await getServerSession(authOptions);
+  const response = await axios.get(`/post/${params.postId}`);
+  if (session && response.data?.user._id !== session.user.id) {
+    redirect("/");
+  }
   return (
     <div className="container pt-[6rem] pb-5">
       <BackButton />
-      <EditPost post={data} campusId={params.campusId} />
+      <EditPost post={response.data} campusId={params.campusId} />
     </div>
   );
 };

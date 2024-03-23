@@ -133,7 +133,11 @@ const EditPost = ({ post, campusId }) => {
                 ));
               }}
             >
-              <SelectItem key={"notfound"} value="notfound" textValue="Not Found">
+              <SelectItem
+                key={"notfound"}
+                value="notfound"
+                textValue="Not Found"
+              >
                 <Chip
                   className="capitalize border-none gap-1 text-default-600"
                   color="danger"
