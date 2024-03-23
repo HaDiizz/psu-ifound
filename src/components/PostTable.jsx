@@ -32,6 +32,9 @@ import AddPostModal from "./AddPostModal";
 import { AiFillEdit } from "react-icons/ai";
 import { MdDelete } from "react-icons/md";
 import { useSession } from "next-auth/react";
+import { deletePost } from "@/lib/actions";
+import ConfirmDelete from "./ConfirmDelete";
+import toast from "react-hot-toast";
 
 const INITIAL_VISIBLE_COLUMNS = [
   "image",
@@ -50,6 +53,9 @@ const statusColorMap = {
 
 export default function PostTable({ campusId, posts }) {
   const { data: session } = useSession();
+  const [postId, setPostId] = useState("");
+  const [postTitle, setPostTitle] = useState("");
+  const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
   const [isOpenAddModal, setIsOpenAddModal] = useState(false);
   const router = useRouter();
   const [previewImage, setPreviewImage] = useState("");
@@ -66,6 +72,20 @@ export default function PostTable({ campusId, posts }) {
     column: "name",
     direction: "ascending",
   });
+
+  const handleDeletePost = async () => {
+    const result = await deletePost(postId);
+    await setIsOpenDeleteModal(false);
+    if (result?.success) {
+      toast.success(`${result?.message}`);
+      return;
+    }
+
+    if (result?.error) {
+      toast.error(`${result?.message}`);
+      return;
+    }
+  };
 
   const hasSearchFilter = Boolean(filterValue);
 
@@ -211,9 +231,9 @@ export default function PostTable({ campusId, posts }) {
                     <span
                       className="text-lg text-default-400 cursor-pointer active:opacity-50"
                       onClick={() => {
-                        // router.push(
-                        //   `/${data.campId}/explore/lost/detail/${data._id}`
-                        // );
+                        router.push(
+                          `/${data.campId}/explore/lost/edit/${data._id}`
+                        );
                       }}
                     >
                       <AiFillEdit size={20} />
@@ -222,10 +242,10 @@ export default function PostTable({ campusId, posts }) {
                   <Tooltip content="Delete" color="danger">
                     <span
                       className="text-lg text-red-500 cursor-pointer active:opacity-50"
-                      onClick={() => {
-                        // router.push(
-                        //   `/${data.campId}/explore/lost/detail/${data._id}`
-                        // );
+                      onClick={async () => {
+                        await setPostId(data?._id);
+                        await setPostTitle(data?.title);
+                        await setIsOpenDeleteModal(true);
                       }}
                     >
                       <MdDelete size={20} />
@@ -338,7 +358,7 @@ export default function PostTable({ campusId, posts }) {
               endContent={<FaPlus />}
               onPress={() => setIsOpenAddModal(true)}
             >
-              เพิ่มรายการตามหาของหายของคุณ
+              เพิ่มข้อมูลของคุณ
             </Button>
           </div>
         </div>
@@ -484,6 +504,12 @@ export default function PostTable({ campusId, posts }) {
           )}
         </TableBody>
       </Table>
+      <ConfirmDelete
+        title={postTitle}
+        isOpen={isOpenDeleteModal}
+        onClose={() => setIsOpenDeleteModal(false)}
+        handleDelete={handleDeletePost}
+      />
     </>
   );
 }

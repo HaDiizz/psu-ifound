@@ -32,13 +32,12 @@ export default function FormDrawer({ open, setOpen, form, campusId }) {
       lat: 0,
       lng: 0,
       image: undefined,
-      campusId: "",
     },
   });
 
   const onSubmit = async (data, e) => {
     if (!file) return;
-    data = { ...data, lat: Number(form.lat), lng: Number(form.lng) };
+    data = { ...data, lat: Number(form.lat), lng: Number(form.lng), campusId };
     const formData = new FormData();
     for (const [key, value] of Object.entries(data)) {
       if (value !== undefined && value !== null) {
@@ -64,8 +63,7 @@ export default function FormDrawer({ open, setOpen, form, campusId }) {
 
   useEffect(() => {
     setValue("image", file);
-    setValue("campusId", campusId);
-  }, [setValue, file, campusId]);
+  }, [setValue, file]);
 
   const DrawerList = (
     <Box
@@ -82,19 +80,16 @@ export default function FormDrawer({ open, setOpen, form, campusId }) {
                 <span className="dark:text-white font-semibold pl-3">
                   Report
                 </span>
-                <FormButton isSubmitting={isSubmitting} />
+                <FormButton isSubmitting={isSubmitting} text={"Submit"} />
               </div>
               <div className="grid gap-y-5 pt-[3rem]">
                 <Select
-                  {...register("campusId")}
                   variant="bordered"
                   label="Campus"
                   placeholder="Select campus"
                   defaultSelectedKeys={[campusId]}
                   className="max-w-xs"
-                  errorMessage={errors.campusId?.message}
-                  isInvalid={errors.campusId?.message}
-                  onSelectionChange={(e) => setValue(e.currentKey)}
+                  isDisabled
                 >
                   <SelectItem key={"01"} value="01">
                     Hatyai Campus
@@ -191,9 +186,15 @@ export default function FormDrawer({ open, setOpen, form, campusId }) {
           </>
         ) : (
           <div className="pt-[4rem] grid gap-4 dark:text-white">
-            <span className="text-4xl font-bold text-inherit text-center">PSU iFound</span>
-            <span className="font-bold text-sm pt-8">Please sign in to unlock the available features.</span>
-            <Link className="underline text-sm" href="/login">Click here to signIn</Link>
+            <span className="text-4xl font-bold text-inherit text-center">
+              PSU iFound
+            </span>
+            <span className="font-bold text-sm pt-8">
+              Please sign in to unlock the available features.
+            </span>
+            <Link className="underline text-sm" href="/login">
+              Click here to signIn
+            </Link>
           </div>
         )}
       </div>

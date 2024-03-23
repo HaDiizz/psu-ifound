@@ -9,7 +9,6 @@ const ACCEPTED_IMAGE_MIME_TYPES = [
 ];
 
 export const FormFoundItemSchema = z.object({
-  campusId: z.string().nonempty("Campus is required."),
   title: z
     .string()
     .nonempty("Title is required.")
@@ -56,7 +55,6 @@ export const FormFoundItemSchema = z.object({
 });
 
 export const FormLostItemSchema = z.object({
-  campusId: z.string().nonempty("Campus is required."),
   title: z
     .string()
     .nonempty("Title is required.")
@@ -87,4 +85,26 @@ export const FormLostItemSchema = z.object({
       (file) => ACCEPTED_IMAGE_MIME_TYPES.includes(file?.[0]?.type),
       "Only .jpg, .jpeg, .png and .webp formats are supported."
     ),
+});
+
+export const EditFormLostItemSchema = z.object({
+  status: z.string().nonempty("Status is required."),
+  title: z
+    .string()
+    .nonempty("Title is required.")
+    .max(100, { message: "Maximum length is 100 characters." }),
+  detail: z
+    .string()
+    .nonempty("Detail is required.")
+    .max(150, { message: "Maximum length is 150 characters." }),
+  location: z
+    .string()
+    .max(100, { message: "Maximum length is 100 characters." }),
+  subLocation: z
+    .string()
+    .max(100, { message: "Maximum length is 100 characters." }),
+  contact: z
+    .string()
+    .nonempty("Contact is required.")
+    .max(50, { message: "Maximum length is 50 characters." }),
 });

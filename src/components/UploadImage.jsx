@@ -1,10 +1,23 @@
 "use client";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
-import { ArrowUpFromLine, X, XCircle } from "lucide-react";
+import { ArrowUpFromLine, X } from "lucide-react";
 import Image from "next/image";
 
-const UploadImage = ({ file, setFile, register, errors }) => {
+const UploadImage = ({ file, setFile, register, errors, defaultImage }) => {
+  useEffect(() => {
+    if (defaultImage) {
+      setFile((prev) => [
+        ...prev,
+        {
+          preview: defaultImage.url,
+          name: defaultImage.public_id,
+          isEdit: true,
+        },
+      ]);
+    }
+  }, [defaultImage, setFile]);
+
   const onDrop = useCallback(
     (acceptedFiles) => {
       if (acceptedFiles?.length) {
@@ -45,7 +58,7 @@ const UploadImage = ({ file, setFile, register, errors }) => {
             "pl-10 pr-10 pt-5 pb-5 border border-neutral-200 rounded-md cursor-pointer dark:hover:bg-slate-800 hover:bg-slate-100",
         })}
       >
-        {file.length > 0 ? (
+        {file?.length > 0 ? (
           <div className="relative">
             <Image
               src={file[0].preview}

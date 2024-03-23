@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@nextui-org/react";
 
-const FormButton = ({ isSubmitting }) => {
+const FormButton = ({ isSubmitting, text }) => {
   return (
     <Button
       type="submit"
@@ -30,7 +30,7 @@ const FormButton = ({ isSubmitting }) => {
         </svg>
       }
     >
-      {isSubmitting ? "Loading" : "Submit"}
+      {isSubmitting ? "Loading" : text}
     </Button>
   );
 };
