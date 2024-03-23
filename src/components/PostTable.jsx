@@ -35,6 +35,7 @@ import { useSession } from "next-auth/react";
 import { deletePost } from "@/lib/actions";
 import ConfirmDelete from "./ConfirmDelete";
 import toast from "react-hot-toast";
+import Link from "next/link";
 
 const INITIAL_VISIBLE_COLUMNS = [
   "image",
@@ -213,31 +214,23 @@ export default function PostTable({ campusId, posts }) {
         return (
           <div className="relative flex items-center gap-2">
             <Tooltip content="View">
-              <span
+              <Link
                 className="text-lg text-default-400 cursor-pointer active:opacity-50"
-                onClick={() => {
-                  router.push(
-                    `/${data.campId}/explore/lost/detail/${data._id}`
-                  );
-                }}
+                href={`/${data.campId}/explore/lost/detail/${data._id}`}
               >
                 <FaEye size={20} />
-              </span>
+              </Link>
             </Tooltip>
             {session &&
               data.user._id.toString() === session.user.id.toString() && (
                 <>
                   <Tooltip content="Edit">
-                    <span
+                    <Link
                       className="text-lg text-default-400 cursor-pointer active:opacity-50"
-                      onClick={() => {
-                        router.push(
-                          `/${data.campId}/explore/lost/edit/${data._id}`
-                        );
-                      }}
+                      href={`/${data.campId}/explore/lost/edit/${data._id}`}
                     >
                       <AiFillEdit size={20} />
-                    </span>
+                    </Link>
                   </Tooltip>
                   <Tooltip content="Delete" color="danger">
                     <span

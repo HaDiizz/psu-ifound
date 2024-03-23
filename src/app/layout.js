@@ -5,6 +5,8 @@ import Navbar from "@/components/Navbar";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { Toaster } from "react-hot-toast";
+import ProgressLoader from "@/components/ProgressLoader";
+import NextTopLoader from "nextjs-toploader";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,6 +23,8 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en">
       <body suppressHydrationWarning={true} className={inter.className}>
+        <ProgressLoader />
+        <NextTopLoader showSpinner={false} color="#f564ce" />
         <div className="main">
           <div className="gradient"></div>
         </div>
