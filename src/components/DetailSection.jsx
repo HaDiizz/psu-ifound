@@ -20,6 +20,10 @@ const DetailSection = ({ post }) => {
             height={100}
             src={post.image.url}
             alt="thumbnail"
+            loading="lazy"
+            layout="responsive"
+            objectFit="cover"
+            objectPosition="center"
           />
         </div>
         <div className="md:col-span-7 p-5 bg-slate-200/25 dark:bg-slate-800/50 rounded-xl flex flex-col w-full h-full">

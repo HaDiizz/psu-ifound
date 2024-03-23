@@ -69,7 +69,10 @@ const UploadImage = ({ file, setFile, register, errors, defaultImage }) => {
                 URL.revokeObjectURL(file[0].preview);
               }}
               className="h-full w-full object-contain rounded-md"
-              priority
+              loading="lazy"
+              layout="responsive"
+              objectFit="cover"
+              objectPosition="center"
             />
             <button
               type="button"
