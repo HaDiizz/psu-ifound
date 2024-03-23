@@ -4,6 +4,7 @@ import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import clientPromise from "@/lib/mongoClient";
 import { extractEmail } from "@/utils/emailValidation";
 import axios from "axios";
+import User from "@/models/user";
 
 export const authOptions = {
   adapter: MongoDBAdapter(clientPromise),
@@ -77,6 +78,8 @@ export const authOptions = {
   ],
   callbacks: {
     async signIn({ user, account }) {
+      const checkDuplicateEmail = await User.find({ email: user.email });
+      if (checkDuplicateEmail.length > 1) return false;
       user.accessToken = account.access_token;
       return true;
     },
