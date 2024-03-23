@@ -52,53 +52,54 @@ const UploadImage = ({ file, setFile, register, errors, defaultImage }) => {
           {errors.image?.message}
         </span>
       </div>
-      <div
-        {...getRootProps({
-          className:
-            "pl-10 pr-10 pt-5 pb-5 border border-neutral-200 rounded-md cursor-pointer dark:hover:bg-slate-800 hover:bg-slate-100",
-        })}
-      >
-        {file?.length > 0 ? (
-          <div className="relative">
+      <div className="relative flex justify-center">
+        {file?.length > 0 && (
+          <button
+            type="button"
+            className="w-7 h-7 rounded-full flex justify-center items-center absolute right-[2px] -top-2 bg-red-500 transition-color hover:scale-125 delay-150 duration-100"
+            onClick={() => removeFile(file[0].name)}
+          >
+            <X className="w-5 h-5 text-white rounded-full bg-red-500 fill-red-500 hover:fill-red-600 transition-colors" />
+          </button>
+        )}
+        <div
+          {...getRootProps({
+            className:
+              "border border-neutral-200 rounded-md cursor-pointer dark:hover:bg-slate-800 hover:bg-slate-100 flex justify-center items-center overflow-hidden",
+          })}
+          style={{ width: "200px", height: "210px" }}
+        >
+          {file?.length > 0 ? (
             <Image
               src={file[0].preview}
               alt={file[0].name}
-              width={40}
-              height={40}
+              width={100}
+              height={100}
               onLoad={() => {
                 URL.revokeObjectURL(file[0].preview);
               }}
-              className="h-full w-full object-contain rounded-md"
-              loading="lazy"
-              layout="responsive"
-              objectFit="cover"
-              objectPosition="center"
+              className="h-full w-full object-cover rounded-md"
+              priority
+              unoptimized
             />
-            <button
-              type="button"
-              className="w-7 h-7 rounded-full flex justify-center items-center absolute -top-12 -right-12 bg-red-500 transition-color hover:scale-125 delay-150 duration-100"
-              onClick={() => removeFile(file[0].name)}
-            >
-              <X className="w-5 h-5 text-white rounded-full bg-red-500 fill-red-500 hover:fill-red-600 transition-colors" />
-            </button>
-          </div>
-        ) : (
-          <>
-            <input
-              {...getInputProps()}
-              {...register("image", { value: file })}
-              value={file}
-            />
-            <div className="flex flex-col items-center justify-center gap-4 text-center dark:text-white text-sm">
-              <ArrowUpFromLine className="w-5 h-5 fill-current" />
-              {isDragActive ? (
-                <p>Drop the files here ...</p>
-              ) : (
-                <p>Drag & drop files here, or click to select files</p>
-              )}
-            </div>
-          </>
-        )}
+          ) : (
+            <>
+              <input
+                {...getInputProps()}
+                {...register("image", { value: file })}
+                value={file}
+              />
+              <div className="flex flex-col items-center justify-center gap-4 text-center dark:text-white text-sm pl-10 pr-10 pt-5 pb-5 ">
+                <ArrowUpFromLine className="w-5 h-5 fill-current" />
+                {isDragActive ? (
+                  <p>Drop the files here ...</p>
+                ) : (
+                  <p>Drag & drop files here, or click to select files</p>
+                )}
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
