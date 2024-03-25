@@ -86,7 +86,7 @@ const DisplayPostDetail = ({ postId, campusId }) => {
               data?.comments?.map((comment) => (
                 <div
                   key={comment._id}
-                  className="card border dark:border-slate-600 p-5 rounded-lg shadow-md"
+                  className="card border dark:border-slate-600 p-5 rounded-lg shadow-md bg-slate-200/25 dark:bg-slate-800/50"
                 >
                   <CommentCard
                     comment={comment}
