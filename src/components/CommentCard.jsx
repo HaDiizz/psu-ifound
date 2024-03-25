@@ -16,7 +16,7 @@ import { deleteComment } from "@/lib/actions";
 import toast from "react-hot-toast";
 import { useSession } from "next-auth/react";
 
-const CommentCard = ({ postId, comment, commentId, campusId }) => {
+const CommentCard = ({ postId, comment, commentId, campusId, commentRef }) => {
   const { data: session } = useSession();
   const [onReply, setOnReply] = useState(false);
 
@@ -41,7 +41,10 @@ const CommentCard = ({ postId, comment, commentId, campusId }) => {
 
   return (
     <>
-      <div className="flex justify-between border-b-2 dark:border-slate-600/20 pb-3 mb-3">
+      <div
+        className="flex justify-between border-b-2 dark:border-slate-600/20 pb-3 mb-3"
+        ref={commentRef}
+      >
         <div>
           <User description={comment.user.email} name={comment.user.fullName}>
             {comment.user.username}
@@ -108,6 +111,7 @@ const CommentCard = ({ postId, comment, commentId, campusId }) => {
             onReply={onReply}
             setOnReply={setOnReply}
             campusId={campusId}
+            commentRef={commentRef}
           />
         )}
       </div>

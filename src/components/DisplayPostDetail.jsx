@@ -11,10 +11,12 @@ import { notFound } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { LockKeyhole } from "lucide-react";
+import { useRef } from "react";
 
 const DisplayPostDetail = ({ postId, campusId }) => {
   const { data, isLoading } = usePost(postId);
   const { data: session } = useSession();
+  const commentRef = useRef(null)
 
   if (!data && !isLoading) {
     return notFound();
@@ -67,10 +69,10 @@ const DisplayPostDetail = ({ postId, campusId }) => {
         <>
           <DetailSection post={data} />
           {session ? (
-            <InputComment postId={data._id} campusId={campusId} />
+            <InputComment postId={data._id} campusId={campusId} commentRef={commentRef} />
           ) : (
             <div className="pt-7 pb-[3rem]">
-              <div className="flex gap-x-3 ard border dark:border-slate-600 p-3 rounded-lg shadow-md">
+              <div className="flex gap-x-3 border dark:border-slate-600 p-3 rounded-lg shadow-md hover:dark:border-slate-500">
                 <span>You must be logged in to comment on this post.</span>
                 <span>
                   <LockKeyhole />
@@ -86,13 +88,14 @@ const DisplayPostDetail = ({ postId, campusId }) => {
               data?.comments?.map((comment) => (
                 <div
                   key={comment._id}
-                  className="card border dark:border-slate-600 p-5 rounded-lg shadow-md bg-slate-200/25 dark:bg-slate-800/50"
+                  className="card border dark:border-slate-600 p-5 rounded-lg shadow-md bg-slate-200/25 dark:bg-slate-800/50 hover:dark:border-slate-500 hover:border-slate-300"
                 >
                   <CommentCard
                     comment={comment}
                     postId={data._id}
                     commentId={comment._id}
                     campusId={campusId}
+                    commentRef={commentRef}
                   />
                 </div>
               ))

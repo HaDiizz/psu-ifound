@@ -2,5 +2,5 @@
 import useSWR from "swr";
 
 export const usePost = (postId) => {
-  return useSWR(`/post/${postId}`);
+  return useSWR(`/post/${postId}`, { refreshInterval: 1000 });
 };

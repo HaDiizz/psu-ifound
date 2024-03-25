@@ -1,15 +1,25 @@
 "use client";
 import React, { useState } from "react";
-import { Textarea } from "@nextui-org/react";
+import { Textarea, CircularProgress } from "@nextui-org/react";
 import { BsFillSendFill } from "react-icons/bs";
 import { createComment } from "@/lib/actions";
 import toast from "react-hot-toast";
 
-const InputComment = ({ postId, onReply, setOnReply, campusId }) => {
+const InputComment = ({
+  postId,
+  onReply,
+  setOnReply,
+  campusId,
+  commentRef,
+}) => {
   const [content, setContent] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleSubmit = async () => {
+    setIsLoading(true);
     if (!content.trim()) {
       if (setOnReply) return setOnReply(false);
+      setIsLoading(false);
       return;
     }
     const newComment = {
@@ -21,6 +31,10 @@ const InputComment = ({ postId, onReply, setOnReply, campusId }) => {
     };
     const result = await createComment(newComment);
     if (result?.success) {
+      if (commentRef && commentRef.current) {
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        await commentRef.current?.scrollIntoView({ behavior: "smooth" });
+      }
       toast.success(`${result?.message}`);
     }
 
@@ -29,6 +43,7 @@ const InputComment = ({ postId, onReply, setOnReply, campusId }) => {
     }
     if (setOnReply) return setOnReply(false);
     setContent("");
+    setIsLoading(false);
   };
   return (
     <div className="pt-7 pb-[3rem] flex items-center gap-x-5">
@@ -41,11 +56,15 @@ const InputComment = ({ postId, onReply, setOnReply, campusId }) => {
         value={content}
         onChange={(e) => setContent(e.target.value)}
       />
-      <BsFillSendFill
-        className="pt-3 cursor-pointer"
-        size={30}
-        onClick={handleSubmit}
-      />
+      {isLoading ? (
+        <CircularProgress aria-label="Loading..." />
+      ) : (
+        <BsFillSendFill
+          className="pt-3 cursor-pointer"
+          size={30}
+          onClick={handleSubmit}
+        />
+      )}
     </div>
   );
 };

@@ -1,4 +1,5 @@
 export function extractEmail(email) {
+  if (!email) return null;
   const emailFormatRegex = /^([a-zA-Z0-9_.+-]+)@psu\.ac\.th$/;
   const match = email.match(emailFormatRegex);
 

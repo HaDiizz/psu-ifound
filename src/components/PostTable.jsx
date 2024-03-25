@@ -346,13 +346,15 @@ export default function PostTable({ campusId, posts }) {
                 ))}
               </DropdownMenu>
             </Dropdown>
-            <Button
-              color="primary"
-              endContent={<FaPlus />}
-              onPress={() => setIsOpenAddModal(true)}
-            >
-              เพิ่มข้อมูลของคุณ
-            </Button>
+            {session && (
+              <Button
+                color="primary"
+                endContent={<FaPlus />}
+                onPress={() => setIsOpenAddModal(true)}
+              >
+                เพิ่มข้อมูลของคุณ
+              </Button>
+            )}
           </div>
         </div>
         <div className="flex justify-between items-center">

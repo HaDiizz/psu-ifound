@@ -1,7 +1,6 @@
 "use client";
 import React, { useMemo } from "react";
 import { Marker, useMapEvents } from "react-leaflet";
-import MarkerIcon from "@/assets/images/red-marker-3d.png";
 
 const LocationMarker = ({ position, setPosition }) => {
   return position === null ? null : (
@@ -12,7 +11,7 @@ const LocationMarker = ({ position, setPosition }) => {
       position={position}
       icon={L.icon({
         iconSize: [30, 30],
-        iconUrl: MarkerIcon.src,
+        iconUrl: "/red-marker-3d.png",
       })}
     ></Marker>
   );

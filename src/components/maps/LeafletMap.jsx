@@ -8,10 +8,8 @@ import Box from "@mui/material/Box";
 import { FaTable } from "react-icons/fa";
 import { Button, useDisclosure } from "@nextui-org/react";
 import TableDrawer from "../TableDrawer";
-import RedMarker from "@/assets/images/search-marker.png";
 import MapLayers from "./layers/MapLayers";
 import MapEvents from "./events/MapEvents";
-import GreenMarker from "@/assets/images/found-marker.png";
 import DetailModal from "../DetailModal";
 
 const LeafletMap = (params) => {
@@ -59,7 +57,7 @@ const LeafletMap = (params) => {
             icon={L.icon({
               iconSize: [35, 35],
               iconUrl:
-                report.status === "unclaimed" ? RedMarker.src : GreenMarker.src,
+                report.status === "unclaimed" ? "/search-marker.png" : "/found-marker.png",
             })}
           >
             <Popup>

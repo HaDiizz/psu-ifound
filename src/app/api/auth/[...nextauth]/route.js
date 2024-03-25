@@ -24,7 +24,7 @@ export const authOptions = {
           const headers = {
             credential: process.env.PSU_OPEN_API_SECRET_KEY,
           };
-          const data = await extractEmail(profile.email);
+          const data = await extractEmail(profile?.email);
           if (data) {
             const { role, username } = await data;
             if (role === "student") {
@@ -55,23 +55,38 @@ export const authOptions = {
             studyLevelName: response?.data[0]?.studyLevelName || "",
           };
         } catch (error) {
-          if (error.response.status === 404) {
-            return {
-              id: profile.sub,
-              username: profile.given_name,
-              fullName: profile.name,
-              email: profile.email,
-              picture: profile.picture,
-              role: profile.role ?? "user",
-              studentId: "",
-              titleName: "",
-              yearStatus: "",
-              majorNameThai: "",
-              deptNameThai: "",
-              campusNameThai: "",
-              studyLevelName: "",
-            };
-          }
+          // if (error.response.status === 404) {
+          //   return {
+          //     id: profile.sub,
+          //     username: profile.given_name,
+          //     fullName: profile.name,
+          //     email: profile.email,
+          //     picture: profile.picture,
+          //     role: profile.role ?? "user",
+          //     studentId: "",
+          //     titleName: "",
+          //     yearStatus: "",
+          //     majorNameThai: "",
+          //     deptNameThai: "",
+          //     campusNameThai: "",
+          //     studyLevelName: "",
+          //   };
+          // }
+          return {
+            id: profile.sub,
+            username: profile.given_name,
+            fullName: profile.name,
+            email: profile.email,
+            picture: profile.picture,
+            role: profile.role ?? "user",
+            studentId: "",
+            titleName: "",
+            yearStatus: "",
+            majorNameThai: "",
+            deptNameThai: "",
+            campusNameThai: "",
+            studyLevelName: "",
+          };
         }
       },
     }),

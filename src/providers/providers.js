@@ -9,7 +9,7 @@ export default function Providers({ children, session }) {
   return (
     <AuthProvider session={session}>
       <SWRConfig
-        value={{ fetcher, refreshInterval: 3000 }}
+        value={{ fetcher }}
       >
         <NextUIProvider>
           <ThemeProvider

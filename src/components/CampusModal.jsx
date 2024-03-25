@@ -20,13 +20,13 @@ import {
 import { useRouter, usePathname } from "next/navigation";
 import axios from "axios";
 import Image from "next/image";
-import ErrorImageRobot from "@/assets/images/error.png";
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import { OptionsSelection } from "./OptionsSelection";
+import { campusData } from "@/utils/constants";
 
 const fetcher = (url) =>
   axios
@@ -46,7 +46,12 @@ const CampusModal = ({ isOpen, onClose }) => {
   const router = useRouter();
   const { data, error, isLoading } = useSWR(
     `${process.env.PSU_OPEN_API_URL}/Central/GetCampus`,
-    fetcher
+    fetcher,
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false
+    }
   );
 
   const handleNext = () => {
@@ -85,7 +90,7 @@ const CampusModal = ({ isOpen, onClose }) => {
             <ModalHeader className="flex flex-col gap-1">
               <Box sx={{ width: "100%", paddingTop: "1.5rem" }}>
                 <Stepper activeStep={activeStep}>
-                  {steps.map((label, index) => {
+                  {steps.map((label) => {
                     const stepProps = {};
                     const labelProps = {};
                     return (
@@ -104,17 +109,62 @@ const CampusModal = ({ isOpen, onClose }) => {
                 {activeStep === steps.length - 1 ? (
                   <>
                     {error ? (
-                      <div className="flex flex-col justify-center place-content-center items-center">
-                        <Image
-                          style={{ width: "5rem", height: "8.8rem" }}
-                          src={ErrorImageRobot}
-                          alt="logo"
-                          width={"auto"}
-                          height={"auto"}
-                          priority
-                        />
-                        <p>Something went wrong!</p>
-                      </div>
+                      campusData ? (
+                        <Table
+                          disallowEmptySelection={true}
+                          color="primary"
+                          selectionMode="single"
+                          hideHeader
+                          aria-label="static collection table"
+                          selectionBehavior="replace"
+                          defaultSelectedKeys={[selectCampus]}
+                          onSelectionChange={(key) =>
+                            setSelectCampus(key.currentKey)
+                          }
+                        >
+                          <TableHeader>
+                            <TableColumn>Campus ID</TableColumn>
+                            <TableColumn>TH</TableColumn>
+                            <TableColumn>EN</TableColumn>
+                          </TableHeader>
+                          <TableBody
+                            isLoading={isLoading}
+                            loadingContent={<Spinner label="Loading..." />}
+                          >
+                            {campusData?.map(
+                              (item) =>
+                                item.campId !== "00" && (
+                                  <TableRow
+                                    className="cursor-pointer"
+                                    key={item.campId}
+                                  >
+                                    <TableCell>{item.campId}</TableCell>
+                                    <TableCell>{item.campNameThai}</TableCell>
+                                    <TableCell>
+                                      {
+                                        item.campNameEng.split(
+                                          "Prince of Songkla University "
+                                        )[1]
+                                      }
+                                    </TableCell>
+                                  </TableRow>
+                                )
+                            )}
+                          </TableBody>
+                        </Table>
+                      ) : (
+                        <div className="flex flex-col justify-center place-content-center items-center">
+                          <Image
+                            style={{ width: "5rem", height: "8.8rem" }}
+                            src={"/error.png"}
+                            alt="logo"
+                            width={"auto"}
+                            height={"auto"}
+                            priority
+                          />
+                          <p>Something went wrong!</p>
+                        </div>
+                      )
                     ) : (
                       <Table
                         disallowEmptySelection={true}
