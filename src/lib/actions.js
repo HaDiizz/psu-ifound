@@ -8,6 +8,7 @@ import { deleteImage, uploadImageToCloudinary } from "./cloudinary";
 import { bufferFile } from "@/utils/bufferFile";
 import fs from "fs/promises";
 import Post from "@/models/post";
+import Comment from "@/models/comment";
 
 export const addReport = async (formData) => {
   const session = await getServerSession(authOptions);
@@ -152,7 +153,7 @@ export const deletePost = async (postId) => {
       _id: postId,
       user: session.user.id,
     });
-    // await Comments.deleteMany({ _id: { $in: post.comments } });
+    await Comment.deleteMany({ _id: { $in: post.comments } });
     if (!post) {
       throw new Error("Post not found.");
     }
@@ -166,5 +167,71 @@ export const deletePost = async (postId) => {
 };
 
 export const createComment = async (formData) => {
-  const { content, postId } = formData;
+  const session = await getServerSession(authOptions);
+  const { content, postId, reply, tag, campusId } = formData;
+  try {
+    if (!session) {
+      return { error: true, message: "Unauthorized." };
+    }
+    await connectDB();
+    if (!content || !postId)
+      return { error: true, message: "Content is required." };
+
+    const findPost = await Post.findById(postId);
+    if (!findPost) return { error: true, message: "The post does not exits." };
+
+    if (reply) {
+      const comment = await Comment.findOne({ postId: postId });
+      if (!comment)
+        return { error: true, message: "The comment does not exits." };
+    }
+    const newComment = new Comment({
+      user: session.user.id,
+      content,
+      tag,
+      reply,
+      postId,
+    });
+
+    await Post.findOneAndUpdate(
+      { _id: postId },
+      {
+        $push: { comments: newComment._id },
+      },
+      { new: true }
+    );
+
+    await newComment.save();
+    revalidatePath(`/${campusId}/explore/lost/detail/${postId}`);
+    return { success: true, message: "Comment successful" };
+  } catch (err) {
+    console.log(err);
+    return { error: true, message: "Something went wrong, try again later." };
+  }
+};
+
+export const deleteComment = async (formData) => {
+  const session = await getServerSession(authOptions);
+  const { commentId, campusId, postId } = formData;
+  try {
+    if (!session) {
+      return { error: true, message: "Unauthorized." };
+    }
+    const comment = await Comment.findOneAndDelete({
+      _id: commentId,
+      user: session.user.id,
+    });
+
+    await Post.findOneAndUpdate(
+      { _id: comment.postId },
+      {
+        $pull: { comments: commentId },
+      }
+    );
+    revalidatePath(`/${campusId}/explore/lost/detail/${postId}`);
+    return { success: true, message: "Deleted comment successful" };
+  } catch (err) {
+    console.log(err);
+    return { error: true, message: "Something went wrong, try again later." };
+  }
 };

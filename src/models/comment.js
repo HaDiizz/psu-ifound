@@ -7,7 +7,7 @@ const commentSchema = new Schema(
       required: true,
     },
     tag: { type: mongoose.Types.ObjectId, ref: "user" },
-    reply: mongoose.Types.ObjectId,
+    reply: Object,
     user: { type: mongoose.Types.ObjectId, ref: "user" },
     postId: mongoose.Types.ObjectId,
   },

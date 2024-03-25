@@ -1,5 +1,5 @@
 import PostTable from "@/components/PostTable";
-import axios from "@/lib/axios";
+import { axios } from "@/lib/axios";
 
 const Page = async ({ params }) => {
   const { data } = await axios(`/post/campus/${params.campusId}`, {

@@ -1,4 +1,4 @@
-import axios from "@/lib/axios";
+import { axios } from "@/lib/axios";
 import dynamic from "next/dynamic";
 const LeafletMap = dynamic(() => import("@/components/maps/LeafletMap"), {
   ssr: false,
@@ -26,7 +26,12 @@ const page = async ({ params }) => {
 
   return (
     <div className="container pt-[5rem]">
-      <LeafletMap lat={lat} lng={lng} campusId={params.campusId} reports={data} />
+      <LeafletMap
+        lat={lat}
+        lng={lng}
+        campusId={params.campusId}
+        reports={data}
+      />
     </div>
   );
 };

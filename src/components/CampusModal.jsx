@@ -58,6 +58,14 @@ const CampusModal = ({ isOpen, onClose }) => {
   };
 
   const handleNavigateCampus = async () => {
+    if (pathname === `/${selectCampus}/explore/${selectOption}`) {
+      setIsDirecting(false);
+      onClose();
+      setActiveStep(0);
+      setSelectCampus("01");
+      setSelectOption("found");
+      return;
+    }
     setIsDirecting(true);
     router.replace(`/${selectCampus}/explore/${selectOption}`);
   };

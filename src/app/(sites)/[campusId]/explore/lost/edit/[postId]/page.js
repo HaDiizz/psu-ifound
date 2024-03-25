@@ -1,5 +1,5 @@
 import BackButton from "@/components/BackButton";
-import axios from "@/lib/axios";
+import { axios } from "@/lib/axios";
 import EditPost from "@/components/EditPost";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth/next";

@@ -24,12 +24,10 @@ import {
   AvatarGroup,
   Tooltip,
 } from "@nextui-org/react";
-import axios from "@/lib/axios";
+import { axios } from "@/lib/axios";
 import ClaimItem from "./ClaimItem";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
-
-const fetcher = (url) => axios.get(url).then((res) => res.data);
 
 const statusColorMap = {
   claimed: "success",
@@ -37,7 +35,7 @@ const statusColorMap = {
 };
 
 const DetailModal = ({ isOpen, onClose, itemId }) => {
-  const { data, isLoading, mutate } = useSWR(`/report/${itemId}`, fetcher);
+  const { data, isLoading, mutate } = useSWR(`/report/${itemId}`);
   const { data: session } = useSession();
 
   const handleClaimItem = async () => {
