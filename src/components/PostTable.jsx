@@ -102,8 +102,19 @@ export default function PostTable({ campusId, posts }) {
     let filteredPosts = [...posts];
 
     if (hasSearchFilter) {
-      filteredPosts = filteredPosts.filter((post) =>
-        post.user.fullName.toLowerCase().includes(filterValue.toLowerCase())
+      filteredPosts = filteredPosts.filter(
+        (post) =>
+          post.user.fullName
+            .toLowerCase()
+            .includes(filterValue.toLowerCase()) ||
+          post.user.username
+            .toLowerCase()
+            .includes(filterValue.toLowerCase()) ||
+          post.user.email.toLowerCase().includes(filterValue.toLowerCase()) ||
+          post.title.toLowerCase().includes(filterValue.toLowerCase()) ||
+          post.detail.toLowerCase().includes(filterValue.toLowerCase()) ||
+          post.location.toLowerCase().includes(filterValue.toLowerCase()) ||
+          post.subLocation.toLowerCase().includes(filterValue.toLowerCase())
       );
     }
     if (
@@ -291,7 +302,7 @@ export default function PostTable({ campusId, posts }) {
           <Input
             isClearable
             className="w-full sm:max-w-[44%]"
-            placeholder="Search by name..."
+            placeholder="Search"
             startContent={<CiSearch />}
             value={filterValue}
             onClear={() => onClear()}

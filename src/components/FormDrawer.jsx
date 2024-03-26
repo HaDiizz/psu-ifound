@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
-import { Input, Select, SelectItem } from "@nextui-org/react";
+import { Input, Select, SelectItem, Button, Tooltip } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import { addReport } from "@/lib/actions";
 import FormButton from "./FormButton";
@@ -11,6 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FormFoundItemSchema } from "@/lib/schema";
 import UploadImage from "./UploadImage";
 import Link from "next/link";
+import { FaTimes } from "react-icons/fa";
 
 export default function FormDrawer({ open, setOpen, form, campusId }) {
   const [file, setFile] = useState("");
@@ -80,7 +81,20 @@ export default function FormDrawer({ open, setOpen, form, campusId }) {
                 <span className="dark:text-white font-semibold pl-3">
                   Report
                 </span>
-                <FormButton isSubmitting={isSubmitting} text={"Submit"} />
+                <Tooltip content="Close" color="danger">
+                  <Button
+                    color="danger"
+                    isIconOnly
+                    aria-label="Close"
+                    onClick={() => {
+                      setOpen(false);
+                      setFile("");
+                      reset();
+                    }}
+                  >
+                    <FaTimes />
+                  </Button>
+                </Tooltip>
               </div>
               <div className="grid gap-y-5 pt-[3rem]">
                 <Select
@@ -181,6 +195,7 @@ export default function FormDrawer({ open, setOpen, form, campusId }) {
                   setFile={setFile}
                   errors={errors}
                 />
+                <FormButton isSubmitting={isSubmitting} text={"Submit"} />
               </div>
             </form>
           </>
@@ -204,13 +219,10 @@ export default function FormDrawer({ open, setOpen, form, campusId }) {
   return (
     <div>
       <Drawer
+        variant="persistent"
+        hideBackdrop={true}
         anchor={"right"}
         open={open}
-        onClose={() => {
-          setOpen(false);
-          setFile("");
-          reset();
-        }}
       >
         {DrawerList}
       </Drawer>

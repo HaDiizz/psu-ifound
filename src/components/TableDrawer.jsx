@@ -84,8 +84,19 @@ export default function TableDrawer({
     let filteredReports = [...reports];
 
     if (hasSearchFilter) {
-      filteredReports = filteredReports.filter((report) =>
-        report.user.fullName.toLowerCase().includes(filterValue.toLowerCase())
+      filteredReports = filteredReports.filter(
+        (report) =>
+          report.user.fullName
+            .toLowerCase()
+            .includes(filterValue.toLowerCase()) ||
+          report.user.username
+            .toLowerCase()
+            .includes(filterValue.toLowerCase()) ||
+          report.user.email.toLowerCase().includes(filterValue.toLowerCase()) ||
+          report.title.toLowerCase().includes(filterValue.toLowerCase()) ||
+          report.detail.toLowerCase().includes(filterValue.toLowerCase()) ||
+          report.location.toLowerCase().includes(filterValue.toLowerCase()) ||
+          report.subLocation.toLowerCase().includes(filterValue.toLowerCase())
       );
     }
     if (
@@ -260,7 +271,7 @@ export default function TableDrawer({
           <Input
             isClearable
             className="w-full sm:max-w-[44%]"
-            placeholder="Search by name..."
+            placeholder="Search"
             startContent={<CiSearch />}
             value={filterValue}
             onClear={() => onClear()}

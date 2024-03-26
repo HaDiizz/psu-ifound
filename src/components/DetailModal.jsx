@@ -175,12 +175,12 @@ const DetailModal = ({ isOpen, onClose, itemId }) => {
                 </Button>
                 {data?.status !== "claimed" ? (
                   data?.userList.some(
-                    (user) => user._id === session.user.id
+                    (user) => user._id === session?.user?.id
                   ) ? (
                     <Button color="success" variant="light">
                       You have been claimed
                     </Button>
-                  ) : (
+                  ) : data?.user?._id === session?.user?.id ? null : (
                     <Popover placement="top-start" backdrop="blur">
                       <PopoverTrigger>
                         <Button color="warning" variant="light">

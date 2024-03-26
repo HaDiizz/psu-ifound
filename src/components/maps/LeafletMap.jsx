@@ -57,7 +57,9 @@ const LeafletMap = (params) => {
             icon={L.icon({
               iconSize: [35, 35],
               iconUrl:
-                report.status === "unclaimed" ? "/search-marker.png" : "/found-marker.png",
+                report.status === "unclaimed"
+                  ? "/search-marker.png"
+                  : "/found-marker.png",
             })}
           >
             <Popup>
@@ -67,7 +69,9 @@ const LeafletMap = (params) => {
                 </span>
                 <span
                   className="underline text-small capitalize text-default-400 cursor-pointer"
-                  onClick={() => handleOpenDetailModal(report._id, report.lat, report.lng)}
+                  onClick={() =>
+                    handleOpenDetailModal(report._id, report.lat, report.lng)
+                  }
                 >
                   ดูรายละเอียดเพิ่มเติม
                 </span>

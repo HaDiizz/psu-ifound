@@ -50,7 +50,7 @@ const CampusModal = ({ isOpen, onClose }) => {
     {
       revalidateIfStale: false,
       revalidateOnFocus: false,
-      revalidateOnReconnect: false
+      revalidateOnReconnect: false,
     }
   );
 
@@ -158,8 +158,8 @@ const CampusModal = ({ isOpen, onClose }) => {
                             style={{ width: "5rem", height: "8.8rem" }}
                             src={"/error.png"}
                             alt="logo"
-                            width={"auto"}
-                            height={"auto"}
+                            width={100}
+                            height={100}
                             priority
                           />
                           <p>Something went wrong!</p>
