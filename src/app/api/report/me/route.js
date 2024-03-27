@@ -12,7 +12,7 @@ export const GET = async (request) => {
     }
     await connectDB();
     const reports = await Report.find({ user: session.user.id }).populate(
-      "user",
+      "user owner",
       "picture username fullName email"
     );
     return NextResponse.json(reports);

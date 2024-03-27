@@ -250,10 +250,14 @@ export const editReport = async (formData) => {
     reportId,
     oldImage,
     status,
+    owner,
   } = Object.fromEntries(formData);
 
   try {
     await connectDB();
+    if (status === "claimed" && !owner) {
+      throw new Error("Owner is required.");
+    }
     let res;
     if (image && image !== "undefined") {
       const fileData = await bufferFile(image);
@@ -275,6 +279,12 @@ export const editReport = async (formData) => {
     }
     if (report.campId !== campusId)
       throw new Error("Campus ID does not match.");
+    if (owner && status === "claimed") {
+      report.owner = owner;
+    }
+    if (status === "unclaimed") {
+      report.owner = null;
+    }
     report.status = status;
     report.title = title;
     report.detail = detail;

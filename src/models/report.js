@@ -45,6 +45,7 @@ const reportSchema = new Schema(
       url: { type: String, required: true },
     },
     user: { type: mongoose.Types.ObjectId, ref: "user" },
+    owner: { type: mongoose.Types.ObjectId, ref: "user" },
     userList: [{ type: mongoose.Types.ObjectId, ref: "user" }],
   },
   { timestamps: true }

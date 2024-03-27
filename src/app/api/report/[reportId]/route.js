@@ -9,7 +9,7 @@ export const GET = async (request, context) => {
   try {
     await connectDB();
     const report = await Report.findOne({ _id: reportId }).populate(
-      "user userList",
+      "user userList owner",
       "picture username fullName email"
     );
     return NextResponse.json(report);
