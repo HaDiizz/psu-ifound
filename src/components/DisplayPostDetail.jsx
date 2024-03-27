@@ -3,7 +3,7 @@ import BackButton from "./BackButton";
 import InputComment from "./InputComment";
 import CommentCard from "./CommentCard";
 import DetailSection from "./DetailSection";
-import { usePost } from "@/hooks/post";
+import { usePost } from "@/hooks/swr";
 import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";

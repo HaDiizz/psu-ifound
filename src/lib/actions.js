@@ -159,6 +159,7 @@ export const deletePost = async (postId) => {
     }
     await deleteImage(post.image.public_id);
     revalidatePath(`/${post.campId}/explore/lost`);
+    revalidatePath(`/history`);
     return { success: true, message: "Deleted successful" };
   } catch (err) {
     console.log(err);
@@ -230,6 +231,87 @@ export const deleteComment = async (formData) => {
     );
     revalidatePath(`/${campusId}/explore/lost/detail/${postId}`);
     return { success: true, message: "Deleted comment successful" };
+  } catch (err) {
+    console.log(err);
+    return { error: true, message: "Something went wrong, try again later." };
+  }
+};
+
+export const editReport = async (formData) => {
+  const session = await getServerSession(authOptions);
+  const {
+    title,
+    detail,
+    location,
+    subLocation,
+    contact,
+    image,
+    campusId,
+    reportId,
+    oldImage,
+    status,
+  } = Object.fromEntries(formData);
+
+  try {
+    await connectDB();
+    let res;
+    if (image && image !== "undefined") {
+      const fileData = await bufferFile(image);
+      res = await uploadImageToCloudinary(fileData);
+      await fs.unlink(fileData.filepath);
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      if (res) {
+        await deleteImage(oldImage);
+      }
+    }
+
+    const report = await Report.findOne({
+      _id: reportId,
+      user: session.user.id,
+    });
+
+    if (!report) {
+      throw new Error("Report not found.");
+    }
+    if (report.campId !== campusId)
+      throw new Error("Campus ID does not match.");
+    report.status = status;
+    report.title = title;
+    report.detail = detail;
+    report.location = location;
+    report.subLocation = subLocation;
+    report.contact = contact;
+    report.campId = campusId;
+    report.image = {
+      public_id: image ? res.public_id : report.image.public_id,
+      url: image ? res.url : report.image.url,
+    };
+    await report.save();
+    revalidatePath(`/${report.campId}/explore/found`);
+    revalidatePath(`/${report.campId}/explore/found/edit/${reportId}`);
+    return { success: true, message: "Edited successful" };
+  } catch (err) {
+    console.log(err);
+    return { error: true, message: "Something went wrong, try again later." };
+  }
+};
+
+export const deleteReport = async (reportId) => {
+  const session = await getServerSession(authOptions);
+  try {
+    await connectDB();
+
+    const report = await Report.findOneAndDelete({
+      _id: reportId,
+      user: session.user.id,
+    });
+    if (!report) {
+      throw new Error("Report not found.");
+    }
+    await deleteImage(report.image.public_id);
+    revalidatePath(`/${report.campId}/explore/found`);
+    revalidatePath(`/history`);
+    return { success: true, message: "Deleted successful" };
   } catch (err) {
     console.log(err);
     return { error: true, message: "Something went wrong, try again later." };

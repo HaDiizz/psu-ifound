@@ -7,7 +7,9 @@ export const columns = [
   { name: "LOCATION", uid: "location", sortable: true },
   { name: "SUB LOCATION", uid: "subLocation", sortable: true },
   { name: "STATUS", uid: "status", sortable: true },
+  { name: "CAMPUS", uid: "campus", sortable: true },
   { name: "CREATED AT", uid: "createdAt", sortable: true },
+  { name: "UPDATED AT", uid: "updatedAt", sortable: true },
   { name: "ACTIONS", uid: "actions" },
 ];
 
@@ -20,6 +22,16 @@ export const statusPostOptions = [
   { name: "Found", uid: "found" },
   { name: "Not Found", uid: "notfound" },
 ];
+
+export const statusPostColorMap = {
+  notfound: "danger",
+  found: "success",
+};
+
+export const statusReportColorMap = {
+  claimed: "success",
+  unclaimed: "danger",
+};
 
 export const dataReports = [
   {

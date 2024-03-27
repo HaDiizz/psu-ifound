@@ -30,7 +30,7 @@ import { MdMyLocation } from "react-icons/md";
 import { useCallback, useMemo, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { capitalize } from "@/utils/capitalize";
-import { columns, statusReportOptions } from "@/utils/data";
+import { columns, statusReportOptions, statusReportColorMap } from "@/utils/data";
 import moment from "moment";
 
 const INITIAL_VISIBLE_COLUMNS = [
@@ -42,11 +42,6 @@ const INITIAL_VISIBLE_COLUMNS = [
   "actions",
   "createdAt",
 ];
-
-const statusColorMap = {
-  claimed: "success",
-  unclaimed: "danger",
-};
 
 export default function TableDrawer({
   open,
@@ -66,8 +61,8 @@ export default function TableDrawer({
   const [statusFilter, setStatusFilter] = useState("all");
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [sortDescriptor, setSortDescriptor] = useState({
-    column: "name",
-    direction: "ascending",
+    column: "createdAt",
+    direction: "descending",
   });
 
   const hasSearchFilter = Boolean(filterValue);
@@ -197,7 +192,7 @@ export default function TableDrawer({
         return (
           <Chip
             className="capitalize"
-            color={statusColorMap[data.status]}
+            color={statusReportColorMap[data.status]}
             size="sm"
             variant="flat"
           >

@@ -21,20 +21,27 @@ import {
   ModalContent,
   useDisclosure,
 } from "@nextui-org/react";
-import { FaChevronDown, FaEye, FaPlus } from "react-icons/fa";
+import { FaChevronDown, FaEye } from "react-icons/fa";
 import { useCallback, useMemo, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { capitalize } from "@/utils/capitalize";
-import { columns, statusPostOptions, statusPostColorMap } from "@/utils/data";
+import {
+  columns,
+  statusPostOptions,
+  statusReportOptions,
+  statusPostColorMap,
+  statusReportColorMap,
+} from "@/utils/data";
 import moment from "moment";
 import AddPostModal from "./AddPostModal";
 import { AiFillEdit } from "react-icons/ai";
 import { MdDelete } from "react-icons/md";
 import { useSession } from "next-auth/react";
-import { deletePost } from "@/lib/actions";
+import { deletePost, deleteReport } from "@/lib/actions";
 import ConfirmDelete from "./ConfirmDelete";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import { campusData } from "@/utils/constants";
 
 const INITIAL_VISIBLE_COLUMNS = [
   "image",
@@ -44,9 +51,11 @@ const INITIAL_VISIBLE_COLUMNS = [
   "status",
   "actions",
   "createdAt",
+  "updatedAt",
+  "campus",
 ];
 
-export default function PostTable({ campusId, posts }) {
+export default function HistoryTable({ posts, tableType }) {
   const { data: session } = useSession();
   const [postId, setPostId] = useState("");
   const [postTitle, setPostTitle] = useState("");
@@ -63,12 +72,17 @@ export default function PostTable({ campusId, posts }) {
   const [statusFilter, setStatusFilter] = useState("all");
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [sortDescriptor, setSortDescriptor] = useState({
-    column: "createdAt",
+    column: "updatedAt",
     direction: "descending",
   });
 
   const handleDeletePost = async () => {
-    const result = await deletePost(postId);
+    let result;
+    if (tableType === "lost") {
+      result = await deletePost(postId);
+    } else if (tableType === "found") {
+      result = await deleteReport(postId);
+    }
     await setIsOpenDeleteModal(false);
     if (result?.success) {
       toast.success(`${result?.message}`);
@@ -112,7 +126,9 @@ export default function PostTable({ campusId, posts }) {
     }
     if (
       statusFilter !== "all" &&
-      Array.from(statusFilter).length !== statusPostOptions.length
+      (tableType === "lost"
+        ? Array.from(statusFilter).length !== statusPostOptions.length
+        : Array.from(statusFilter).length !== statusReportOptions.length)
     ) {
       filteredPosts = filteredPosts.filter((post) =>
         Array.from(statusFilter).includes(post.status)
@@ -160,6 +176,17 @@ export default function PostTable({ campusId, posts }) {
             </p>
           </div>
         );
+      case "updatedAt":
+        return (
+          <div className="flex flex-col">
+            <p className="text-bold text-small capitalize">
+              {moment(data.updatedAt).fromNow()}
+            </p>
+            <p className="text-bold text-tiny capitalize text-default-400">
+              {moment(data.updatedAt).format("llll")}
+            </p>
+          </div>
+        );
       case "image":
         return (
           <div
@@ -203,35 +230,55 @@ export default function PostTable({ campusId, posts }) {
             </p>
           </div>
         );
+      case "campus":
+        return (
+          <div className="flex flex-col">
+            <p className="text-bold text-small capitalize">
+              {campusData
+                .find((campus) => campus.campId === data.campId)
+                .campNameEng.split("Prince of Songkla University ")[1] || "-"}
+            </p>
+          </div>
+        );
       case "status":
         return (
           <Chip
             className="capitalize border-none gap-1 text-default-600"
-            color={statusPostColorMap[data.status]}
+            color={
+              tableType === "lost"
+                ? statusPostColorMap[data.status]
+                : statusReportColorMap[data.status]
+            }
             size="sm"
             variant="dot"
           >
-            {statusPostOptions.find((option) => option.uid === cellValue).name}
+            {tableType === "lost"
+              ? statusPostOptions.find((option) => option.uid === cellValue)
+                  .name
+              : statusReportOptions.find((option) => option.uid === cellValue)
+                  .name}
           </Chip>
         );
       case "actions":
         return (
           <div className="relative flex items-center gap-2">
-            <Tooltip content="View">
-              <Link
-                className="text-lg text-default-400 cursor-pointer active:opacity-50"
-                href={`/${data.campId}/explore/lost/detail/${data._id}`}
-              >
-                <FaEye size={20} />
-              </Link>
-            </Tooltip>
+            {tableType === "lost" && (
+              <Tooltip content="View">
+                <Link
+                  className="text-lg text-default-400 cursor-pointer active:opacity-50"
+                  href={`/${data.campId}/explore/lost/detail/${data._id}`}
+                >
+                  <FaEye size={20} />
+                </Link>
+              </Tooltip>
+            )}
             {session &&
               data.user._id.toString() === session.user.id.toString() && (
                 <>
                   <Tooltip content="Edit">
                     <Link
                       className="text-lg text-default-400 cursor-pointer active:opacity-50"
-                      href={`/${data.campId}/explore/lost/edit/${data._id}`}
+                      href={`/${data.campId}/explore/${tableType}/edit/${data._id}`}
                     >
                       <AiFillEdit size={20} />
                     </Link>
@@ -319,11 +366,17 @@ export default function PostTable({ campusId, posts }) {
                 selectionMode="multiple"
                 onSelectionChange={setStatusFilter}
               >
-                {statusPostOptions.map((status) => (
-                  <DropdownItem key={status.uid} className="capitalize">
-                    {capitalize(status.name)}
-                  </DropdownItem>
-                ))}
+                {tableType === "lost"
+                  ? statusPostOptions?.map((status) => (
+                      <DropdownItem key={status.uid} className="capitalize">
+                        {capitalize(status.name)}
+                      </DropdownItem>
+                    ))
+                  : statusReportOptions?.map((status) => (
+                      <DropdownItem key={status.uid} className="capitalize">
+                        {capitalize(status.name)}
+                      </DropdownItem>
+                    ))}
               </DropdownMenu>
             </Dropdown>
             <Dropdown>
@@ -350,15 +403,6 @@ export default function PostTable({ campusId, posts }) {
                 ))}
               </DropdownMenu>
             </Dropdown>
-            {session && (
-              <Button
-                color="primary"
-                endContent={<FaPlus />}
-                onPress={() => setIsOpenAddModal(true)}
-              >
-                เพิ่มข้อมูลของคุณ
-              </Button>
-            )}
           </div>
         </div>
         <div className="flex justify-between items-center">
@@ -458,14 +502,9 @@ export default function PostTable({ campusId, posts }) {
           </>
         </ModalContent>
       </Modal>
-      <AddPostModal
-        isOpen={isOpenAddModal}
-        setIsOpen={setIsOpenAddModal}
-        campusId={campusId}
-      />
+      <AddPostModal isOpen={isOpenAddModal} setIsOpen={setIsOpenAddModal} />
       <Table
         fullWidth={true}
-        // removeWrapper
         aria-label="post table"
         className="dark:text-white"
         isHeaderSticky
@@ -474,12 +513,9 @@ export default function PostTable({ campusId, posts }) {
         classNames={{
           wrapper: "max-h-[382px]",
         }}
-        // selectedKeys={selectedKeys}
-        // selectionMode="multiple"
         sortDescriptor={sortDescriptor}
         topContent={topContent}
         topContentPlacement="outside"
-        // onSelectionChange={setSelectedKeys}
         onSortChange={setSortDescriptor}
       >
         <TableHeader columns={headerColumns}>

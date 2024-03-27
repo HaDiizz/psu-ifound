@@ -127,8 +127,11 @@ function NavbarFixed({ session, handleOpen }) {
                   {session.user.email}
                 </p>
               </DropdownItem>
-              <DropdownItem key="settings">Settings</DropdownItem>
-              <DropdownItem key="analytics">Analytics</DropdownItem>
+              <DropdownItem key="history">
+                <Link className="w-full" href={"/history"}>
+                  <div>History</div>
+                </Link>
+              </DropdownItem>
               <DropdownItem
                 className="text-red-500"
                 key="logout"
@@ -163,9 +166,7 @@ function NavbarScroll({ isScrolling, session, handleOpen }) {
     >
       <ul className="flex items-center">
         <li className="px-2 text-black dark:text-white hover:text-neutral-600 dark:hover:text-neutral-300 text-md">
-          <Link href={"/"} scroll={true}>
-            Home
-          </Link>
+          <Link href={"/"}>Home</Link>
         </li>
         <li className="px-2 text-black dark:text-white hover:text-neutral-600 dark:hover:text-neutral-300 text-md">
           <div className="cursor-pointer" onClick={handleOpen}>
@@ -205,8 +206,11 @@ function NavbarScroll({ isScrolling, session, handleOpen }) {
                       {session.user.email}
                     </p>
                   </DropdownItem>
-                  <DropdownItem key="settings">Settings</DropdownItem>
-                  <DropdownItem key="analytics">Analytics</DropdownItem>
+                  <DropdownItem key="history">
+                    <Link className="w-full" href={"/history"}>
+                      <div>History</div>
+                    </Link>
+                  </DropdownItem>
                   <DropdownItem
                     className="text-red-500"
                     key="logout"

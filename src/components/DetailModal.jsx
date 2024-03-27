@@ -28,11 +28,7 @@ import { axios } from "@/lib/axios";
 import ClaimItem from "./ClaimItem";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
-
-const statusColorMap = {
-  claimed: "success",
-  unclaimed: "danger",
-};
+import { statusReportColorMap } from "@/utils/data";
 
 const DetailModal = ({ isOpen, onClose, itemId }) => {
   const { data, isLoading, mutate } = useSWR(`/report/${itemId}`);
@@ -120,7 +116,7 @@ const DetailModal = ({ isOpen, onClose, itemId }) => {
                                 <TableCell>
                                   <Chip
                                     className="capitalize"
-                                    color={statusColorMap[data.status]}
+                                    color={statusReportColorMap[data.status]}
                                     size="sm"
                                     variant="flat"
                                   >

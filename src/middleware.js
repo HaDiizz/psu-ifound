@@ -16,12 +16,19 @@ export async function middleware(req) {
     return NextResponse.redirect(`${process.env.NEXTAUTH_URL}`);
   }
   if (
-    (!session && nextUrl.pathname.startsWith("/01/explore/lost/edit")) ||
-    nextUrl.pathname.startsWith("/02/explore/lost/edit") ||
-    nextUrl.pathname.startsWith("/03/explore/lost/edit") ||
-    nextUrl.pathname.startsWith("/04/explore/lost/edit") ||
-    nextUrl.pathname.startsWith("/05/explore/lost/edit") ||
-    nextUrl.pathname.startsWith("/admin")
+    !session &&
+    (nextUrl.pathname.startsWith("/01/explore/lost/edit") ||
+      nextUrl.pathname.startsWith("/02/explore/lost/edit") ||
+      nextUrl.pathname.startsWith("/03/explore/lost/edit") ||
+      nextUrl.pathname.startsWith("/04/explore/lost/edit") ||
+      nextUrl.pathname.startsWith("/05/explore/lost/edit") ||
+      nextUrl.pathname.startsWith("/01/explore/found/edit") ||
+      nextUrl.pathname.startsWith("/02/explore/found/edit") ||
+      nextUrl.pathname.startsWith("/03/explore/found/edit") ||
+      nextUrl.pathname.startsWith("/04/explore/found/edit") ||
+      nextUrl.pathname.startsWith("/05/explore/found/edit") ||
+      nextUrl.pathname.startsWith("/admin") ||
+      nextUrl.pathname.startsWith("/history"))
   ) {
     return NextResponse.redirect(`${process.env.NEXTAUTH_URL}`);
   }
