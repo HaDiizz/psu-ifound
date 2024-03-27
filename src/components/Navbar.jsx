@@ -127,6 +127,13 @@ function NavbarFixed({ session, handleOpen }) {
                   {session.user.email}
                 </p>
               </DropdownItem>
+              {session.user.role === "admin" && (
+                <DropdownItem key="dashboard">
+                  <Link className="w-full" href={"/admin/dashboard"}>
+                    <div>Dashboard</div>
+                  </Link>
+                </DropdownItem>
+              )}
               <DropdownItem key="history">
                 <Link className="w-full" href={"/history"}>
                   <div>History</div>
@@ -211,6 +218,13 @@ function NavbarScroll({ isScrolling, session, handleOpen }) {
                       <div>History</div>
                     </Link>
                   </DropdownItem>
+                  {session.user.role === "admin" && (
+                    <DropdownItem key="dashboard">
+                      <Link className="w-full" href={"/admin/dashboard"}>
+                        <div>Dashboard</div>
+                      </Link>
+                    </DropdownItem>
+                  )}
                   <DropdownItem
                     className="text-red-500"
                     key="logout"

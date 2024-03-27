@@ -45,7 +45,7 @@ export const authOptions = {
             fullName: profile.name,
             email: profile.email,
             picture: profile.picture,
-            role: profile.role ?? "user",
+            role: profile.role === "admin" ? "admin" : "user",
             studentId: response?.data[0]?.studentId || "",
             titleName: response?.data[0]?.titleName || "",
             yearStatus: response?.data[0]?.yearStatus || "",
@@ -78,7 +78,7 @@ export const authOptions = {
             fullName: profile.name,
             email: profile.email,
             picture: profile.picture,
-            role: profile.role ?? "user",
+            role: profile.role === "admin" ? "admin" : "user",
             studentId: "",
             titleName: "",
             yearStatus: "",
@@ -98,7 +98,10 @@ export const authOptions = {
       user.accessToken = account.access_token;
       return true;
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
+      if (trigger === "update") {
+        return { ...token, ...session.user };
+      }
       if (user) {
         return { ...token, ...user };
       }
