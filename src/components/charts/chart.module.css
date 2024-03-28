@@ -1,0 +1,16 @@
+.container {
+    height: 450px;
+    background-color: "#182237";
+    padding: 20px;
+    border-radius: 10px;
+  }
+  
+  .title{
+    font-weight: 200;
+    color: "#182237";
+    margin-bottom: 20px;
+  }
+
+  .title_wrapper {
+    padding-bottom: 1.25rem;
+  }
