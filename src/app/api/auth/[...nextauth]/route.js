@@ -1,13 +1,12 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import { MongoDBAdapter } from "@auth/mongodb-adapter";
-import clientPromise from "@/lib/mongoClient";
 import { extractEmail } from "@/utils/emailValidation";
 import axios from "axios";
 import User from "@/models/user";
+import { cookies } from "next/headers";
+import { findOneUserByEmail } from "@/utils/services";
 
 export const authOptions = {
-  adapter: MongoDBAdapter(clientPromise),
   session: {
     jwt: true,
     strategy: "jwt",
@@ -45,7 +44,7 @@ export const authOptions = {
             fullName: profile.name,
             email: profile.email,
             picture: profile.picture,
-            role: profile.role === "admin" ? "admin" : "user",
+            role: profile.role ?? "user",
             studentId: response?.data[0]?.studentId || "",
             titleName: response?.data[0]?.titleName || "",
             yearStatus: response?.data[0]?.yearStatus || "",
@@ -55,30 +54,13 @@ export const authOptions = {
             studyLevelName: response?.data[0]?.studyLevelName || "",
           };
         } catch (error) {
-          // if (error.response.status === 404) {
-          //   return {
-          //     id: profile.sub,
-          //     username: profile.given_name,
-          //     fullName: profile.name,
-          //     email: profile.email,
-          //     picture: profile.picture,
-          //     role: profile.role ?? "user",
-          //     studentId: "",
-          //     titleName: "",
-          //     yearStatus: "",
-          //     majorNameThai: "",
-          //     deptNameThai: "",
-          //     campusNameThai: "",
-          //     studyLevelName: "",
-          //   };
-          // }
           return {
             id: profile.sub,
             username: profile.given_name,
             fullName: profile.name,
             email: profile.email,
             picture: profile.picture,
-            role: profile.role === "admin" ? "admin" : "user",
+            role: profile.role ?? "user",
             studentId: "",
             titleName: "",
             yearStatus: "",
@@ -93,9 +75,26 @@ export const authOptions = {
   ],
   callbacks: {
     async signIn({ user, account }) {
-      const checkDuplicateEmail = await User.find({ email: user.email });
-      if (checkDuplicateEmail.length > 1) return false;
+      const isUserExits = await User.findOne({ email: user.email });
+      if (!isUserExits) {
+        await User.create({
+          sub: user.id,
+          username: user.username,
+          fullName: user.fullName,
+          email: user.email,
+          picture: user.picture,
+          role: user.role ?? "user",
+          studentId: user.studentId || "",
+          titleName: user.titleName || "",
+          yearStatus: user.yearStatus || "",
+          majorNameThai: user.majorNameThai || "",
+          deptNameThai: user.deptNameThai || "",
+          campusNameThai: user.campusNameThai || "",
+          studyLevelName: user.studyLevelName || "",
+        });
+      }
       user.accessToken = account.access_token;
+      user.expires_at = account.expires_at;
       return true;
     },
     async jwt({ token, user, trigger, session }) {
@@ -111,7 +110,21 @@ export const authOptions = {
       if (token) {
         session.user = token.user || token;
       }
+      let sessionUser = await findOneUserByEmail({ email: session.user.email });
+      if (sessionUser) {
+        session.user = sessionUser.user;
+        session.user.id = sessionUser.user._id;
+      }
       if (session.user) return session;
+    },
+  },
+  events: {
+    session: ({ session }) => {
+      if (new Date() > new Date(session.user.expires_at * 1000)) {
+        cookies().delete("next-auth.callback-url");
+        cookies().delete("next-auth.csrf-token");
+        cookies().delete("next-auth.session-token");
+      }
     },
   },
   pages: {
