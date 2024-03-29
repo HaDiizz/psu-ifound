@@ -12,3 +12,23 @@ export const usePostsMe = () => {
 export const useReportsMe = () => {
   return useSWR("/report/me", { refreshInterval: 3000 });
 };
+
+export const usePosts = (limit) => {
+  return useSWR(`/post?limit=${limit}`, { refreshInterval: 10000 });
+};
+
+export const useReports = (limit) => {
+  return useSWR(`/report?limit=${limit}`, { refreshInterval: 10000 });
+};
+
+export const useUsers = () => {
+  return useSWR(`/user`);
+};
+
+export const useAdmins = () => {
+  return useSWR(`/admin`);
+};
+
+export const useCountsByCampId = () => {
+  return useSWR(`/countsByCampId`);
+};

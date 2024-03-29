@@ -2,13 +2,7 @@
 import React, { useState } from "react";
 import { PieChart, Pie, Sector, ResponsiveContainer } from "recharts";
 import styles from "./chart.module.css";
-
-const data = [
-  { name: "Group A", value: 400 },
-  { name: "Group B", value: 300 },
-  { name: "Group C", value: 300 },
-  { name: "Group D", value: 200 },
-];
+import { Spinner } from "@nextui-org/react";
 
 const renderActiveShape = (props) => {
   const RADIAN = Math.PI / 180;
@@ -68,8 +62,8 @@ const renderActiveShape = (props) => {
         x={ex + (cos >= 0 ? 1 : -1) * 12}
         y={ey}
         textAnchor={textAnchor}
-        fill="#333"
-      >{`PV ${value}`}</text>
+        fill="#8150f4"
+      >{`Amount: ${value}`}</text>
       <text
         x={ex + (cos >= 0 ? 1 : -1) * 12}
         y={ey}
@@ -83,34 +77,51 @@ const renderActiveShape = (props) => {
   );
 };
 
-const PieChartComponent = () => {
+const PieChartComponent = ({ totalPost, totalReport, isLoading }) => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const onPieEnter = (_, index) => {
     setActiveIndex(index);
   };
 
+  const data = [
+    {
+      name: "Found",
+      value: totalReport,
+    },
+    {
+      name: "Lost",
+      value: totalPost,
+    },
+  ];
+
   return (
     <div className={styles.container}>
       <div className={styles.title_wrapper}>
         <span className={styles.title}>Found & Lost</span>
       </div>
-      <ResponsiveContainer width="100%" height="90%">
-        <PieChart width={400} height={400}>
-          <Pie
-            activeIndex={activeIndex}
-            activeShape={renderActiveShape}
-            data={data}
-            cx="50%"
-            cy="50%"
-            innerRadius={60}
-            outerRadius={80}
-            fill="#8884d8"
-            dataKey="value"
-            onMouseEnter={onPieEnter}
-          />
-        </PieChart>
-      </ResponsiveContainer>
+      {isLoading ? (
+        <div className="flex justify-center items-center h-full">
+          <Spinner label="Loading..." />
+        </div>
+      ) : (
+        <ResponsiveContainer width="100%" height="90%">
+          <PieChart width={400} height={400}>
+            <Pie
+              activeIndex={activeIndex}
+              activeShape={renderActiveShape}
+              data={data}
+              cx="50%"
+              cy="50%"
+              innerRadius={60}
+              outerRadius={80}
+              fill="#8884d8"
+              dataKey="value"
+              onMouseEnter={onPieEnter}
+            />
+          </PieChart>
+        </ResponsiveContainer>
+      )}
     </div>
   );
 };

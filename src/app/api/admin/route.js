@@ -17,13 +17,13 @@ export const GET = async () => {
       );
     }
     await connectDB();
-    const [count, users] = await Promise.all([
+    const [count, admins] = await Promise.all([
       User.countDocuments({}),
-      User.find().select("-accessToken"),
+      User.find({ role: "admin" }).select("-accessToken"),
     ]);
-    return NextResponse.json({ count, users });
+    return NextResponse.json({ count, admins });
   } catch (err) {
     console.log(err);
-    throw new Error("Failed to fetch users!");
+    throw new Error("Failed to fetch admins!");
   }
 };
