@@ -6,15 +6,11 @@ import { getServerSession } from "next-auth/next";
 
 export const GET = async (request) => {
   const { searchParams } = new URL(request.url);
-  const param = searchParams.get("limit");
-  const hasLimit = typeof param === "number" && param > 0;
+  let param = Number(searchParams.get("limit"));
+  const isValidLimit = typeof param === "number" && param >= 0;
 
-  const queryOptions = {
-    sort: { createdAt: 1 },
-  };
-
-  if (hasLimit) {
-    queryOptions.limit = param;
+  if (!isValidLimit) {
+    param = 0;
   }
   try {
     const session = await getServerSession(authOptions);
@@ -30,10 +26,10 @@ export const GET = async (request) => {
     await connectDB();
     const [count, posts] = await Promise.all([
       Post.countDocuments({}),
-      Post.find({}, null, queryOptions).populate(
-        "user",
-        "picture username fullName email"
-      ),
+      Post.find()
+        .populate("user", "picture username fullName email")
+        .sort({ createdAt: -1 })
+        .limit(param),
     ]);
     return NextResponse.json({ posts, count });
   } catch (err) {

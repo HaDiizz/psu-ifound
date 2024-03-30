@@ -19,7 +19,7 @@ export const GET = async () => {
     await connectDB();
     const [count, users] = await Promise.all([
       User.countDocuments({}),
-      User.find().select("-accessToken"),
+      User.find(),
     ]);
     return NextResponse.json({ count, users });
   } catch (err) {

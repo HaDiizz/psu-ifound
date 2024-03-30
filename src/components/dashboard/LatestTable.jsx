@@ -23,10 +23,9 @@ import {
 import { useEffect, useState } from "react";
 
 export default function LatestTable() {
-  const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState([]);
-  const { data: postsData } = usePosts(5);
-  const { data: reportsData } = useReports(5);
+  const { data: postsData, isLoading: isPostDataLoading } = usePosts(5);
+  const { data: reportsData, isLoading: isReportDataLoading } = useReports(5);
 
   useEffect(() => {
     if (postsData?.posts && reportsData?.reports) {
@@ -37,14 +36,13 @@ export default function LatestTable() {
       combinedData.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
       setData(combinedData);
     }
-    setIsLoading(false);
   }, [postsData?.posts, reportsData?.reports]);
   return (
     <div className={styles.container}>
       <div className={styles.title_wrapper}>
         <span className={styles.title}>Latest Found & Lost</span>
       </div>
-      {isLoading ? (
+      {isPostDataLoading || isReportDataLoading ? (
         <div className="flex justify-center items-center h-full">
           <Spinner label="Loading..." />
         </div>
@@ -67,7 +65,7 @@ export default function LatestTable() {
           <TableBody
             emptyContent={"No data found"}
             loadingContent={<Spinner color="white" />}
-            isLoading={isLoading}
+            isLoading={isPostDataLoading || isReportDataLoading}
           >
             {data?.length > 0 &&
               data?.map((item) => (

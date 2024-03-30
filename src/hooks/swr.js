@@ -32,3 +32,7 @@ export const useAdmins = () => {
 export const useCountsByCampId = () => {
   return useSWR(`/countsByCampId`);
 };
+
+export const useUserRegisteredWeekly = () => {
+  return useSWR(`/user/registered-weekly`);
+};

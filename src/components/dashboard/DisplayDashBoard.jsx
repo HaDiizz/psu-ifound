@@ -9,17 +9,20 @@ import {
   useCountsByCampId,
   usePosts,
   useReports,
+  useUserRegisteredWeekly,
   useUsers,
 } from "@/hooks/swr";
 import StatCard from "./StatCard";
 
 const DisplayDashBoard = () => {
-  const { data: posts, isLoading: isPostsLoading } = usePosts();
-  const { data: reports, isLoading: isReportLoading } = useReports();
+  const { data: posts, isLoading: isPostsLoading } = usePosts(0);
+  const { data: reports, isLoading: isReportLoading } = useReports(0);
   const { data: users } = useUsers();
   const { data: admins } = useAdmins();
   const { data: barChartData, isLoading: isBarChartDataLoading } =
     useCountsByCampId();
+  const { data: lineChartData, isLoading: isLineChartDataLoading } =
+    useUserRegisteredWeekly();
 
   return (
     <>
@@ -47,7 +50,10 @@ const DisplayDashBoard = () => {
           <LatestTable />
         </div>
         <div className="lg:col-span-6 col-span-12 card p-5 border border-gray-200 rounded-lg shadow-md dark:bg-slate-800 dark:border-slate-700">
-          <LineChart />
+          <LineChart
+            data={lineChartData?.result}
+            isLoading={isLineChartDataLoading}
+          />
         </div>
       </div>
     </>

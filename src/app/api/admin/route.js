@@ -19,7 +19,7 @@ export const GET = async () => {
     await connectDB();
     const [count, admins] = await Promise.all([
       User.countDocuments({}),
-      User.find({ role: "admin" }).select("-accessToken"),
+      User.find({ role: "admin" }),
     ]);
     return NextResponse.json({ count, admins });
   } catch (err) {
