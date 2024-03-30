@@ -8,7 +8,11 @@ import EditReport from "@/components/EditReport";
 const Page = async ({ params }) => {
   const session = await getServerSession(authOptions);
   const response = await axios.get(`/report/${params.reportId}`);
-  if (session && response.data?.user._id !== session.user.id) {
+  if (
+    session &&
+    session.user.role !== "admin" &&
+    response.data?.user._id !== session.user.id
+  ) {
     redirect("/");
   }
   return (

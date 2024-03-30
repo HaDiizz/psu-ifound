@@ -8,7 +8,11 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 const Page = async ({ params }) => {
   const session = await getServerSession(authOptions);
   const response = await axios.get(`/post/${params.postId}`);
-  if (session && response.data?.user._id !== session.user.id) {
+  if (
+    session &&
+    session.user.role !== "admin" &&
+    response.data?.user._id !== session.user.id
+  ) {
     redirect("/");
   }
   return (

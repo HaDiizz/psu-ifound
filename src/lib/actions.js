@@ -117,9 +117,12 @@ export const editPost = async (formData) => {
         await deleteImage(oldImage);
       }
     }
-
-    const post = await Post.findOne({ _id: postId, user: session.user.id });
-
+    let post;
+    if (session && session?.user?.role === "admin") {
+      post = await Post.findOne({ _id: postId });
+    } else {
+      post = await Post.findOne({ _id: postId, user: session.user.id });
+    }
     if (!post) {
       throw new Error("Post not found.");
     }
@@ -150,10 +153,17 @@ export const deletePost = async (postId) => {
   try {
     await connectDB();
 
-    const post = await Post.findOneAndDelete({
-      _id: postId,
-      user: session.user.id,
-    });
+    let post;
+    if (session && session?.user?.role === "admin") {
+      post = await Post.findOneAndDelete({
+        _id: postId,
+      });
+    } else {
+      post = await Post.findOneAndDelete({
+        _id: postId,
+        user: session.user.id,
+      });
+    }
     await Comment.deleteMany({ _id: { $in: post.comments } });
     if (!post) {
       throw new Error("Post not found.");
@@ -270,10 +280,17 @@ export const editReport = async (formData) => {
       }
     }
 
-    const report = await Report.findOne({
-      _id: reportId,
-      user: session.user.id,
-    });
+    let report;
+    if (session && session.user.role === "admin") {
+      report = await Report.findOne({
+        _id: reportId,
+      });
+    } else {
+      report = await Report.findOne({
+        _id: reportId,
+        user: session.user.id,
+      });
+    }
 
     if (!report) {
       throw new Error("Report not found.");
@@ -312,10 +329,17 @@ export const deleteReport = async (reportId) => {
   try {
     await connectDB();
 
-    const report = await Report.findOneAndDelete({
-      _id: reportId,
-      user: session.user.id,
-    });
+    let report;
+    if (session && session?.user?.role === "admin") {
+      report = await Report.findOneAndDelete({
+        _id: reportId,
+      });
+    } else {
+      report = await Report.findOneAndDelete({
+        _id: reportId,
+        user: session.user.id,
+      });
+    }
     if (!report) {
       throw new Error("Report not found.");
     }

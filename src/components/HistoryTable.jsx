@@ -33,7 +33,6 @@ import {
   statusReportColorMap,
 } from "@/utils/data";
 import moment from "moment";
-import AddPostModal from "./AddPostModal";
 import { AiFillEdit } from "react-icons/ai";
 import { MdDelete } from "react-icons/md";
 import { useSession } from "next-auth/react";
@@ -60,7 +59,6 @@ export default function HistoryTable({ posts, tableType }) {
   const [postId, setPostId] = useState("");
   const [postTitle, setPostTitle] = useState("");
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
-  const [isOpenAddModal, setIsOpenAddModal] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [page, setPage] = useState(1);
@@ -502,7 +500,6 @@ export default function HistoryTable({ posts, tableType }) {
           </>
         </ModalContent>
       </Modal>
-      <AddPostModal isOpen={isOpenAddModal} setIsOpen={setIsOpenAddModal} />
       <Table
         fullWidth={true}
         aria-label="post table"

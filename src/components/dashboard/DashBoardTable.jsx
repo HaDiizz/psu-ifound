@@ -20,29 +20,45 @@ import {
   Modal,
   ModalContent,
   useDisclosure,
-  Select,
-  SelectItem,
 } from "@nextui-org/react";
 import { FaChevronDown, FaEye } from "react-icons/fa";
 import { useCallback, useMemo, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { capitalize } from "@/utils/capitalize";
-import { userColumns, roleUserOptions, roleUserColorMap } from "@/utils/data";
+import {
+  columns,
+  statusPostOptions,
+  statusReportOptions,
+  statusPostColorMap,
+  statusReportColorMap,
+} from "@/utils/data";
 import moment from "moment";
+import { AiFillEdit } from "react-icons/ai";
+import { MdDelete } from "react-icons/md";
 import { useSession } from "next-auth/react";
-import { updateUserRole } from "@/lib/actions";
+import { deletePost, deleteReport } from "@/lib/actions";
+import ConfirmDelete from "../ConfirmDelete";
 import toast from "react-hot-toast";
+import Link from "next/link";
+import { campusData } from "@/utils/constants";
 
 const INITIAL_VISIBLE_COLUMNS = [
-  "picture",
+  "image",
   "name",
-  "email",
-  "role",
+  "title",
+  "location",
+  "status",
+  "actions",
   "createdAt",
+  "updatedAt",
+  "campus",
 ];
 
-export default function UserPermissionTable({ users }) {
+export default function DashBoardTable({ posts, tableType }) {
   const { data: session } = useSession();
+  const [postId, setPostId] = useState("");
+  const [postTitle, setPostTitle] = useState("");
+  const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [page, setPage] = useState(1);
@@ -51,15 +67,21 @@ export default function UserPermissionTable({ users }) {
   const [visibleColumns, setVisibleColumns] = useState(
     new Set(INITIAL_VISIBLE_COLUMNS)
   );
-  const [roleFilter, setRoleFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [sortDescriptor, setSortDescriptor] = useState({
-    column: "role",
-    direction: "ascending",
+    column: "updatedAt",
+    direction: "descending",
   });
 
-  const handleUpdateRole = async (userId, role) => {
-    const result = await updateUserRole({ userId, role });
+  const handleDeletePost = async () => {
+    let result;
+    if (tableType === "lost") {
+      result = await deletePost(postId);
+    } else if (tableType === "found") {
+      result = await deleteReport(postId);
+    }
+    await setIsOpenDeleteModal(false);
     if (result?.success) {
       toast.success(`${result?.message}`);
       return;
@@ -74,35 +96,44 @@ export default function UserPermissionTable({ users }) {
   const hasSearchFilter = Boolean(filterValue);
 
   const headerColumns = useMemo(() => {
-    if (visibleColumns === "all") return userColumns;
+    if (visibleColumns === "all") return columns;
 
-    return userColumns.filter((column) =>
+    return columns.filter((column) =>
       Array.from(visibleColumns).includes(column.uid)
     );
   }, [visibleColumns]);
 
   const filteredItems = useMemo(() => {
-    let filteredUsers = [...users];
+    let filteredPosts = [...posts];
 
     if (hasSearchFilter) {
-      filteredUsers = filteredUsers.filter(
-        (user) =>
-          user.fullName.toLowerCase().includes(filterValue.toLowerCase()) ||
-          user.username.toLowerCase().includes(filterValue.toLowerCase()) ||
-          user.email.toLowerCase().includes(filterValue.toLowerCase()) ||
-          user.role.toLowerCase().includes(filterValue.toLowerCase())
+      filteredPosts = filteredPosts.filter(
+        (post) =>
+          post.user.fullName
+            .toLowerCase()
+            .includes(filterValue.toLowerCase()) ||
+          post.user.username
+            .toLowerCase()
+            .includes(filterValue.toLowerCase()) ||
+          post.user.email.toLowerCase().includes(filterValue.toLowerCase()) ||
+          post.title.toLowerCase().includes(filterValue.toLowerCase()) ||
+          post.detail.toLowerCase().includes(filterValue.toLowerCase()) ||
+          post.location.toLowerCase().includes(filterValue.toLowerCase()) ||
+          post.subLocation.toLowerCase().includes(filterValue.toLowerCase())
       );
     }
     if (
-      roleFilter !== "all" &&
-      Array.from(roleFilter).length !== roleUserOptions.length
+      statusFilter !== "all" &&
+      (tableType === "lost"
+        ? Array.from(statusFilter).length !== statusPostOptions.length
+        : Array.from(statusFilter).length !== statusReportOptions.length)
     ) {
-      filteredUsers = filteredUsers.filter((user) =>
-        Array.from(roleFilter).includes(user.role)
+      filteredPosts = filteredPosts.filter((post) =>
+        Array.from(statusFilter).includes(post.status)
       );
     }
-    return filteredUsers;
-  }, [users, filterValue, roleFilter]);
+    return filteredPosts;
+  }, [posts, filterValue, statusFilter]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -143,10 +174,21 @@ export default function UserPermissionTable({ users }) {
             </p>
           </div>
         );
-      case "picture":
+      case "updatedAt":
+        return (
+          <div className="flex flex-col">
+            <p className="text-bold text-small capitalize">
+              {moment(data.updatedAt).fromNow()}
+            </p>
+            <p className="text-bold text-tiny capitalize text-default-400">
+              {moment(data.updatedAt).format("llll")}
+            </p>
+          </div>
+        );
+      case "image":
         return (
           <div
-            onClick={() => handlePreviewImage(data.picture)}
+            onClick={() => handlePreviewImage(data.image.url)}
             className="flex justify-center items-center overflow-hidden rounded-lg cursor-pointer"
             style={{ width: "80px", height: "90px" }}
           >
@@ -155,86 +197,107 @@ export default function UserPermissionTable({ users }) {
               className="object-cover w-full h-full rounded-md"
               width={100}
               height={100}
-              src={data.picture}
-              alt="user profile"
+              src={data.image.url}
+              alt="thumbnail"
               loading="lazy"
             />
           </div>
         );
       case "name":
         return (
-          <User description={data.email} name={data.fullName}>
-            {data.username}
+          <User description={data.user.email} name={data.user.fullName}>
+            {data.user.username}
           </User>
         );
-      case "role":
-        if (session.user.id === data._id) {
-          return (
-            <Chip
-              className="capitalize border-none gap-1 text-default-600"
-              color={roleUserColorMap[data.role]}
-              size="sm"
-              variant="dot"
-            >
-              {roleUserOptions.find((option) => option.uid === cellValue).name}
-            </Chip>
-          );
-        }
+      case "location":
         return (
-          <Select
-            aria-labelledby="select role"
-            classNames={{
-              trigger: "border-[0.4px]",
-            }}
-            disallowEmptySelection={true}
-            fullWidth={true}
-            defaultSelectedKeys={[data.role]}
-            onSelectionChange={(e) => {
-              handleUpdateRole(data._id, e.currentKey);
-            }}
-            variant="bordered"
-            renderValue={(items) => {
-              return items.map((item) => (
-                <Chip
-                  key={item.key}
-                  className="capitalize border-none gap-1 text-default-600"
-                  color={roleUserColorMap[item.props.textValue]}
-                  size="sm"
-                  variant="dot"
-                >
-                  {
-                    roleUserOptions.find(
-                      (option) => option.uid === item.props.textValue
-                    ).name
-                  }
-                </Chip>
-              ));
-            }}
+          <div className="flex flex-col">
+            <p className="text-bold text-small capitalize">
+              {data.location || "-"}
+            </p>
+            <p className="text-bold text-tiny capitalize text-default-400">
+              {data.subLocation || "-"}
+            </p>
+          </div>
+        );
+      case "title":
+        return (
+          <div className="flex flex-col">
+            <p className="text-bold text-small capitalize">
+              {data.title || "-"}
+            </p>
+          </div>
+        );
+      case "campus":
+        return (
+          <div className="flex flex-col">
+            <p className="text-bold text-small capitalize">
+              {campusData
+                .find((campus) => campus.campId === data.campId)
+                .campNameEng.split("Prince of Songkla University ")[1] || "-"}
+            </p>
+          </div>
+        );
+      case "status":
+        return (
+          <Chip
+            className="capitalize border-none gap-1 text-default-600"
+            color={
+              tableType === "lost"
+                ? statusPostColorMap[data.status]
+                : statusReportColorMap[data.status]
+            }
+            size="sm"
+            variant="dot"
           >
-            <SelectItem key="user" textValue="user">
-              <Chip
-                className="capitalize border-none gap-1 text-default-600"
-                color={"success"}
-                size="sm"
-                variant="dot"
-              >
-                User
-              </Chip>
-            </SelectItem>
-            <SelectItem key="admin" textValue="admin">
-              <Chip
-                className="capitalize border-none gap-1 text-default-600"
-                color={"danger"}
-                size="sm"
-                variant="dot"
-              >
-                Admin
-              </Chip>
-            </SelectItem>
-          </Select>
+            {tableType === "lost"
+              ? statusPostOptions.find((option) => option.uid === cellValue)
+                  .name
+              : statusReportOptions.find((option) => option.uid === cellValue)
+                  .name}
+          </Chip>
+        );
+      case "actions":
+        return (
+          <div className="relative flex items-center gap-2">
+            {tableType === "lost" && (
+              <Tooltip content="View">
+                <Link
+                  className="text-lg text-default-400 cursor-pointer active:opacity-50"
+                  href={`/${data.campId}/explore/lost/detail/${data._id}`}
+                >
+                  <FaEye size={20} />
+                </Link>
+              </Tooltip>
+            )}
+            {session && session.user.role === "admin" && (
+              <>
+                <Tooltip content="Edit">
+                  <Link
+                    className="text-lg text-default-400 cursor-pointer active:opacity-50"
+                    href={`/${data.campId}/explore/${tableType}/edit/${data._id}`}
+                  >
+                    <AiFillEdit size={20} />
+                  </Link>
+                </Tooltip>
+                <Tooltip content="Delete" color="danger">
+                  <span
+                    className="text-lg text-red-500 cursor-pointer active:opacity-50"
+                    onClick={async () => {
+                      await setPostId(data?._id);
+                      await setPostTitle(data?.title);
+                      await setIsOpenDeleteModal(true);
+                    }}
+                  >
+                    <MdDelete size={20} />
+                  </span>
+                </Tooltip>
+              </>
+            )}
+          </div>
         );
       default:
-        return cellValue || "-";
+        return cellValue;
     }
   }, []);
 
@@ -289,22 +352,28 @@ export default function UserPermissionTable({ users }) {
                   endContent={<FaChevronDown className="text-small" />}
                   variant="flat"
                 >
-                  Roles
+                  Status
                 </Button>
               </DropdownTrigger>
               <DropdownMenu
                 disallowEmptySelection
                 aria-label="Table Columns"
                 closeOnSelect={false}
-                selectedKeys={roleFilter}
+                selectedKeys={statusFilter}
                 selectionMode="multiple"
-                onSelectionChange={setRoleFilter}
+                onSelectionChange={setStatusFilter}
               >
-                {roleUserOptions.map((role) => (
-                  <DropdownItem key={role.uid} className="capitalize">
-                    {capitalize(role.name)}
-                  </DropdownItem>
-                ))}
+                {tableType === "lost"
+                  ? statusPostOptions?.map((status) => (
+                      <DropdownItem key={status.uid} className="capitalize">
+                        {capitalize(status.name)}
+                      </DropdownItem>
+                    ))
+                  : statusReportOptions?.map((status) => (
+                      <DropdownItem key={status.uid} className="capitalize">
+                        {capitalize(status.name)}
+                      </DropdownItem>
+                    ))}
               </DropdownMenu>
             </Dropdown>
             <Dropdown>
@@ -324,7 +393,7 @@ export default function UserPermissionTable({ users }) {
                 selectionMode="multiple"
                 onSelectionChange={setVisibleColumns}
               >
-                {userColumns.map((column) => (
+                {columns.map((column) => (
                   <DropdownItem key={column.uid} className="capitalize">
                     {capitalize(column.name)}
                   </DropdownItem>
@@ -335,7 +404,7 @@ export default function UserPermissionTable({ users }) {
         </div>
         <div className="flex justify-between items-center">
           <span className="text-default-400 text-small">
-            Total {users.length} items
+            Total {posts.length} items
           </span>
           <label className="flex items-center text-default-400 text-small">
             Rows per page:
@@ -353,10 +422,10 @@ export default function UserPermissionTable({ users }) {
     );
   }, [
     filterValue,
-    roleFilter,
+    statusFilter,
     visibleColumns,
     onRowsPerPageChange,
-    users.length,
+    posts.length,
     onSearchChange,
     hasSearchFilter,
   ]);
@@ -432,7 +501,7 @@ export default function UserPermissionTable({ users }) {
       </Modal>
       <Table
         fullWidth={true}
-        aria-label="user table"
+        aria-label="post table"
         className="dark:text-white"
         isHeaderSticky
         bottomContent={bottomContent}
@@ -466,6 +535,12 @@ export default function UserPermissionTable({ users }) {
           )}
         </TableBody>
       </Table>
+      <ConfirmDelete
+        title={postTitle}
+        isOpen={isOpenDeleteModal}
+        onClose={() => setIsOpenDeleteModal(false)}
+        handleDelete={handleDeletePost}
+      />
     </>
   );
 }
