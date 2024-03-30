@@ -12,6 +12,19 @@ import {
 } from "recharts";
 import { Spinner } from "@nextui-org/react";
 
+const CustomTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-slate-200/20 text-black p-5 rounded-lg flex flex-col dark:bg-slate-700/70 dark:text-white">
+        <span className="text-small">{label}</span>
+        <span className="text-tiny text-indigo-500 font-bold">{`Number of users : ${payload[0].value}`}</span>
+      </div>
+    );
+  }
+
+  return null;
+};
+
 const LineChartComponent = ({ data, isLoading }) => {
   return (
     <div className={styles.container}>
@@ -37,7 +50,7 @@ const LineChartComponent = ({ data, isLoading }) => {
           >
             <XAxis dataKey="_id" />
             <YAxis />
-            <Tooltip contentStyle={{ border: "none" }} />
+            <Tooltip content={<CustomTooltip />} />
             <Legend />
             <Line
               type="monotone"

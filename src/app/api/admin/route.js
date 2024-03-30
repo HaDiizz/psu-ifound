@@ -18,7 +18,7 @@ export const GET = async () => {
     }
     await connectDB();
     const [count, admins] = await Promise.all([
-      User.countDocuments({}),
+      User.countDocuments({ role: "admin" }),
       User.find({ role: "admin" }),
     ]);
     return NextResponse.json({ count, admins });

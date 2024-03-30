@@ -9,6 +9,7 @@ import { bufferFile } from "@/utils/bufferFile";
 import fs from "fs/promises";
 import Post from "@/models/post";
 import Comment from "@/models/comment";
+import User from "@/models/user";
 
 export const addReport = async (formData) => {
   const session = await getServerSession(authOptions);
@@ -322,6 +323,31 @@ export const deleteReport = async (reportId) => {
     revalidatePath(`/${report.campId}/explore/found`);
     revalidatePath(`/history`);
     return { success: true, message: "Deleted successful" };
+  } catch (err) {
+    console.log(err);
+    return { error: true, message: "Something went wrong, try again later." };
+  }
+};
+
+export const updateUserRole = async ({ userId, role }) => {
+  const session = await getServerSession(authOptions);
+  try {
+    await connectDB();
+    if (!session) throw new Error("Unauthorized.");
+    if (!["admin", "user"].includes(role)) {
+      throw new Error("Invalid role.");
+    }
+    if (session && session.user.role !== "admin")
+      throw new Error("Permission denied.");
+    const user = await User.findById(userId);
+    const checkUser = await user._doc;
+    if (!checkUser) throw new Error("User not found.");
+    if (String(checkUser._id) === session.user.id)
+      throw new Error("Access denied");
+
+    user.role = role;
+    await user.save();
+    return { success: true, message: "Updated role successful" };
   } catch (err) {
     console.log(err);
     return { error: true, message: "Something went wrong, try again later." };
