@@ -4,12 +4,18 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth/next";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 
 async function getUserData() {
-  const res = await fetch("https://psu-ifound.vercel.app/api/user" || "http://localhost:3000/api/user", {
-    next: { revalidate: 3600 },
-    headers: headers(),
-  });
+  const authorization = headers().get("authorization");
+  const res = await fetch(
+    "https://psu-ifound.vercel.app/api/user" ||
+      "http://localhost:3000/api/user",
+    {
+      next: { revalidate: 3600 },
+      headers: { authorization },
+    }
+  );
 
   return res.json();
 }
@@ -21,9 +27,9 @@ const Page = async () => {
   }
   const data = await getUserData();
   return (
-    <div>
+    <Suspense fallback={null}>
       <UserPermissionTable users={data?.users} />
-    </div>
+    </Suspense>
   );
 };
 
