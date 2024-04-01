@@ -11,8 +11,11 @@ import TableDrawer from "../TableDrawer";
 import MapLayers from "./layers/MapLayers";
 import MapEvents from "./events/MapEvents";
 import DetailModal from "../DetailModal";
+import { Autocomplete, AutocompleteItem } from "@nextui-org/react";
+import { useLocations } from "@/hooks/swr";
 
 const LeafletMap = (params) => {
+  const { data, isLoading } = useLocations(params.campusId);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [itemId, setItemId] = useState("");
   const mapRef = useRef(null);
@@ -38,13 +41,44 @@ const LeafletMap = (params) => {
     await onOpen();
   };
 
+  const handleOnChangeSelection = (key) => {
+    const getLocation = data.filter((item) => item._id === key);
+    if (!getLocation.length) {
+      return;
+    }
+    flyTo(getLocation[0].lat, getLocation[0].lng);
+  };
+
   return (
     <>
+      <div className="pb-5 pt-8">
+        <div className="grid grid-cols-12">
+          <div className="col-span-12 md:col-span-6">
+            {!isLoading && (
+              <>
+                <Autocomplete
+                  size="sm"
+                  label="Search a location"
+                  variant="bordered"
+                  defaultItems={data}
+                  onSelectionChange={(key) => handleOnChangeSelection(key)}
+                >
+                  {(item) => (
+                    <AutocompleteItem key={item._id}>
+                      {item.name}
+                    </AutocompleteItem>
+                  )}
+                </Autocomplete>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
       <MapContainer
         ref={mapRef}
         center={[params?.lat, params?.lng]}
         zoom={16}
-        style={{ height: "100vh" }}
+        style={{ height: "73vh" }}
       >
         <MapLayers campusId={params.campusId} />
         {params?.reports.map((report) => (
@@ -80,7 +114,7 @@ const LeafletMap = (params) => {
           </Marker>
         ))}
         <MapEvents
-        campusId={params.campusId}
+          campusId={params.campusId}
           setPosition={setPosition}
           position={position}
           form={form}
