@@ -7,13 +7,12 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
 async function getUserData() {
-  const authorization = headers().get("authorization");
   const res = await fetch(
     "https://psu-ifound.vercel.app/api/user" ||
       "http://localhost:3000/api/user",
     {
       next: { revalidate: 3600 },
-      headers: { authorization },
+      headers: headers(),
     }
   );
 
