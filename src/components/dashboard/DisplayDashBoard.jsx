@@ -3,13 +3,11 @@ import React from "react";
 import BarChart from "../charts/BarChart";
 import PieChart from "../charts/PieChart";
 import LatestTable from "./LatestTable";
-import LineChart from "../charts/LineChart";
 import {
   useAdmins,
   useCountsByCampId,
   usePosts,
   useReports,
-  useUserRegisteredWeekly,
   useUsers,
 } from "@/hooks/swr";
 import StatCard from "./StatCard";
@@ -21,8 +19,6 @@ const DisplayDashBoard = () => {
   const { data: admins } = useAdmins();
   const { data: barChartData, isLoading: isBarChartDataLoading } =
     useCountsByCampId();
-  const { data: lineChartData, isLoading: isLineChartDataLoading } =
-    useUserRegisteredWeekly();
 
   return (
     <>
@@ -46,14 +42,8 @@ const DisplayDashBoard = () => {
             isLoading={isPostsLoading || isReportLoading}
           />
         </div>
-        <div className="lg:col-span-6 col-span-12 card p-5 border border-gray-200 rounded-lg shadow-md dark:bg-slate-800 dark:border-slate-700 flex">
+        <div className="lg:col-span-12 col-span-12 card p-5 border border-gray-200 rounded-lg shadow-md dark:bg-slate-800 dark:border-slate-700 flex">
           <LatestTable />
-        </div>
-        <div className="lg:col-span-6 col-span-12 card p-5 border border-gray-200 rounded-lg shadow-md dark:bg-slate-800 dark:border-slate-700">
-          <LineChart
-            data={lineChartData?.result}
-            isLoading={isLineChartDataLoading}
-          />
         </div>
       </div>
     </>
