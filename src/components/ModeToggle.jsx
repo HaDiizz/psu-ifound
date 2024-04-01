@@ -12,18 +12,26 @@ import {
 } from "@nextui-org/react";
 
 export function ModeToggle() {
-  const { setTheme } = useTheme();
+  const { setTheme, theme } = useTheme();
   return (
     <Dropdown>
       <DropdownTrigger>
         <Button
-          isIconOnly
           color="default"
           variant="light"
           className={`capitalize text-neutral-900 dark:text-white`}
         >
-          <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-          <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+          {theme === "dark" ? (
+            <div className="flex gap-x-3 items-center">
+              <Moon />
+              <span>Dark</span>
+            </div>
+          ) : (
+            <div className="flex gap-x-3 items-center">
+              <Sun />
+              <span>Light</span>
+            </div>
+          )}
         </Button>
       </DropdownTrigger>
       <DropdownMenu aria-label="Dropdown Variants" variant="faded">

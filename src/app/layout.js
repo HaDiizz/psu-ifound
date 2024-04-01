@@ -1,12 +1,15 @@
 import { Inter } from "next/font/google";
 import "@/styles/globals.css";
 import Providers from "@/providers/providers";
-import Navbar from "@/components/Navbar";
+import dynamic from "next/dynamic";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { Toaster } from "react-hot-toast";
 import ProgressLoader from "@/components/ProgressLoader";
 import NextTopLoader from "nextjs-toploader";
+const Navbar = dynamic(() => import("@/components/Navbar"), {
+  ssr: false,
+});
 
 const inter = Inter({ subsets: ["latin"] });
 

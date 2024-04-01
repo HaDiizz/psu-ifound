@@ -89,14 +89,6 @@ function NavbarFixed({ session, handleOpen }) {
             Explore
           </div>
         </li>
-        <li className="px-2 text-md">
-          <Link
-            className="dark:hover:text-neutral-300 hover:text-neutral-500"
-            href={"/contact"}
-          >
-            Contact
-          </Link>
-        </li>
         <li className="px-2 text-md dark:text-white text-neutral-900">
           <ModeToggle />
         </li>
@@ -179,9 +171,6 @@ function NavbarScroll({ isScrolling, session, handleOpen }) {
           <div className="cursor-pointer" onClick={handleOpen}>
             Explore
           </div>
-        </li>
-        <li className="px-2 text-black dark:text-white text-md hover:text-neutral-600 dark:hover:text-neutral-300">
-          <Link href={"/contact"}>Contact</Link>
         </li>
         <li className="px-2 text-white text-md">
           <ModeToggle />
