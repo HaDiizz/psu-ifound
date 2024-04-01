@@ -2,17 +2,23 @@
 import UserPermissionTable from "@/components/dashboard/UserPermissionTable";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth/next";
-import { headers } from "next/headers";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
 async function getUserData() {
+  const cookieStore = await cookies();
+  let sessionTokenCookie = await cookieStore.get("next-auth.session-token");
+  let sessionToken = await sessionTokenCookie.value;
   const res = await fetch(
     "https://psu-ifound.vercel.app/api/user" ||
       "http://localhost:3000/api/user",
     {
       next: { revalidate: 3600 },
-      headers: headers(),
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: `next-auth.session-token=${sessionToken};path=/;expires=Session`,
+      },
     }
   );
 
