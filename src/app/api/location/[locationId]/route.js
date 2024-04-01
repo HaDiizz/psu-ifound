@@ -3,7 +3,7 @@ import Location from "@/models/location";
 import { NextResponse } from "next/server";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth/next";
-
+export const dynamic = "force-dynamic"
 export const GET = async (request, context) => {
   const { locationId } = context.params;
   try {

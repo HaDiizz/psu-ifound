@@ -1,3 +1,4 @@
+"use server";
 import React from "react";
 import dynamic from "next/dynamic";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";

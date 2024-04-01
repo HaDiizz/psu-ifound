@@ -1,3 +1,4 @@
+"use server";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import TabDashBoardSection from "@/components/dashboard/TabDashBoardSection";
 import { getServerSession } from "next-auth/next";

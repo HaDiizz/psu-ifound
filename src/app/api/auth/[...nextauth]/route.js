@@ -5,7 +5,7 @@ import axios from "axios";
 import User from "@/models/user";
 import { cookies } from "next/headers";
 import { findOneUserByEmail } from "@/utils/services";
-
+export const dynamic = "force-dynamic"
 export const authOptions = {
   session: {
     jwt: true,

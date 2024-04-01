@@ -1,3 +1,4 @@
+"use server";
 import React from "react";
 import { campusData } from "@/utils/constants";
 import Link from "next/link";

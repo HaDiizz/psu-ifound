@@ -3,7 +3,7 @@ import connectDB from "@/lib/connectDB";
 import { NextResponse } from "next/server";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth/next";
-
+export const dynamic = "force-dynamic"
 export const GET = async () => {
   try {
     const session = await getServerSession(authOptions);

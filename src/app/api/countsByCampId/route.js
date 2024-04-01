@@ -5,7 +5,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth/next";
 import Report from "@/models/report";
 import { campusData } from "@/utils/constants";
-
+export const dynamic = "force-dynamic"
 export const GET = async (request) => {
   const { searchParams } = new URL(request.url);
   const param = searchParams.get("limit");
