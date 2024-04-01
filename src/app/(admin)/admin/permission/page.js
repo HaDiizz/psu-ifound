@@ -8,7 +8,7 @@ import { Suspense } from "react";
 
 async function getUserData() {
   const cookieStore = await cookies();
-  let sessionTokenCookie = await cookieStore.get("next-auth.session-token");
+  let sessionTokenCookie = await cookieStore.get("__Secure-next-auth.session-token");
   let sessionToken = await sessionTokenCookie.value;
   const res = await fetch(
     "https://psu-ifound.vercel.app/api/user" ||
@@ -17,7 +17,7 @@ async function getUserData() {
       next: { revalidate: 3600 },
       headers: {
         "Content-Type": "application/json",
-        Cookie: `next-auth.session-token=${sessionToken};path=/;expires=Session`,
+        Cookie: `__Secure-next-auth.session-token=${sessionToken};path=/;expires=Session`,
       },
     }
   );
