@@ -6,7 +6,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 async function getUserData() {
-  const res = await fetch("http://localhost:3000/api/user", {
+  const res = await fetch(process.env.BASE_URL || "http://localhost:3000/api/user", {
     next: { revalidate: 3600 },
     headers: headers(),
   });
