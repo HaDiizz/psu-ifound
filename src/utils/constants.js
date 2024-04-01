@@ -25,3 +25,11 @@ export const campusData = [
     campNameEng: "Prince of Songkla University Trang Campus",
   },
 ];
+
+export const campusCoordinates = {
+  "01": { lat: 7.0063301, lng: 100.4998717 },
+  "02": { lat: 6.8782041, lng: 101.2359429 },
+  "03": { lat: 7.8942686, lng: 98.3530526 },
+  "04": { lat: 9.0937187, lng: 99.3568276 },
+  "05": { lat: 7.5184169, lng: 99.5785418 },
+};
