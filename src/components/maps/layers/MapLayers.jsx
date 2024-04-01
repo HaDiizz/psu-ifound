@@ -1,12 +1,15 @@
 "use client";
 import React from "react";
-import { LayersControl, LayerGroup } from "react-leaflet";
+import { LayersControl } from "react-leaflet";
 import BaseMapLayers from "./BaseMapLayers";
+import Location from "../Location";
 
-const MapLayers = () => {
+const MapLayers = ({ campusId }) => {
   return (
     <LayersControl position="topright">
-      <LayersControl.Overlay></LayersControl.Overlay>
+      <LayersControl.Overlay name="Location Area">
+        <Location campusId={campusId} />
+      </LayersControl.Overlay>
       <BaseMapLayers />
     </LayersControl>
   );

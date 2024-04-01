@@ -15,10 +15,10 @@ async function getUserData() {
 
 const Page = async () => {
   const session = await getServerSession(authOptions);
-  const data = await getUserData();
   if (session && session.user.role !== "admin") {
     redirect("/");
   }
+  const data = await getUserData();
   return (
     <div>
       <UserPermissionTable users={data?.users} />

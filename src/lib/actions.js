@@ -10,6 +10,7 @@ import fs from "fs/promises";
 import Post from "@/models/post";
 import Comment from "@/models/comment";
 import User from "@/models/user";
+import Location from "@/models/location";
 
 export const addReport = async (formData) => {
   const session = await getServerSession(authOptions);
@@ -372,6 +373,86 @@ export const updateUserRole = async ({ userId, role }) => {
     user.role = role;
     await user.save();
     return { success: true, message: "Updated role successful" };
+  } catch (err) {
+    console.log(err);
+    return { error: true, message: "Something went wrong, try again later." };
+  }
+};
+
+export const addLocation = async (formData) => {
+  const session = await getServerSession(authOptions);
+  const { locationName, lat, lng, campId } = formData;
+  try {
+    if (!session) {
+      return { error: true, message: "Unauthorized." };
+    }
+    if (session && session.user.role !== "admin") {
+      return { error: true, message: "Permission denied." };
+    }
+    await connectDB();
+    if (!locationName || !lat || !lng || !campId) {
+      return { error: true, message: "Fields are required." };
+    }
+    const location = await new Location({
+      name: locationName,
+      campId,
+      lat: lat.toFixed(6),
+      lng: lng.toFixed(6),
+    });
+    await location.save();
+    revalidatePath(`/admin/location/${location.campId}`);
+    return { success: true, message: "Added successful" };
+  } catch (err) {
+    console.log(err);
+    return { error: true, message: "Something went wrong, try again later." };
+  }
+};
+
+export const deleteLocation = async (locationId) => {
+  const session = await getServerSession(authOptions);
+  try {
+    if (!session) {
+      return { error: true, message: "Unauthorized." };
+    }
+    if (session && session.user.role !== "admin") {
+      return { error: true, message: "Permission denied." };
+    }
+    await connectDB();
+    const location = await Location.findOneAndDelete({
+      _id: locationId,
+    });
+    if (!location) {
+      throw new Error("Location not found.");
+    }
+    revalidatePath(`/admin/location/${location.campId}`);
+    return { success: true, message: "Deleted successful" };
+  } catch (err) {
+    console.log(err);
+    return { error: true, message: "Something went wrong, try again later." };
+  }
+};
+
+export const updateLocation = async ({ locationId, name, lat, lng }) => {
+  const session = await getServerSession(authOptions);
+  try {
+    await connectDB();
+    if (!session) return { error: true, message: "Unauthorized." };
+    if (session && session.user.role !== "admin")
+      return { error: true, message: "Permission denied." };
+    if (!name || !lat || !lng) {
+      return { error: true, message: "Fields are required." };
+    }
+    const location = await Location.findOneAndUpdate(
+      { _id: locationId },
+      {
+        name,
+        lat: lat.toFixed(6),
+        lng: lng.toFixed(6),
+      },
+      { new: true }
+    );
+    if (!location) return { error: true, message: "Location not found." };
+    return { success: true, message: "Updated location successful" };
   } catch (err) {
     console.log(err);
     return { error: true, message: "Something went wrong, try again later." };

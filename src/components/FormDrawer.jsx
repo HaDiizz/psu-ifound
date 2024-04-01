@@ -13,7 +13,7 @@ import UploadImage from "./UploadImage";
 import Link from "next/link";
 import { FaTimes } from "react-icons/fa";
 
-export default function FormDrawer({ open, setOpen, form, campusId }) {
+export default function FormDrawer({ open, setOpen, form, campusId, setForm }) {
   const [file, setFile] = useState("");
   const { data: session } = useSession();
   const {
@@ -64,7 +64,8 @@ export default function FormDrawer({ open, setOpen, form, campusId }) {
 
   useEffect(() => {
     setValue("image", file);
-  }, [setValue, file]);
+    setValue("location", form?.location);
+  }, [setValue, file, form?.location]);
 
   const DrawerList = (
     <Box
@@ -150,6 +151,10 @@ export default function FormDrawer({ open, setOpen, form, campusId }) {
                   variant="bordered"
                   isInvalid={errors.location?.message}
                   errorMessage={errors.location?.message}
+                  value={form?.location}
+                  onValueChange={(input) =>
+                    setForm({ ...form, location: input })
+                  }
                 />
                 <Input
                   {...register("subLocation")}

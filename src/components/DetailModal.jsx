@@ -102,7 +102,7 @@ const DetailModal = ({ isOpen, onClose, itemId }) => {
                                       {data.location}
                                     </p>
                                     <p className="text-bold text-tiny capitalize text-default-400">
-                                      {data?.subLocation && "-"}
+                                      {data?.subLocation ? data?.subLocation : "-"}
                                     </p>
                                   </div>
                                 </TableCell>

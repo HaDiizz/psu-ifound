@@ -46,7 +46,7 @@ const LeafletMap = (params) => {
         zoom={16}
         style={{ height: "100vh" }}
       >
-        <MapLayers />
+        <MapLayers campusId={params.campusId} />
         {params?.reports.map((report) => (
           <Marker
             key={report._id}
@@ -80,6 +80,7 @@ const LeafletMap = (params) => {
           </Marker>
         ))}
         <MapEvents
+        campusId={params.campusId}
           setPosition={setPosition}
           position={position}
           form={form}
@@ -112,6 +113,7 @@ const LeafletMap = (params) => {
         setOpen={setOpenFormDrawer}
         form={form}
         campusId={params.campusId}
+        setForm={setForm}
       />
       <TableDrawer
         open={openTableDrawer}

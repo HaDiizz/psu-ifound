@@ -36,3 +36,11 @@ export const useCountsByCampId = () => {
 export const useUserRegisteredWeekly = () => {
   return useSWR(`/user/registered-weekly`);
 };
+
+export const useLocations = (campusId) => {
+  return useSWR(`/location/campus/${campusId}`, { refreshInterval: 3600 });
+};
+
+export const useLocation = (locationId) => {
+  return useSWR(`/location/${locationId}`, { refreshInterval: 3600 });
+};

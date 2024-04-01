@@ -21,8 +21,8 @@ export const metadata = {
 export default async function RootLayout({ children }) {
   const session = await getServerSession(authOptions);
   return (
-    <html lang="en">
-      <body suppressHydrationWarning={true} className={inter.className}>
+    <html suppressHydrationWarning={true} lang="en">
+      <body className={inter.className}>
         <ProgressLoader />
         <NextTopLoader showSpinner={false} color="#f564ce" />
         <div className="main">
