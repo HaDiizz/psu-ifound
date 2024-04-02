@@ -9,7 +9,7 @@ export const bufferFile = async (image) => {
   const name = uuidv4();
   const ext = image.type.split("/")[1];
   const tempdir = os.tmpdir();
-  const uploadDir = path.join(tempdir, "iFound/images", `${name}.${ext}`);
+  const uploadDir = path.join(tempdir, `/${name}.${ext}`);
   fs.writeFile(uploadDir, buffer);
   return { filepath: uploadDir, filename: image.name };
 };
