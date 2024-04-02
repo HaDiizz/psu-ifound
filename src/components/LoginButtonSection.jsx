@@ -12,7 +12,7 @@ const LoginButtonSection = () => {
   }
 
   async function handleGoogleSignIn() {
-    await signIn("google", { callbackUrl: process.env.NEXTAUTH_URL });
+    await signIn("google", { callbackUrl: process.env.NEXTAUTH_URL || "http://localhost:3000" });
   }
 
   return (

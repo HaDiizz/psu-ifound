@@ -54,23 +54,21 @@ const LeafletMap = (params) => {
       <div className="pb-5 pt-8">
         <div className="grid grid-cols-12">
           <div className="col-span-12 md:col-span-6">
-            {!isLoading && (
-              <>
-                <Autocomplete
-                  size="sm"
-                  label="Search a location"
-                  variant="bordered"
-                  defaultItems={data}
-                  onSelectionChange={(key) => handleOnChangeSelection(key)}
-                >
-                  {(item) => (
-                    <AutocompleteItem key={item._id}>
-                      {item.name}
-                    </AutocompleteItem>
-                  )}
-                </Autocomplete>
-              </>
-            )}
+            <>
+              <Autocomplete
+                size="sm"
+                label="Search a location"
+                variant="bordered"
+                defaultItems={isLoading ? [] : data}
+                onSelectionChange={(key) => handleOnChangeSelection(key)}
+              >
+                {(item) => (
+                  <AutocompleteItem key={item._id}>
+                    {item.name}
+                  </AutocompleteItem>
+                )}
+              </Autocomplete>
+            </>
           </div>
         </div>
       </div>

@@ -22,6 +22,7 @@ import {
   useDisclosure,
   Select,
   SelectItem,
+  Spinner,
 } from "@nextui-org/react";
 import { FaChevronDown, FaEye } from "react-icons/fa";
 import { useCallback, useMemo, useState } from "react";
@@ -32,6 +33,7 @@ import moment from "moment";
 import { useSession } from "next-auth/react";
 import { updateUserRole } from "@/lib/actions";
 import toast from "react-hot-toast";
+import { useUsers } from "@/hooks/swr";
 
 const INITIAL_VISIBLE_COLUMNS = [
   "picture",
@@ -41,8 +43,9 @@ const INITIAL_VISIBLE_COLUMNS = [
   "createdAt",
 ];
 
-export default function UserPermissionTable({ users }) {
+export default function UserPermissionTable() {
   const { data: session } = useSession();
+  const { data, isLoading, mutate } = useUsers();
   const [previewImage, setPreviewImage] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [page, setPage] = useState(1);
@@ -61,6 +64,7 @@ export default function UserPermissionTable({ users }) {
   const handleUpdateRole = async (userId, role) => {
     const result = await updateUserRole({ userId, role });
     if (result?.success) {
+      mutate();
       toast.success(`${result?.message}`);
       return;
     }
@@ -82,7 +86,7 @@ export default function UserPermissionTable({ users }) {
   }, [visibleColumns]);
 
   const filteredItems = useMemo(() => {
-    let filteredUsers = [...users];
+    let filteredUsers = isLoading ? [] : [...data?.users];
 
     if (hasSearchFilter) {
       filteredUsers = filteredUsers.filter(
@@ -102,7 +106,7 @@ export default function UserPermissionTable({ users }) {
       );
     }
     return filteredUsers;
-  }, [users, filterValue, roleFilter]);
+  }, [data?.users, filterValue, roleFilter]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -335,7 +339,7 @@ export default function UserPermissionTable({ users }) {
         </div>
         <div className="flex justify-between items-center">
           <span className="text-default-400 text-small">
-            Total {users.length} items
+            Total {data?.users?.length} items
           </span>
           <label className="flex items-center text-default-400 text-small">
             Rows per page:
@@ -356,7 +360,7 @@ export default function UserPermissionTable({ users }) {
     roleFilter,
     visibleColumns,
     onRowsPerPageChange,
-    users.length,
+    data?.users?.length,
     onSearchChange,
     hasSearchFilter,
   ]);
@@ -456,7 +460,12 @@ export default function UserPermissionTable({ users }) {
             </TableColumn>
           )}
         </TableHeader>
-        <TableBody emptyContent={"No data found"} items={sortedItems}>
+        <TableBody
+          emptyContent={"No data found"}
+          items={sortedItems}
+          isLoading={isLoading}
+          loadingContent={<Spinner label="Loading..." />}
+        >
           {(item) => (
             <TableRow key={item._id}>
               {(columnKey) => (

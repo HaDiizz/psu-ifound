@@ -1,4 +1,4 @@
-"use server"
+"use server";
 import dynamic from "next/dynamic";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
