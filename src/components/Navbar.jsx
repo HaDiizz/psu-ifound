@@ -63,7 +63,7 @@ function NavbarFixed({ session, handleOpen }) {
       <div className="flex items-center gap-2 text-white">
         <Link
           href="/"
-          className="font-bold text-inherit text-xl text-neutral-900 dark:text-white"
+          className="font-bold text-inherit text-xl text-neutral-900 dark:text-white hidden md:block"
         >
           PSU
           <span className="text-indigo-500 dark:text-indigo-400 pl-1">
@@ -72,7 +72,7 @@ function NavbarFixed({ session, handleOpen }) {
         </Link>
       </div>
       <ul className="flex items-center dark:text-white text-neutral-900">
-        <li className="px-2 text-md ">
+        <li className="px-2 text-md">
           <Link
             className="dark:hover:text-neutral-300 hover:text-neutral-500"
             href={"/"}

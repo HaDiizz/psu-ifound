@@ -1,7 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ["res.cloudinary.com", "lh3.googleusercontent.com", "avatars.githubusercontent.com"],
+    domains: [
+      "res.cloudinary.com",
+      "lh3.googleusercontent.com",
+      "avatars.githubusercontent.com",
+    ],
     remotePatterns: [
       {
         protocol: "https",
@@ -26,6 +30,7 @@ const nextConfig = {
     PSU_OPEN_API_SECRET_KEY: process.env.PSU_OPEN_API_SECRET_KEY,
     PSU_OPEN_API_URL: process.env.PSU_OPEN_API_URL,
     ACCESS_TOKEN_MAP_TILE: process.env.ACCESS_TOKEN_MAP_TILE,
+    BASE_URL_ORIGIN: process.env.BASE_URL_ORIGIN,
   },
 };
 

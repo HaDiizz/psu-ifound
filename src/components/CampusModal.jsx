@@ -1,5 +1,5 @@
 "use client";
-import useSWR from "swr";
+import useSWRImmutable from "swr/immutable";
 import {
   Modal,
   ModalContent,
@@ -44,14 +44,9 @@ const CampusModal = ({ isOpen, onClose }) => {
   const [selectOption, setSelectOption] = useState("found");
   const [activeStep, setActiveStep] = useState(0);
   const router = useRouter();
-  const { data, error, isLoading } = useSWR(
+  const { data, error, isLoading } = useSWRImmutable(
     `${process.env.PSU_OPEN_API_URL}/Central/GetCampus`,
-    fetcher,
-    {
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    }
+    fetcher
   );
 
   const handleNext = () => {
