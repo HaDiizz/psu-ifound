@@ -65,6 +65,9 @@ export const metadata = {
       },
     ],
   },
+  verification: {
+    google: "QB4p2TnjStku0tmNesYkGbbesYkOJotOg4oUbN7i5qo",
+  },
 };
 
 export default async function RootLayout({ children }) {
