@@ -1,9 +1,25 @@
 import { axios } from "@/lib/axios";
 import dynamic from "next/dynamic";
 import { campusCoordinates } from "@/utils/constants";
+import { campusData } from "@/utils/constants";
 const LeafletMap = dynamic(() => import("@/components/maps/LeafletMap"), {
   ssr: false,
 });
+
+export async function generateMetadata({ params }) {
+  return {
+    title:
+      campusData
+        .find((campus) => campus.campId === params.campusId)
+        .campNameEng.split("Prince of Songkla University ")[1] || "-",
+    alternates: {
+      canonical: `/${params.campusId}/explore/found`,
+      languages: {
+        en: `/en/${params.campusId}/explore/found`,
+      },
+    },
+  };
+}
 
 const page = async ({ params }) => {
   let lat = 7.0063301;

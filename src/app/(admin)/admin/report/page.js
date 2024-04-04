@@ -10,7 +10,12 @@ const Page = async () => {
   if (session && session.user.role !== "admin") {
     redirect("/");
   }
-  return <TabDashBoardSection />;
+  return (
+    <>
+      <h1 className="text-default-500 pb-2 font-bold">Reports</h1>
+      <TabDashBoardSection />
+    </>
+  );
 };
 
 export default Page;

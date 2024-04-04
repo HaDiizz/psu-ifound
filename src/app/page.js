@@ -1,5 +1,13 @@
-"use server";
 import BannerSection from "@/components/BannerSection";
+
+export const metadata = {
+  alternates: {
+    canonical: `/`,
+    languages: {
+      en: `/en`,
+    },
+  },
+};
 
 export default async function Home() {
   return (

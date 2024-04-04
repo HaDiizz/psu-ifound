@@ -14,10 +14,56 @@ const Navbar = dynamic(() => import("@/components/Navbar"), {
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "PSU iFound",
-  description: "The app that created by NEBULA team",
+  metadataBase: new URL("https://psu-ifound.vercel.app"),
+  title: {
+    default: `PSU iFound`,
+    template: `PSU iFound | %s`,
+  },
+  description:
+    "Lost and Found Hub: Discover and announce lost items within all 5 campuses of Price of Songkla University. Connect with owners or finders. Your lost belongings might just find their way back to you",
+  generator: "Next.js",
+  applicationName: "Next.js",
+  referrer: "origin-when-cross-origin",
+  keywords: [
+    "Found",
+    "Find",
+    "PSU",
+    "Prince of Songkla University",
+    "Prince of Songkla University Hatyai Campus",
+    "Prince of Songkla University Pattani Campus",
+    "Prince of Songkla University Surat Thani Campus",
+    "Prince of Songkla University Trang Campus",
+    "Prince of Songkla University Phuket Campus",
+    "Lost",
+    "PSU student",
+    "Campus",
+  ],
+  authors: [
+    { name: "NEBULA" },
+    { name: "NEBULA", url: "https://github.com/HaDiizz" },
+  ],
+  colorSchema: "Dark",
+  creator: "NEBULA",
+  publisher: "NEBULA Prince of Songkla",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   icons: {
     icon: "./favicon.ico",
+  },
+  openGraph: {
+    title: "PSU iFound",
+    description:
+      "Lost and Found Hub: Discover and announce lost items within all 5 campuses of Price of Songkla University. Connect with owners or finders. Your lost belongings might just find their way back to you",
+    images: [
+      {
+        url: "/logo-ifound.webp",
+        width: 400,
+        height: 300,
+      },
+    ],
   },
 };
 

@@ -27,7 +27,7 @@ const DisplayPostDetail = ({ postId, campusId }) => {
       {isLoading ? (
         <>
           <div className="pt-7 pb-5">
-            <Typography component="div" variant="h2">
+            <Typography component="div" variant="h1">
               <Skeleton variant="text" />
             </Typography>
           </div>

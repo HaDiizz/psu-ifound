@@ -17,6 +17,7 @@ const Page = async ({ params }) => {
   }
   return (
     <div className="container pt-[6rem] pb-5">
+      <h1 className="text-default-500 pb-2 font-bold">Edit Post</h1>
       <BackButton />
       <EditPost post={response.data} campusId={params.campusId} />
     </div>

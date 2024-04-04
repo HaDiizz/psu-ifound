@@ -26,6 +26,7 @@ const Page = async ({ params }) => {
 
   return (
     <>
+      <h1 className="text-default-500 pb-2 font-bold">Create Location</h1>
       <LeafletMap lat={lat} lng={lng} campusId={params.campusId} />
     </>
   );

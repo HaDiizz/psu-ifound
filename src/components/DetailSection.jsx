@@ -7,7 +7,7 @@ const DetailSection = ({ post }) => {
   return (
     <>
       <div className="pt-7 pb-5">
-        <span className="leading-none text-4xl font-bold">{post.title}</span>
+        <h1 className="leading-none font-bold">{post.title}</h1>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-12 gap-3 place-items-center">
         <div

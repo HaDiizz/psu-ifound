@@ -21,6 +21,7 @@ const Page = async ({ params }) => {
 
   return (
     <>
+      <h1 className="text-default-500 pb-2 font-bold">Edit Location</h1>
       <EditLocation
         lat={lat}
         lng={lng}

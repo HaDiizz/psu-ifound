@@ -13,6 +13,7 @@ const Page = async ({ params }) => {
   }
   return (
     <>
+      <h1 className="text-default-500 pb-2 font-bold">Location List</h1>
       <BackButton />
       <div className="pt-5">
         <LocationTable campusId={params.campusId} />

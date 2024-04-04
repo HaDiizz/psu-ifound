@@ -9,7 +9,12 @@ const Page = async () => {
   if (session && session.user.role !== "admin") {
     redirect("/");
   }
-  return <UserPermissionTable />;
+  return (
+    <>
+      <h1 className="text-default-500 pb-2 font-bold">User Permission</h1>
+      <UserPermissionTable />
+    </>
+  );
 };
 
 export default Page;
