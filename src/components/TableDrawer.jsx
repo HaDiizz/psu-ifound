@@ -19,7 +19,6 @@ import {
   DropdownMenu,
   DropdownTrigger,
   Input,
-  Image,
   Modal,
   ModalContent,
   useDisclosure,
@@ -30,8 +29,13 @@ import { MdMyLocation } from "react-icons/md";
 import { useCallback, useMemo, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { capitalize } from "@/utils/capitalize";
-import { columns, statusReportOptions, statusReportColorMap } from "@/utils/data";
+import {
+  columns,
+  statusReportOptions,
+  statusReportColorMap,
+} from "@/utils/data";
 import moment from "moment";
+import Image from "next/image";
 
 const INITIAL_VISIBLE_COLUMNS = [
   "image",
@@ -159,7 +163,6 @@ export default function TableDrawer({
               height={100}
               src={data.image.url}
               alt="thumbnail"
-              loading="lazy"
             />
           </div>
         );
@@ -464,18 +467,19 @@ export default function TableDrawer({
             "bg-gradient-to-t from-zinc-900 to-zinc-900/10 backdrop-opacity-20",
         }}
       >
-        <ModalContent>
+        <ModalContent className="bg-transparent">
           <>
-            <Image
-              referrerPolicy="no-referrer"
-              className="block w-full h-full"
-              showSkeleton
-              src={previewImage}
-              width="auto"
-              height="auto"
-              alt="thumbnail"
-              loading="lazy"
-            />
+            {previewImage && (
+              <Image
+                referrerPolicy="no-referrer"
+                className="block w-full h-full"
+                src={previewImage}
+                width={100}
+                height={100}
+                alt="thumbnail"
+                unoptimized
+              />
+            )}
           </>
         </ModalContent>
       </Modal>

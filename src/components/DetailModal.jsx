@@ -14,7 +14,6 @@ import {
   TableCell,
   Button,
   Spinner,
-  Image,
   Chip,
   User,
   Popover,
@@ -29,6 +28,7 @@ import ClaimItem from "./ClaimItem";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import { statusReportColorMap } from "@/utils/data";
+import Image from "next/image";
 
 const DetailModal = ({ isOpen, onClose, itemId }) => {
   const { data, isLoading, mutate } = useSWR(`/report/${itemId}`);
@@ -80,7 +80,6 @@ const DetailModal = ({ isOpen, onClose, itemId }) => {
                             height={100}
                             src={data?.image?.url}
                             alt="thumbnail"
-                            loading="lazy"
                           />
                         </div>
                         <div>
@@ -102,7 +101,9 @@ const DetailModal = ({ isOpen, onClose, itemId }) => {
                                       {data.location}
                                     </p>
                                     <p className="text-bold text-tiny capitalize text-default-400">
-                                      {data?.subLocation ? data?.subLocation : "-"}
+                                      {data?.subLocation
+                                        ? data?.subLocation
+                                        : "-"}
                                     </p>
                                   </div>
                                 </TableCell>

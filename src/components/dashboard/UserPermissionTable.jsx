@@ -8,7 +8,6 @@ import {
   TableCell,
   User,
   Chip,
-  Tooltip,
   Button,
   Pagination,
   Dropdown,
@@ -16,7 +15,6 @@ import {
   DropdownMenu,
   DropdownTrigger,
   Input,
-  Image,
   Modal,
   ModalContent,
   useDisclosure,
@@ -34,6 +32,7 @@ import { useSession } from "next-auth/react";
 import { updateUserRole } from "@/lib/actions";
 import toast from "react-hot-toast";
 import { useUsers } from "@/hooks/swr";
+import Image from "next/image";
 
 const INITIAL_VISIBLE_COLUMNS = [
   "picture",
@@ -161,7 +160,6 @@ export default function UserPermissionTable() {
               height={100}
               src={data.picture}
               alt="user profile"
-              loading="lazy"
             />
           </div>
         );
@@ -419,18 +417,19 @@ export default function UserPermissionTable() {
             "bg-gradient-to-t from-zinc-900 to-zinc-900/10 backdrop-opacity-20",
         }}
       >
-        <ModalContent>
+        <ModalContent className="bg-transparent">
           <>
-            <Image
-              referrerPolicy="no-referrer"
-              className="block w-full h-full"
-              showSkeleton
-              src={previewImage}
-              width="auto"
-              height="auto"
-              alt="thumbnail"
-              loading="lazy"
-            />
+            {previewImage && (
+              <Image
+                referrerPolicy="no-referrer"
+                className="block w-full h-full"
+                src={previewImage}
+                width={100}
+                height={100}
+                alt="thumbnail"
+                unoptimized
+              />
+            )}
           </>
         </ModalContent>
       </Modal>

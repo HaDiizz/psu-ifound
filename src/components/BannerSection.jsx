@@ -3,17 +3,24 @@ import { FaSearchLocation } from "react-icons/fa";
 import { Button, useDisclosure } from "@nextui-org/react";
 import Image from "next/image";
 import CampusModal from "./CampusModal";
+import { useState } from "react";
 
 const BannerSection = () => {
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const [isImageReady, setIsImageReady] = useState(false);
+
   const handleOpen = () => {
     onOpen();
+  };
+
+  const onLoadCallBack = (e) => {
+    setIsImageReady(true);
   };
   return (
     <div>
       <CampusModal isOpen={isOpen} onClose={onClose} />
       <div className="flex justify-between md:pt-[4rem]">
-        <div className="flex flex-col max-w-[750px] gap-y-8 items-start">
+        <div className="flex flex-col max-w-[730px] gap-y-8 items-start">
           <span
             className="flex justify-center items-center"
             style={{ lineHeight: 2 }}
@@ -29,12 +36,9 @@ const BannerSection = () => {
             <span className="letter">d</span>
           </span>
           <p>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-            Praesentium vel nobis earum animi maiores asperiores, provident quae
-            perferendis necessitatibus dicta in tenetur ex a quis delectus qui.
-            Cumque incidunt omnis reiciendis cum inventore sint quis id facilis
-            dolore corrupti modi ratione eius vitae iure, nulla iste quaerat.
-            Voluptas, dolor optio.
+            Lost and Found Hub. Discover and announce lost items within all 5
+            campuses of Price of Songkla University. Connect with owners or
+            finders. Your lost belongings might just find their way back to you
           </p>
           <div>
             <Button
@@ -52,11 +56,13 @@ const BannerSection = () => {
         <Image
           style={{ width: "25rem", height: "25rem" }}
           className="hidden md:block"
-          src={"/globe.svg"}
+          src={isImageReady ? "/globe-webp.webp" : "/blur-globe.webp"}
           alt="banner globe"
           width={100}
           height={100}
           priority
+          unoptimized
+          onLoad={onLoadCallBack}
         />
       </div>
     </div>
