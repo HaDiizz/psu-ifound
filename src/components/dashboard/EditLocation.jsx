@@ -1,5 +1,4 @@
 "use client";
-import React from "react";
 import dynamic from "next/dynamic";
 import { useLocation } from "@/hooks/swr";
 import { Spinner } from "@nextui-org/react";

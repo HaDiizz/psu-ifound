@@ -1,4 +1,3 @@
-import React from "react";
 import HistorySection from "@/components/History";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth/next";

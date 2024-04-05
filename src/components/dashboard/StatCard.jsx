@@ -1,4 +1,3 @@
-import React from "react";
 import { Siren, SearchCode, UsersRound, UserRoundCog } from "lucide-react";
 
 const StatCard = ({ totalPost, totalReport, totalUser, totalAdmin }) => {

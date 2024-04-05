@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Marker, useMapEvents } from "react-leaflet";
 import * as turf from "@turf/turf";
 import hatyai_poi from "../data/hatyai_poi.json";

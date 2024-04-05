@@ -1,5 +1,4 @@
 "use client";
-import React from "react";
 import BarChart from "../charts/BarChart";
 import PieChart from "../charts/PieChart";
 import LatestTable from "./LatestTable";

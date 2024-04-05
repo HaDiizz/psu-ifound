@@ -1,5 +1,4 @@
 "use client";
-import React from "react";
 import { GeoJSON } from "react-leaflet";
 import hatyai_poi from "./data/hatyai_poi.json";
 import pattani_poi from "./data/pattani_poi.json";

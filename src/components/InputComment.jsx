@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Textarea, CircularProgress } from "@nextui-org/react";
 import { BsFillSendFill } from "react-icons/bs";
 import { createComment } from "@/lib/actions";

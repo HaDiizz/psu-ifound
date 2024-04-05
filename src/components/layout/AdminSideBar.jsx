@@ -1,6 +1,5 @@
 "use client";
 import { SideBarMenus } from "@/utils/helper";
-import React from "react";
 import MenuItem from "./MenuItem";
 
 const AdminSideBar = () => {

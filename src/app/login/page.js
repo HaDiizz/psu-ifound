@@ -1,4 +1,3 @@
-import React from "react";
 import LoginButtonSection from "@/components/LoginButtonSection";
 import Image from "next/image";
 

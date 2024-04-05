@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import { useState } from "react";
 import { PieChart, Pie, Sector, ResponsiveContainer } from "recharts";
 import styles from "./chart.module.css";
 import { Spinner } from "@nextui-org/react";

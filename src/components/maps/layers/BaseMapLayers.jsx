@@ -1,4 +1,3 @@
-import React from "react";
 import { LayersControl, TileLayer, LayerGroup } from "react-leaflet";
 import { useTheme } from "next-themes";
 
