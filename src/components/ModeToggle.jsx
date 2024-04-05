@@ -24,12 +24,12 @@ export function ModeToggle() {
           {theme === "dark" ? (
             <div className="flex gap-x-3 items-center">
               <Moon />
-              <span>Dark</span>
+              <span className="hidden md:block">Dark</span>
             </div>
           ) : (
             <div className="flex gap-x-3 items-center">
               <Sun />
-              <span>Light</span>
+              <span className="hidden md:block">Light</span>
             </div>
           )}
         </Button>

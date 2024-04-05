@@ -42,7 +42,7 @@ const CommentCard = ({ postId, comment, commentId, campusId, commentRef }) => {
   return (
     <>
       <div
-        className="flex justify-between border-b-2 dark:border-slate-600/20 pb-3 mb-3"
+        className="flex flex-col md:flex-row justify-between border-b-2 dark:border-slate-600/20 pb-3 mb-3"
         ref={commentRef}
       >
         <div>
@@ -50,7 +50,7 @@ const CommentCard = ({ postId, comment, commentId, campusId, commentRef }) => {
             {comment.user.username}
           </User>
         </div>
-        <div className="flex gap-x-5">
+        <div className="flex justify-between md:justify-normal gap-x-5">
           <div className="flex flex-col">
             <p className="text-bold text-small capitalize">
               {moment(comment.createdAt).fromNow()}

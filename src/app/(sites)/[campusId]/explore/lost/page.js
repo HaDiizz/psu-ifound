@@ -22,7 +22,7 @@ const Page = async ({ params }) => {
     next: { revalidate: 3600 },
   });
   return (
-    <div className="container pt-[10rem]">
+    <div className="container pt-[5.4rem] pb-5">
       <h1 className="text-default-500 pb-2 font-bold">Post List</h1>
       <PostTable campusId={params.campusId} posts={data} />
     </div>

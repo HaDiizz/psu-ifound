@@ -187,6 +187,21 @@ nav {
   }
 }
 
+@media screen and (max-width: 648px) {
+  .options_top_table {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .filter_right {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+}
+
 .dark .letter {
   color: #6e51ff;
 }

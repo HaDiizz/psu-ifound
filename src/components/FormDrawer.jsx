@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
-import { Input, Select, SelectItem, Button, Tooltip } from "@nextui-org/react";
+import { Input, Select, SelectItem, Button, Tooltip, Textarea } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import { addReport } from "@/lib/actions";
 import FormButton from "./FormButton";
@@ -132,7 +132,7 @@ export default function FormDrawer({ open, setOpen, form, campusId, setForm }) {
                   isInvalid={errors.title?.message}
                   errorMessage={errors.title?.message}
                 />
-                <Input
+                <Textarea
                   {...register("detail")}
                   defaultValue=""
                   className="dark:text-white"

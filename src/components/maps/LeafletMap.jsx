@@ -125,13 +125,10 @@ const LeafletMap = (params) => {
           position: "fixed",
           bottom: 20,
           right: 20,
-          zIndex: 1000,
+          zIndex: 50,
         }}
       >
         <Button
-          sx={{
-            zIndex: 9999,
-          }}
           onClick={handleOpenTableDrawer}
           isIconOnly
           color="danger"

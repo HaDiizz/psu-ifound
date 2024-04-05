@@ -35,7 +35,7 @@ const UploadImage = ({ file, setFile, register, errors, defaultImage }) => {
     accept: {
       "image/*": [".jpeg", ".jpg", ".png", ".webp"],
     },
-    maxSize: 1024 * 1024 * 2,
+    // maxSize: 1024 * 1024 * 2,
     onDrop,
     multiple: false,
   });
@@ -52,11 +52,11 @@ const UploadImage = ({ file, setFile, register, errors, defaultImage }) => {
           {errors.image?.message}
         </span>
       </div>
-      <div className="relative flex justify-center">
+      <div className="relative flex justify-center self-center">
         {file?.length > 0 && (
           <button
             type="button"
-            className="w-7 h-7 rounded-full flex justify-center items-center absolute right-[2px] -top-2 bg-red-500 transition-color hover:scale-125 delay-150 duration-100"
+            className="w-7 h-7 rounded-full flex justify-center items-center absolute right-[-14px] -top-2 bg-red-500 transition-color hover:scale-125 delay-150 duration-100"
             onClick={() => removeFile(file[0].name)}
           >
             <X className="w-5 h-5 text-white rounded-full bg-red-500 fill-red-500 hover:fill-red-600 transition-colors" />

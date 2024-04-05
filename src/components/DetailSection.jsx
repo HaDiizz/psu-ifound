@@ -6,13 +6,10 @@ const DetailSection = ({ post }) => {
   return (
     <>
       <div className="pt-7 pb-5">
-        <h1 className="leading-none font-bold">{post.title}</h1>
+        <h1 className="leading-none font-bold break-words">{post.title}</h1>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-12 gap-3 place-items-center">
-        <div
-          className="md:col-span-5 flex justify-center items-center overflow-hidden rounded-lg"
-          style={{ width: "400px", height: "410px" }}
-        >
+        <div className="md:col-span-5 flex justify-center items-center overflow-hidden rounded-lg w-[300px] h-[310px] lg:w-[400px] lg:h-[410px]">
           <Image
             className="object-cover w-full h-full rounded-md"
             width={100}

@@ -290,7 +290,7 @@ export default function PostTable({ campusId, posts }) {
   const topContent = useMemo(() => {
     return (
       <div className="flex flex-col gap-4">
-        <div className="flex justify-between gap-3 items-end">
+        <div className="flex justify-between gap-3 items-end options_top_table">
           <Input
             isClearable
             className="w-full sm:max-w-[44%]"
@@ -300,7 +300,7 @@ export default function PostTable({ campusId, posts }) {
             onClear={() => onClear()}
             onValueChange={onSearchChange}
           />
-          <div className="flex gap-3">
+          <div className="flex gap-3 filter_right">
             <Dropdown>
               <DropdownTrigger className="hidden sm:flex">
                 <Button
