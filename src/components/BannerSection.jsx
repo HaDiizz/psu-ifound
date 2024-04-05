@@ -3,19 +3,15 @@ import { FaSearchLocation } from "react-icons/fa";
 import { Button, useDisclosure } from "@nextui-org/react";
 import Image from "next/image";
 import CampusModal from "./CampusModal";
-import { useState } from "react";
+import Globe from "../../public/globe-webp.webp";
 
 const BannerSection = () => {
   const { isOpen, onClose, onOpen } = useDisclosure();
-  const [isImageReady, setIsImageReady] = useState(false);
 
   const handleOpen = () => {
     onOpen();
   };
 
-  const onLoadCallBack = (e) => {
-    setIsImageReady(true);
-  };
   return (
     <div>
       <CampusModal isOpen={isOpen} onClose={onClose} />
@@ -53,17 +49,18 @@ const BannerSection = () => {
             </Button>
           </div>
         </div>
-        <Image
-          style={{ width: "25rem", height: "25rem" }}
-          className="hidden md:block"
-          src={isImageReady ? "/globe-webp.webp" : "/blur-globe.webp"}
-          alt="banner globe"
-          width={100}
-          height={100}
-          priority
-          unoptimized
-          onLoad={onLoadCallBack}
-        />
+        {Globe && (
+          <Image
+            style={{ width: "25rem", height: "25rem" }}
+            className="hidden md:block"
+            src={Globe}
+            alt="banner globe"
+            width={100}
+            height={100}
+            priority
+            unoptimized
+          />
+        )}
       </div>
     </div>
   );
