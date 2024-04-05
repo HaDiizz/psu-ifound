@@ -33,5 +33,7 @@ const nextConfig = {
     BASE_URL_ORIGIN: process.env.BASE_URL_ORIGIN,
   },
 };
-
-module.exports = nextConfig;
+const withPWA = require("next-pwa")({
+  dest: "public",
+});
+module.exports = withPWA(nextConfig);

@@ -14,6 +14,7 @@ const Navbar = dynamic(() => import("@/components/Navbar"), {
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
+  manifest: "/manifest.webmanifest",
   metadataBase: new URL("https://psu-ifound.vercel.app"),
   title: {
     default: `PSU iFound`,
