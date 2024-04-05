@@ -107,7 +107,7 @@ function NavbarFixed({ session, handleOpen }) {
                   alt="avatar"
                   priority
                 />
-                {session.user.username}
+                <span className="hidden md:block">{session.user.username}</span>
               </Button>
             </DropdownTrigger>
             <DropdownMenu aria-label="User Actions" variant="flat">

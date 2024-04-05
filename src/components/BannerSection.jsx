@@ -31,7 +31,7 @@ const BannerSection = () => {
             <span className="letter">n</span>
             <span className="letter">d</span>
           </span>
-          <p>
+          <p className="text_intro_description">
             Lost and Found Hub. Discover and announce lost items within all 5
             campuses of Price of Songkla University. Connect with owners or
             finders. Your lost belongings might just find their way back to you

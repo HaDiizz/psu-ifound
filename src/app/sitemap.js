@@ -40,6 +40,10 @@ export default async function sitemap() {
       url: `${baseURL}/history`,
       lastModified: new Date(),
     },
+    {
+      url: `${baseURL}/login`,
+      lastModified: new Date(),
+    },
     ...postUrls,
   ];
 }
