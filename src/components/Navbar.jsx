@@ -175,7 +175,7 @@ function NavbarScroll({ isScrolling, session, handleOpen }) {
         <li className="px-2 text-white text-md">
           <ModeToggle />
         </li>
-        <li className="px-4 py-2 ml-2">
+        <li className="px-2 py-2 ml-0 md:ml-2">
           {session ? (
             <div className="lg:flex">
               <Dropdown placement="bottom-start">
@@ -190,7 +190,9 @@ function NavbarScroll({ isScrolling, session, handleOpen }) {
                       alt="avatar"
                       priority
                     />
-                    {session.user.username}
+                    <span className="hidden md:block">
+                      {session.user.username}
+                    </span>
                   </Button>
                 </DropdownTrigger>
                 <DropdownMenu aria-label="User Actions" variant="flat">

@@ -41,7 +41,7 @@ const BannerSection = () => {
             <div className="items-center align-middle">
               <Button
                 className="items-center align-middle"
-                size="lg"
+                size="md"
                 color="primary"
                 variant="ghost"
                 endContent={<FaSearchLocation size={20} />}

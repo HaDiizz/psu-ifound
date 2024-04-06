@@ -21,12 +21,20 @@ export const ContainerScroll = ({ titleComponent, children }) => {
   }, []);
 
   const scaleDimensions = () => {
-    return isMobile ? [0.7, 0.9] : [1.05, 1];
+    return isMobile ? [1, 1] : [1.05, 1];
   };
 
-  const rotate = useTransform(scrollYProgress, [0, 1], [15, -5]);
+  const rotateOption = () => {
+    return isMobile ? [0, 0] : [15, -5];
+  };
+
+  const translateOption = () => {
+    return isMobile ? [-80, 0] : [0, -100];
+  };
+
+  const rotate = useTransform(scrollYProgress, [0, 1], rotateOption());
   const scale = useTransform(scrollYProgress, [0, 1], scaleDimensions());
-  const translate = useTransform(scrollYProgress, [0, 1], [0, -100]);
+  const translate = useTransform(scrollYProgress, [0, 1], translateOption());
 
   return (
     <div
