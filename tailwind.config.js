@@ -14,6 +14,12 @@ module.exports = {
   ],
   prefix: "",
   theme: {
+    screens: {
+      laptop: "1500px",
+      sm: "576px",
+      md: "960px",
+      lg: "1440px",
+    },
     container: {
       center: true,
       padding: "2rem",
@@ -86,7 +92,7 @@ function addVariablesForColors({ addBase, theme }) {
   let newVars = Object.fromEntries(
     Object.entries(allColors).map(([key, val]) => [`--${key}`, val])
   );
- 
+
   addBase({
     ":root": newVars,
   });
