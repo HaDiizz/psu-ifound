@@ -7,6 +7,7 @@ import pattani_poi from "../data/pattani_poi.json";
 import surat_poi from "../data/surat_poi.json";
 import phuket_poi from "../data/phuket_poi.json";
 import trang_poi from "../data/trang_poi.json";
+import { database } from "@/lib/firebase";
 
 const LocationMarker = ({ position, setPosition }) => {
   return position === null ? null : (
@@ -34,19 +35,91 @@ const MapEvents = ({
 }) => {
   const [geojson, setGeoJson] = useState({});
   useEffect(() => {
-    if (campusId === "01") {
-      setGeoJson(hatyai_poi);
-    } else if (campusId === "02") {
-      setGeoJson(pattani_poi);
-    } else if (campusId === "03") {
-      setGeoJson(phuket_poi);
-    } else if (campusId === "04") {
-      setGeoJson(surat_poi);
-    } else if (campusId === "05") {
-      setGeoJson(trang_poi);
-    } else {
-      setGeoJson(hatyai_poi);
-    }
+    database.files
+      .where("campusId", "==", campusId)
+      .get()
+      .then((querySnapshot) => {
+        if (!querySnapshot.empty) {
+          const file = querySnapshot.docs[0].data();
+          try {
+            const parsedData = JSON.parse(file.data);
+            if (!parsedData.type || parsedData.type !== "FeatureCollection") {
+              throw new Error(
+                "Invalid JSON format: 'type' property is missing or not equal to 'FeatureCollection'"
+              );
+            }
+            if (!parsedData.features || !Array.isArray(parsedData.features)) {
+              throw new Error(
+                "Invalid JSON format: 'features' property is missing or not an array"
+              );
+            }
+            for (const feature of parsedData.features) {
+              if (
+                feature.type !== "Feature" ||
+                !feature.geometry ||
+                !feature.properties
+              ) {
+                throw new Error(
+                  "Invalid JSON format: 'feature' 'geometry' or 'properties' property is missing or not an array"
+                );
+              }
+              const geometry = feature.geometry;
+              if (
+                geometry.type !== "Polygon" ||
+                !Array.isArray(geometry.coordinates)
+              ) {
+                throw new Error(
+                  "Invalid JSON format: 'geometry type' or 'geometry coordinates' property is missing or not an array"
+                );
+              }
+            }
+            setGeoJson(parsedData);
+          } catch (error) {
+            if (campusId === "01") {
+              setGeoJson(hatyai_poi);
+            } else if (campusId === "02") {
+              setGeoJson(pattani_poi);
+            } else if (campusId === "03") {
+              setGeoJson(phuket_poi);
+            } else if (campusId === "04") {
+              setGeoJson(surat_poi);
+            } else if (campusId === "05") {
+              setGeoJson(trang_poi);
+            } else {
+              setGeoJson(hatyai_poi);
+            }
+          }
+        } else {
+          if (campusId === "01") {
+            setGeoJson(hatyai_poi);
+          } else if (campusId === "02") {
+            setGeoJson(pattani_poi);
+          } else if (campusId === "03") {
+            setGeoJson(phuket_poi);
+          } else if (campusId === "04") {
+            setGeoJson(surat_poi);
+          } else if (campusId === "05") {
+            setGeoJson(trang_poi);
+          } else {
+            setGeoJson(hatyai_poi);
+          }
+        }
+      })
+      .catch((error) => {
+        if (campusId === "01") {
+          setGeoJson(hatyai_poi);
+        } else if (campusId === "02") {
+          setGeoJson(pattani_poi);
+        } else if (campusId === "03") {
+          setGeoJson(phuket_poi);
+        } else if (campusId === "04") {
+          setGeoJson(surat_poi);
+        } else if (campusId === "05") {
+          setGeoJson(trang_poi);
+        } else {
+          setGeoJson(hatyai_poi);
+        }
+      });
   }, [campusId]);
   const map = useMapEvents({
     async click(e) {

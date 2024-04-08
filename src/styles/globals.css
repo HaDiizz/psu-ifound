@@ -301,3 +301,29 @@ nav {
     padding: 0;
   }
 }
+
+.CodeMirror {
+  text-align: left !important;
+  /* width: 100vh !important; */
+  height: 100vh !important;
+  overflow-y: auto;
+  border-radius: 10px;
+  padding: 20px;
+}
+.CodeMirror-wrap pre {
+  word-break: break-word;
+}
+.cm-wrap {
+  height: 100vh !important;
+}
+
+.CodeMirror-line {
+  line-height: 25px !important;
+  font-size: 15px !important;
+  padding-left: 10px !important;
+}
+
+.CodeMirror-linenumber {
+  line-height: 25px !important;
+  font-size: 15px !important;
+}

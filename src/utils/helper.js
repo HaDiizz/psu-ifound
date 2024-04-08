@@ -1,4 +1,10 @@
-import { LayoutDashboard, UserRoundCog, MapPinned, FileSearch } from "lucide-react";
+import {
+  LayoutDashboard,
+  UserRoundCog,
+  MapPinned,
+  FileSearch,
+  FileJson,
+} from "lucide-react";
 export const SideBarMenus = [
   {
     id: "dashboard",
@@ -23,5 +29,11 @@ export const SideBarMenus = [
     name: "Location",
     url: "/admin/location",
     icon: MapPinned,
+  },
+  {
+    id: "manage_file",
+    name: "Manage File",
+    url: "/admin/file",
+    icon: FileJson,
   },
 ];

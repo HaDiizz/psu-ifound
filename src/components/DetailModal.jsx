@@ -170,7 +170,7 @@ const DetailModal = ({ isOpen, onClose, itemId }) => {
                 <Button color="danger" variant="light" onPress={onClose}>
                   Close
                 </Button>
-                {data?.status !== "claimed" ? (
+                {isLoading ? null : data?.status !== "claimed" ? (
                   data?.userList.some(
                     (user) => user._id === session?.user?.id
                   ) ? (
