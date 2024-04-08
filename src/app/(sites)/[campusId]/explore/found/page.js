@@ -30,9 +30,7 @@ const page = async ({ params }) => {
     lng = campusCoordinates[params.campusId].lng;
   }
 
-  const { data } = await axios(`/report/campus/${params.campusId}`, {
-    next: { revalidate: 3600 },
-  });
+  const { data } = await axios(`/report/campus/${params.campusId}`);
 
   return (
     <div className="container pt-[5rem]">
