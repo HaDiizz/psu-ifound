@@ -393,6 +393,10 @@ export const addLocation = async (formData) => {
     if (!locationName || !lat || !lng || !campId) {
       return { error: true, message: "Fields are required." };
     }
+    const isDuplicateName = await Location.findOne({ name: locationName });
+    if (isDuplicateName) {
+      return { error: true, message: "Location name is duplicated." };
+    }
     const location = await new Location({
       name: locationName,
       campId,
@@ -442,6 +446,10 @@ export const updateLocation = async ({ locationId, name, lat, lng }) => {
     if (!name || !lat || !lng) {
       return { error: true, message: "Fields are required." };
     }
+    const isDuplicateName = await Location.findOne({ name: name });
+    if (isDuplicateName && String(isDuplicateName._id) !== locationId) {
+      return { error: true, message: "Location name is duplicated." };
+    }
     const location = await Location.findOneAndUpdate(
       { _id: locationId },
       {
@@ -453,6 +461,40 @@ export const updateLocation = async ({ locationId, name, lat, lng }) => {
     );
     if (!location) return { error: true, message: "Location not found." };
     return { success: true, message: "Updated location successful" };
+  } catch (err) {
+    console.log(err);
+    return { error: true, message: "Something went wrong, try again later." };
+  }
+};
+
+export const addLocationByAPI = async (locationNameList, campId) => {
+  const session = await getServerSession(authOptions);
+  try {
+    if (!session) {
+      return { error: true, message: "Unauthorized." };
+    }
+    if (session && session.user.role !== "admin") {
+      return { error: true, message: "Permission denied." };
+    }
+    await connectDB();
+    if (locationNameList.length === 0 || !campId) {
+      return { error: true, message: "Data not found." };
+    }
+    locationNameList.forEach(async (facNameThai) => {
+      const filter = { name: facNameThai };
+      const update = {
+        name: facNameThai,
+        campId: campId,
+        $setOnInsert: {
+          lat: 0,
+          lng: 0,
+        },
+      };
+      const options = { upsert: true, new: true };
+      await Location.findOneAndUpdate(filter, update, options);
+    });
+    revalidatePath(`/admin/location/${campId}`);
+    return { success: true, message: "Added successful" };
   } catch (err) {
     console.log(err);
     return { error: true, message: "Something went wrong, try again later." };

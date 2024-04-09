@@ -5,7 +5,7 @@ import axios from "axios";
 import User from "@/models/user";
 import { cookies } from "next/headers";
 import { findOneUserByEmail } from "@/utils/services";
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 export const authOptions = {
   session: {
     jwt: true,
@@ -31,12 +31,13 @@ export const authOptions = {
                 `${process.env.PSU_OPEN_API_URL}/regist/Student/${username}`,
                 { headers }
               );
-            } else if (role === "personnel") {
-              response = await axios.get(
-                `${process.env.PSU_OPEN_API_URL}/Personnel/GetStaffDetailsByStaffNameOrSurName/${given_name} ${family_name}`,
-                { headers }
-              );
             }
+            // else if (role === "personnel") {
+            //   response = await axios.get(
+            //     `${process.env.PSU_OPEN_API_URL}/Personnel/GetStaffDetailsByStaffNameOrSurName/${given_name} ${family_name}`,
+            //     { headers }
+            //   );
+            // }
           }
           return {
             id: profile.sub,

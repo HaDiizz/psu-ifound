@@ -22,7 +22,7 @@ import { MdDelete } from "react-icons/md";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import ConfirmDelete from "../ConfirmDelete";
-import { deleteLocation } from "@/lib/actions";
+import { addLocationByAPI, deleteLocation } from "@/lib/actions";
 import { useLocations } from "@/hooks/swr";
 
 const locationColumns = [
@@ -35,7 +35,8 @@ const locationColumns = [
 ];
 
 export default function LocationTable({ campusId }) {
-  const { data: locations, isLoading } = useLocations(campusId);
+  const [isFetching, setIsFetching] = useState(false);
+  const { data: locations, isLoading, mutate } = useLocations(campusId);
   const { data: session } = useSession();
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
   const [locationName, setLocationName] = useState("");
@@ -52,6 +53,7 @@ export default function LocationTable({ campusId }) {
   const handleDeleteLocation = async () => {
     const result = await deleteLocation(locationId);
     await setIsOpenDeleteModal(false);
+    await mutate();
     if (result?.success) {
       toast.success(`${result?.message}`);
       return;
@@ -63,6 +65,28 @@ export default function LocationTable({ campusId }) {
     }
   };
 
+  const handleFetchFaculties = async () => {
+    setIsFetching(true);
+    const response = await fetch(
+      `${process.env.PSU_OPEN_API_URL}/Central/GetFacultyByCampusID/${campusId}`,
+      {
+        headers: { credential: process.env.PSU_OPEN_API_SECRET_KEY },
+      }
+    );
+    const data = await response.json();
+    const facNameThaiArray = await data?.data?.map((item) => item?.facNameThai);
+    const result = await addLocationByAPI(facNameThaiArray, campusId);
+    setIsFetching(false);
+    await mutate();
+    if (result?.success) {
+      toast.success(`${result?.message}`);
+    }
+
+    if (result?.error) {
+      toast.error(`${result?.message}`);
+    }
+  };
+
   const hasSearchFilter = Boolean(filterValue);
 
   const filteredItems = useMemo(() => {
@@ -71,9 +95,7 @@ export default function LocationTable({ campusId }) {
     if (hasSearchFilter) {
       filteredLocations = filteredLocations.filter(
         (location) =>
-          location.locationName
-            .toLowerCase()
-            .includes(filterValue.toLowerCase()) ||
+          location?.name.toLowerCase().includes(filterValue.toLowerCase()) ||
           location.lat === filterValue ||
           location.lng === filterValue
       );
@@ -209,15 +231,29 @@ export default function LocationTable({ campusId }) {
           />
           <div className="flex gap-3">
             {session && (
-              <Link
-                href={`/admin/location/${campusId}/create`}
-                className="flex items-center gap-x-3 p-2 bg-slate-900 text-white dark:bg-slate-100 dark:text-black rounded-lg text-tiny md:text-medium"
-              >
-                <span>
-                  <FaPlus />
-                </span>
-                <span>Add new location</span>
-              </Link>
+              <>
+                <Tooltip
+                  content="ข้อมูลคณะที่ดึงมาทั้งหมดจะมีค่า latitude และ longitude เป็น 0"
+                  color="warning"
+                >
+                  <Button
+                    variant="flat"
+                    onClick={handleFetchFaculties}
+                    isLoading={isFetching}
+                  >
+                    {isFetching ? "Loading" : "Explore Faculties"}
+                  </Button>
+                </Tooltip>
+                <Link
+                  href={`/admin/location/${campusId}/create`}
+                  className="flex items-center gap-x-3 p-2 bg-slate-900 text-white dark:bg-slate-100 dark:text-black rounded-lg text-tiny md:text-medium"
+                >
+                  <span>
+                    <FaPlus />
+                  </span>
+                  <span>Add new location</span>
+                </Link>
+              </>
             )}
           </div>
         </div>

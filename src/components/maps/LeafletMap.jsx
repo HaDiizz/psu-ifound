@@ -62,11 +62,13 @@ const LeafletMap = (params) => {
                 defaultItems={isLoading ? [] : data}
                 onSelectionChange={(key) => handleOnChangeSelection(key)}
               >
-                {(item) => (
-                  <AutocompleteItem key={item._id}>
-                    {item.name}
-                  </AutocompleteItem>
-                )}
+                {(item) =>
+                  item.lat !== 0 || item.lng !== 0 ? (
+                    <AutocompleteItem key={item._id}>
+                      {item.name}
+                    </AutocompleteItem>
+                  ) : null
+                }
               </Autocomplete>
             </>
           </div>
