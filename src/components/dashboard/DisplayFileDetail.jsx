@@ -262,7 +262,7 @@ const DisplayFileDetail = ({ fileId }) => {
               />
             </MapContainer>
             <div className="card border dark:border-slate-600 shadow-md bg-slate-200/25 dark:bg-slate-800/50 w-full h-[33vh] mt-[2vh] overflow-y-auto">
-              <div className="flex justify-end bg-[#0c1021] h-8 items-center">
+              <div className="flex justify-end bg-[#ffffff7f] dark:bg-[#0c1021] h-8 items-center">
                 <span
                   className="p-4 cursor-pointer"
                   onClick={handleCopyCoordinates}
