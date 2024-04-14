@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 import Comment from "@/models/comment";
 
 export const GET = async (request, context) => {
-  const { postId } = context.params;
+  const { postId } = await context.params;
   try {
     await connectDB();
     await Comment.findOne({ postId: postId });

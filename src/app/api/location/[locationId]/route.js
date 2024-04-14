@@ -3,9 +3,9 @@ import Location from "@/models/location";
 import { NextResponse } from "next/server";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth/next";
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 export const GET = async (request, context) => {
-  const { locationId } = context.params;
+  const { locationId } = await context.params;
   try {
     const session = await getServerSession(authOptions);
     if (!session) {

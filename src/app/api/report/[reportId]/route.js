@@ -3,9 +3,9 @@ import connectDB from "@/lib/connectDB";
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 export const GET = async (request, context) => {
-  const { reportId } = context.params;
+  const { reportId } = await context.params;
   try {
     await connectDB();
     const report = await Report.findOne({ _id: reportId }).populate(

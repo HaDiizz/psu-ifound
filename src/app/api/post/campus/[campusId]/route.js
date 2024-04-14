@@ -3,7 +3,7 @@ import connectDB from "@/lib/connectDB";
 import { NextResponse } from "next/server";
 
 export const GET = async (request, context) => {
-  const { campusId } = context.params;
+  const { campusId } = await context.params;
   try {
     await connectDB();
     const posts = await Post.find({ campId: campusId }).populate(
