@@ -3,19 +3,27 @@ import connectDB from "@/lib/connectDB";
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
+import User from "@/models/user";
+
 export const dynamic = "force-dynamic";
+
 export const GET = async (request, context) => {
   const { reportId } = await context.params;
   try {
     await connectDB();
-    const report = await Report.findOne({ _id: reportId }).populate(
-      "user userList owner",
-      "picture username fullName email"
-    );
+    const report = await Report.findOne({ _id: reportId }).populate([
+      { path: "user", model: User, select: "picture username fullName email" },
+      {
+        path: "userList",
+        model: User,
+        select: "picture username fullName email",
+      },
+      { path: "owner", model: User, select: "picture username fullName email" },
+    ]);
     return NextResponse.json(report);
   } catch (err) {
     console.log(err);
-    NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
+    throw new Error("Failed to fetch report! " + err);
   }
 };
 
@@ -54,6 +62,6 @@ export const PUT = async (request, context) => {
     });
   } catch (err) {
     console.log(err);
-    NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
+    throw new Error("Failed to edit report! " + err);
   }
 };

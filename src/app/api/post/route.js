@@ -3,7 +3,9 @@ import connectDB from "@/lib/connectDB";
 import { NextResponse } from "next/server";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth/next";
-export const dynamic = "force-dynamic"
+
+export const dynamic = "force-dynamic";
+
 export const GET = async (request) => {
   const { searchParams } = new URL(request.url);
   let param = Number(searchParams.get("limit"));
@@ -34,6 +36,6 @@ export const GET = async (request) => {
     return NextResponse.json({ posts, count });
   } catch (err) {
     console.log(err);
-    throw new Error("Failed to fetch posts!");
+    throw new Error("Failed to fetch posts!" + err);
   }
 };
