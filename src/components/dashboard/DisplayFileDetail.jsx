@@ -22,6 +22,7 @@ import "codemirror/mode/jsx/jsx";
 import "codemirror/mode/css/css";
 import "codemirror/mode/python/python";
 import "codemirror/mode/clike/clike";
+import jsBeautify from "js-beautify";
 
 const DisplayFileDetail = ({ fileId }) => {
   const { theme } = useTheme();
@@ -131,7 +132,7 @@ const DisplayFileDetail = ({ fileId }) => {
 
   const pushBack = () => {
     if (currentData.trim() !== previousData.trim()) {
-      if (window.confirm("are your sure to leave without saving data?")) {
+      if (window.confirm("Are you sure to leave without saving data?")) {
         router.back();
       } else {
         return;
@@ -194,6 +195,15 @@ const DisplayFileDetail = ({ fileId }) => {
     }
   };
 
+  const formatDocument = () => {
+    setCurrentData(
+      jsBeautify(currentData, {
+        indent_size: 2,
+        space_in_empty_paren: true,
+      })
+    );
+  };
+
   return (
     <div>
       <div className="flex gap-x-4 items-center">
@@ -204,19 +214,26 @@ const DisplayFileDetail = ({ fileId }) => {
           <span className="text-red-500 font-bold">(Modified)</span>
         )}
       </div>
-      <div className="flex justify-end gap-x-5">
-        <div className="flex justify-start">
+      <div className="flex justify-between gap-x-5 pt-5">
+        <div className="flex gap-x-5">
           <Button color="primary" onClick={() => pushBack()}>
             Back
           </Button>
+          <Button
+            variant="flat"
+            color="success"
+            isDisabled={currentData === previousData}
+            onClick={handleUpdateFileData}
+          >
+            Save
+          </Button>
         </div>
         <Button
+          className="bg-indigo-500 text-white"
           variant="flat"
-          color="success"
-          isDisabled={currentData === previousData}
-          onClick={handleUpdateFileData}
+          onClick={() => formatDocument()}
         >
-          Save
+          Prettier
         </Button>
       </div>
       {currentFile && (

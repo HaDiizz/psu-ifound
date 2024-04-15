@@ -21,6 +21,7 @@
     "codemirror": "^5.61.1",
     "firebase": "^10.10.0",
     "framer-motion": "^10.16.5",
+    "js-beautify": "^1.15.1",
     "leaflet": "^1.9.4",
     "leaflet-draw": "^1.0.4",
     "lucide-react": "^0.344.0",
