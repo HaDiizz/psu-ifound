@@ -12,6 +12,6 @@ export const findOneUserByEmail = async ({ email }) => {
     user = user._doc;
     return { user: { ...user, _id: user._id.toString() } };
   } catch (error) {
-    return { error: "Failed to find the user service." };
+    return { error: "Failed to find the user service. " + error };
   }
 };

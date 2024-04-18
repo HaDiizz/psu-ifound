@@ -20,6 +20,8 @@ export const userColumns = [
   { name: "EMAIL", uid: "email", sortable: true },
   { name: "USERNAME", uid: "username", sortable: true },
   { name: "ROLE", uid: "role", sortable: true },
+  { name: "STATUS", uid: "status", sortable: true },
+  { name: "REMARK", uid: "remark", sortable: true },
   { name: "STUDENT ID", uid: "studentId", sortable: true },
   { name: "SEX", uid: "titleName", sortable: true },
   { name: "YEAR", uid: "yearStatus", sortable: true },
@@ -38,6 +40,16 @@ export const roleUserOptions = [
 export const roleUserColorMap = {
   admin: "danger",
   user: "success",
+};
+
+export const statusUserOptions = [
+  { name: "ACTIVE", uid: "ACTIVE" },
+  { name: "INACTIVE", uid: "INACTIVE" },
+];
+
+export const statusUserColorMap = {
+  ACTIVE: "success",
+  INACTIVE: "danger",
 };
 
 export const statusReportOptions = [

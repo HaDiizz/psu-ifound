@@ -3,15 +3,16 @@ import GoogleProvider from "next-auth/providers/google";
 import { extractEmail } from "@/utils/emailValidation";
 import axios from "axios";
 import User from "@/models/user";
-import { cookies } from "next/headers";
 import { findOneUserByEmail } from "@/utils/services";
+
 export const dynamic = "force-dynamic";
+
 export const authOptions = {
   session: {
     jwt: true,
     strategy: "jwt",
     maxAge: 7 * 24 * 60 * 60,
-    updateAge: 24 * 60 * 60,
+    // updateAge: 24 * 60 * 60,
   },
   providers: [
     GoogleProvider({
@@ -77,6 +78,9 @@ export const authOptions = {
   callbacks: {
     async signIn({ user, account }) {
       const isUserExits = await User.findOne({ email: user.email });
+      // if (isUserExits && isUserExits.status === "INACTIVE") {
+      //   return false;
+      // }
       if (!isUserExits) {
         await User.create({
           sub: user.id,
@@ -117,15 +121,6 @@ export const authOptions = {
         session.user.id = sessionUser.user._id;
       }
       if (session.user) return session;
-    },
-  },
-  events: {
-    session: ({ session }) => {
-      if (new Date() > new Date(session.user.expires_at * 1000)) {
-        cookies().delete("next-auth.callback-url");
-        cookies().delete("next-auth.csrf-token");
-        cookies().delete("next-auth.session-token");
-      }
     },
   },
   pages: {

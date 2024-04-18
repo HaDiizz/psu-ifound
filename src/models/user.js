@@ -48,6 +48,15 @@ const userSchema = new Schema(
     accessToken: {
       type: String,
     },
+    status: {
+      type: String,
+      default: "ACTIVE",
+      enum: ["ACTIVE", "INACTIVE"],
+    },
+    remark: {
+      type: String,
+      default: "",
+    },
   },
   { timestamps: true }
 );

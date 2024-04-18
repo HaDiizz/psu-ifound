@@ -7,6 +7,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { Toaster } from "react-hot-toast";
 import ProgressLoader from "@/components/ProgressLoader";
 import NextTopLoader from "nextjs-toploader";
+import ErrorBanned from "@/components/ErrorBanned";
 const Navbar = dynamic(() => import("@/components/Navbar"), {
   ssr: false,
 });
@@ -90,6 +91,11 @@ export const metadata = {
 
 export default async function RootLayout({ children }) {
   const session = await getServerSession(authOptions);
+  if (session && session.user) {
+    if (session.user.status === "INACTIVE") {
+      return <ErrorBanned />;
+    }
+  }
   return (
     <html suppressHydrationWarning={true} lang="en">
       <body className={inter.className}>

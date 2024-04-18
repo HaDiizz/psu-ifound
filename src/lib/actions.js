@@ -11,6 +11,8 @@ import Post from "@/models/post";
 import Comment from "@/models/comment";
 import User from "@/models/user";
 import Location from "@/models/location";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 export const addReport = async (formData) => {
   const session = await getServerSession(authOptions);
@@ -379,6 +381,35 @@ export const updateUserRole = async ({ userId, role }) => {
   }
 };
 
+export const updateUserStatus = async ({ userId, status, remark }) => {
+  const session = await getServerSession(authOptions);
+  try {
+    await connectDB();
+    if (!session) throw new Error("Unauthorized.");
+    if (!["ACTIVE", "INACTIVE"].includes(status)) {
+      throw new Error("Invalid status.");
+    }
+    if (session && session.user.role !== "admin")
+      throw new Error("Permission denied.");
+    if (status === "INACTIVE" && (!remark || remark === "")) {
+      return { error: true, message: "Remark is required." };
+    }
+    const user = await User.findById(userId);
+    const checkUser = await user._doc;
+    if (!checkUser) throw new Error("User not found.");
+    if (String(checkUser._id) === session.user.id)
+      throw new Error("Access denied");
+
+    user.status = status;
+    user.remark = remark;
+    await user.save();
+    return { success: true, message: "Updated user status successful" };
+  } catch (err) {
+    console.log(err);
+    return { error: true, message: "Something went wrong, try again later." };
+  }
+};
+
 export const addLocation = async (formData) => {
   const session = await getServerSession(authOptions);
   const { locationName, lat, lng, campId } = formData;
@@ -499,4 +530,14 @@ export const addLocationByAPI = async (locationNameList, campId) => {
     console.log(err);
     return { error: true, message: "Something went wrong, try again later." };
   }
+};
+
+export const backToHome = () => {
+  cookies().delete("next-auth.callback-url");
+  cookies().delete("next-auth.csrf-token");
+  cookies().delete("next-auth.session-token");
+  cookies().delete("__Secure-next-auth.callback-url");
+  cookies().delete("__Host-next-auth.csrf-token");
+  cookies().delete("__Secure-next-auth.session-token");
+  redirect("/");
 };
