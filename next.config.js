@@ -25,6 +25,7 @@ const nextConfig = {
   },
   compiler: {
     styledComponents: true,
+    removeConsole: true,
   },
   env: {
     PSU_OPEN_API_SECRET_KEY: process.env.PSU_OPEN_API_SECRET_KEY,
