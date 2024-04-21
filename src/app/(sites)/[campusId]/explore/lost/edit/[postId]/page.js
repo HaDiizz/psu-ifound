@@ -4,10 +4,11 @@ import EditPost from "@/components/EditPost";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { headers } from "next/headers";
 
 const Page = async ({ params }) => {
   const session = await getServerSession(authOptions);
-  const response = await axios.get(`/post/${params.postId}`);
+  const response = await axios.get(`/post/${params.postId}`, headers());
   if (
     session &&
     session.user.role !== "admin" &&

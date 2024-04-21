@@ -8,6 +8,7 @@ export const columns = [
   { name: "SUB LOCATION", uid: "subLocation", sortable: true },
   { name: "STATUS", uid: "status", sortable: true },
   { name: "CAMPUS", uid: "campus", sortable: true },
+  { name: "PUBLISHED", uid: "isPublish", sortable: true },
   { name: "CREATED AT", uid: "createdAt", sortable: true },
   { name: "UPDATED AT", uid: "updatedAt", sortable: true },
   { name: "ACTIONS", uid: "actions" },

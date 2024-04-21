@@ -7,7 +7,10 @@ export const GET = async (request, context) => {
   const { campusId } = await context.params;
   try {
     await connectDB();
-    const reports = await Report.find({ campId: campusId }).populate({
+    const reports = await Report.find({
+      campId: campusId,
+      isPublish: true,
+    }).populate({
       path: "user",
       model: User,
       select: "picture username fullName email",

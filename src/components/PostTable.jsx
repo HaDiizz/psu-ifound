@@ -213,6 +213,16 @@ export default function PostTable({ campusId, posts }) {
             {statusPostOptions.find((option) => option.uid === cellValue).name}
           </Chip>
         );
+      case "isPublish":
+        return (
+          <Chip
+            className="capitalize border-none gap-1 text-white"
+            color={data.isPublish ? "success" : "danger"}
+            size="sm"
+          >
+            {data.isPublish ? "Published" : "Unpublished"}
+          </Chip>
+        );
       case "actions":
         return (
           <div className="relative flex items-center gap-2">

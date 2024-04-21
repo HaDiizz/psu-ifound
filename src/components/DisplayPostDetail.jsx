@@ -7,7 +7,7 @@ import { usePost } from "@/hooks/swr";
 import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import { notFound } from "next/navigation";
+import { redirect } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { LockKeyhole } from "lucide-react";
@@ -16,10 +16,10 @@ import { useRef } from "react";
 const DisplayPostDetail = ({ postId, campusId }) => {
   const { data, isLoading } = usePost(postId);
   const { data: session } = useSession();
-  const commentRef = useRef(null)
+  const commentRef = useRef(null);
 
   if (!data && !isLoading) {
-    return notFound();
+    return redirect("/");
   }
   return (
     <>
@@ -69,7 +69,11 @@ const DisplayPostDetail = ({ postId, campusId }) => {
         <>
           <DetailSection post={data} />
           {session ? (
-            <InputComment postId={data._id} campusId={campusId} commentRef={commentRef} />
+            <InputComment
+              postId={data._id}
+              campusId={campusId}
+              commentRef={commentRef}
+            />
           ) : (
             <div className="pt-7 pb-[3rem]">
               <div className="flex gap-x-3 border dark:border-slate-600 p-3 rounded-lg shadow-md hover:dark:border-slate-500">

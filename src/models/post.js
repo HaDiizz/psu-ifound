@@ -35,6 +35,10 @@ const postSchema = new Schema(
     },
     user: { type: mongoose.Types.ObjectId, ref: "user" },
     comments: [{ type: mongoose.Types.ObjectId, ref: "comment" }],
+    isPublish: {
+      type: Boolean,
+      default: true,
+    },
   },
   { timestamps: true }
 );

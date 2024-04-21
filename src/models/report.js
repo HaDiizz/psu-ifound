@@ -47,6 +47,10 @@ const reportSchema = new Schema(
     user: { type: mongoose.Types.ObjectId, ref: "user" },
     owner: { type: mongoose.Types.ObjectId, ref: "user" },
     userList: [{ type: mongoose.Types.ObjectId, ref: "user" }],
+    isPublish: {
+      type: Boolean,
+      default: true,
+    },
   },
   { timestamps: true }
 );
