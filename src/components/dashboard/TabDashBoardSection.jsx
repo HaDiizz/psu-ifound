@@ -6,8 +6,16 @@ import DashBoardTable from "./DashBoardTable";
 
 const TabDashBoardSection = () => {
   const [selected, setSelected] = useState("lost");
-  const { data: postsData, isLoading: isPostLoading } = usePosts(0);
-  const { data: reportsData, isLoading: isReportLoading } = useReports(0);
+  const {
+    data: postsData,
+    isLoading: isPostLoading,
+    mutate: postMutate,
+  } = usePosts(0);
+  const {
+    data: reportsData,
+    isLoading: isReportLoading,
+    mutate: reportMutate,
+  } = useReports(0);
   return (
     <Tabs
       color="default"
@@ -21,7 +29,11 @@ const TabDashBoardSection = () => {
             <Spinner label="Loading..." />
           </div>
         ) : (
-          <DashBoardTable posts={postsData.posts || []} tableType={selected} />
+          <DashBoardTable
+            posts={postsData.posts || []}
+            tableType={selected}
+            mutate={postMutate}
+          />
         )}
       </Tab>
       <Tab key="found" title="ประกาศเจอของหาย">
@@ -33,6 +45,7 @@ const TabDashBoardSection = () => {
           <DashBoardTable
             posts={reportsData.reports || []}
             tableType={selected}
+            mutate={reportMutate}
           />
         )}
       </Tab>

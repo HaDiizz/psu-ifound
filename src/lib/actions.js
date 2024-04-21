@@ -356,6 +356,38 @@ export const deleteReport = async (reportId) => {
   }
 };
 
+export const updateIsPublish = async ({ itemId, isPublish, tableType }) => {
+  const session = await getServerSession(authOptions);
+  try {
+    await connectDB();
+    if (!session) throw new Error("Unauthorized.");
+    if (session && session.user.role !== "admin")
+      throw new Error("Permission denied.");
+    if (isPublish !== true && isPublish !== false) {
+      return { error: true, message: "Invalid type." };
+    }
+    let item;
+    if (tableType === "lost") {
+      item = await Post.findById(itemId);
+    } else if (tableType === "found") {
+      item = await Report.findById(itemId);
+    } else {
+      return { error: true, message: "Invalid datatype" };
+    }
+    const checkItem = await item._doc;
+    if (!checkItem) throw new Error("Item not found.");
+    item.isPublish = isPublish;
+    await item.save();
+    return {
+      success: true,
+      message: `Item is ${isPublish ? "Published" : "Unpublished"} successful.`,
+    };
+  } catch (err) {
+    console.log(err);
+    return { error: true, message: "Something went wrong, try again later." };
+  }
+};
+
 export const updateUserRole = async ({ userId, role }) => {
   const session = await getServerSession(authOptions);
   try {

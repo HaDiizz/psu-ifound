@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import EditReport from "@/components/EditReport";
+import PublishSelection from "@/components/PublishSelection";
 
 const Page = async ({ params }) => {
   const session = await getServerSession(authOptions);
@@ -18,7 +19,14 @@ const Page = async ({ params }) => {
   return (
     <div className="container pt-[6rem] pb-5">
       <h1 className="text-default-500 pb-2 font-bold">Edit Report</h1>
-      <BackButton />
+      <div className="flex justify-between">
+        <BackButton />
+        <PublishSelection
+          itemId={response.data._id}
+          isPublish={response.data.isPublish}
+          tableType={"found"}
+        />
+      </div>
       <EditReport report={response.data} campusId={params.campusId} />
     </div>
   );

@@ -19,6 +19,8 @@ import {
   Modal,
   ModalContent,
   useDisclosure,
+  Select,
+  SelectItem,
 } from "@nextui-org/react";
 import { FaChevronDown, FaEye } from "react-icons/fa";
 import { useCallback, useMemo, useState } from "react";
@@ -35,7 +37,7 @@ import moment from "moment";
 import { AiFillEdit } from "react-icons/ai";
 import { MdDelete } from "react-icons/md";
 import { useSession } from "next-auth/react";
-import { deletePost, deleteReport } from "@/lib/actions";
+import { deletePost, deleteReport, updateIsPublish } from "@/lib/actions";
 import ConfirmDelete from "../ConfirmDelete";
 import toast from "react-hot-toast";
 import Link from "next/link";
@@ -51,11 +53,10 @@ const INITIAL_VISIBLE_COLUMNS = [
   "actions",
   "createdAt",
   "updatedAt",
-  "campus",
   "isPublish",
 ];
 
-export default function DashBoardTable({ posts, tableType }) {
+export default function DashBoardTable({ posts, tableType, mutate }) {
   const { data: session } = useSession();
   const [postId, setPostId] = useState("");
   const [postTitle, setPostTitle] = useState("");
@@ -160,6 +161,21 @@ export default function DashBoardTable({ posts, tableType }) {
     await setPreviewImage(url);
   };
 
+  const handleUpdateIsPublish = async (itemId, status) => {
+    const isPublish = (await status) === "Published" ? true : false;
+    const result = await updateIsPublish({ itemId, isPublish, tableType });
+    if (result?.success) {
+      mutate();
+      toast.success(`${result?.message}`);
+      return;
+    }
+
+    if (result?.error) {
+      toast.error(`${result?.message}`);
+      return;
+    }
+  };
+
   const renderCell = useCallback((data, columnKey) => {
     const cellValue = data[columnKey];
 
@@ -259,13 +275,53 @@ export default function DashBoardTable({ posts, tableType }) {
         );
       case "isPublish":
         return (
-          <Chip
-            className="capitalize border-none gap-1 text-white"
-            color={data.isPublish ? "success" : "danger"}
-            size="sm"
+          <Select
+            aria-labelledby="publish selection"
+            classNames={{
+              trigger: "border-[0.4px]",
+            }}
+            disallowEmptySelection={true}
+            fullWidth={true}
+            selectedKeys={[data.isPublish ? "Published" : "Unpublished"]}
+            onSelectionChange={(e) => {
+              handleUpdateIsPublish(data._id, e.currentKey);
+            }}
+            variant="bordered"
+            renderValue={(items) => {
+              return items.map((item) => (
+                <Chip
+                  key={item.key}
+                  className="capitalize border-none gap-1"
+                  color={data.isPublish ? "success" : "danger"}
+                  size="sm"
+                  variant="dot"
+                >
+                  {data.isPublish ? "Published" : "Unpublished"}
+                </Chip>
+              ));
+            }}
           >
-            {data.isPublish ? "Published" : "Unpublished"}
-          </Chip>
+            <SelectItem key="Published" textValue="Published">
+              <Chip
+                className="capitalize border-none gap-1"
+                color={"success"}
+                size="sm"
+                variant="dot"
+              >
+                Published
+              </Chip>
+            </SelectItem>
+            <SelectItem key="Unpublished" textValue="Unpublished">
+              <Chip
+                className="capitalize border-none gap-1"
+                color={"danger"}
+                size="sm"
+                variant="dot"
+              >
+                Unpublished
+              </Chip>
+            </SelectItem>
+          </Select>
         );
       case "actions":
         return (
@@ -531,6 +587,7 @@ export default function DashBoardTable({ posts, tableType }) {
               key={column.uid}
               align={column.uid === "actions" ? "center" : "start"}
               allowsSorting={column.sortable}
+              width={column.uid === "isPublish" ? 180 : 50}
             >
               {column.name}
             </TableColumn>
