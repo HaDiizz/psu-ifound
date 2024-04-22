@@ -39,6 +39,10 @@ const postSchema = new Schema(
       type: Boolean,
       default: true,
     },
+    completedAt: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true }
 );
