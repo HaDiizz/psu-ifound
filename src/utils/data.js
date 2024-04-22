@@ -1,6 +1,6 @@
 export const columns = [
   { name: "IMAGE", uid: "image" },
-  { name: "NAME", uid: "name", sortable: true },
+  { name: "NAME", uid: "name" },
   { name: "TITLE", uid: "title", sortable: true },
   { name: "DETAIL", uid: "detail", sortable: true },
   { name: "CONTACT", uid: "contact", sortable: true },
@@ -9,6 +9,7 @@ export const columns = [
   { name: "STATUS", uid: "status", sortable: true },
   { name: "CAMPUS", uid: "campus", sortable: true },
   { name: "PUBLISHED", uid: "isPublish", sortable: true },
+  { name: "COMPLETED AT", uid: "completedAt", sortable: true },
   { name: "CREATED AT", uid: "createdAt", sortable: true },
   { name: "UPDATED AT", uid: "updatedAt", sortable: true },
   { name: "ACTIONS", uid: "actions" },
@@ -16,7 +17,7 @@ export const columns = [
 
 export const userColumns = [
   { name: "PICTURE", uid: "picture" },
-  { name: "NAME", uid: "name", sortable: true },
+  { name: "NAME", uid: "name" },
   { name: "FULLNAME", uid: "fullName", sortable: true },
   { name: "EMAIL", uid: "email", sortable: true },
   { name: "USERNAME", uid: "username", sortable: true },

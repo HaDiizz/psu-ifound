@@ -130,6 +130,12 @@ export const editPost = async (formData) => {
       throw new Error("Post not found.");
     }
     if (post.campId !== campusId) throw new Error("Campus ID does not match.");
+    if (status === "notfound") {
+      post.completedAt = null;
+    }
+    if (status === "found") {
+      post.completedAt = new Date();
+    }
     post.status = status;
     post.title = title;
     post.detail = detail;
@@ -305,6 +311,12 @@ export const editReport = async (formData) => {
     }
     if (status === "unclaimed") {
       report.owner = null;
+    }
+    if (status === "claimed") {
+      report.completedAt = new Date();
+    }
+    if (status === "unclaimed") {
+      report.completedAt = null;
     }
     report.status = status;
     report.title = title;

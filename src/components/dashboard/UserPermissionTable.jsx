@@ -22,7 +22,7 @@ import {
   SelectItem,
   Spinner,
 } from "@nextui-org/react";
-import { FaChevronDown, FaEye } from "react-icons/fa";
+import { FaChevronDown } from "react-icons/fa";
 import { useCallback, useMemo, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { capitalize } from "@/utils/capitalize";

@@ -48,10 +48,10 @@ const INITIAL_VISIBLE_COLUMNS = [
   "image",
   "name",
   "title",
-  "location",
   "status",
   "actions",
   "createdAt",
+  "completedAt",
   "updatedAt",
   "isPublish",
 ];
@@ -150,9 +150,41 @@ export default function DashBoardTable({ posts, tableType, mutate }) {
     return [...items].sort((a, b) => {
       const first = a[sortDescriptor.column];
       const second = b[sortDescriptor.column];
-      const cmp = first < second ? -1 : first > second ? 1 : 0;
 
-      return sortDescriptor.direction === "descending" ? -cmp : cmp;
+      if (first === null && second === null) {
+        return 0;
+      } else if (first === null) {
+        return sortDescriptor.direction === "descending" ? 1 : -1;
+      } else if (second === null) {
+        return sortDescriptor.direction === "descending" ? -1 : 1;
+      }
+
+      const isDate = typeof first === "object" && first instanceof Date;
+      const isString = typeof first === "string";
+      const isBoolean = typeof first === "boolean";
+
+      if (isDate) {
+        const dateA = new Date(first);
+        const dateB = new Date(second);
+        const cmp = dateA.getTime() - dateB.getTime();
+        return sortDescriptor.direction === "descending" ? -cmp : cmp;
+      } else if (isString) {
+        return sortDescriptor.direction === "ascending"
+          ? first.localeCompare(second)
+          : second.localeCompare(first);
+      } else if (isBoolean) {
+        const boolA = first;
+        const boolB = second;
+        return sortDescriptor.direction === "ascending"
+          ? boolA
+            ? -1
+            : 1
+          : boolA
+          ? 1
+          : -1;
+      } else {
+        return first < second ? -1 : first > second ? 1 : 0;
+      }
     });
   }, [sortDescriptor, items]);
 
@@ -180,6 +212,23 @@ export default function DashBoardTable({ posts, tableType, mutate }) {
     const cellValue = data[columnKey];
 
     switch (columnKey) {
+      case "completedAt":
+        return (
+          <div className="flex flex-col">
+            {data?.completedAt ? (
+              <>
+                <p className="text-bold text-small capitalize">
+                  {moment(data.completedAt).fromNow()}
+                </p>
+                <p className="text-bold text-tiny capitalize text-default-400">
+                  {moment(data.completedAt).format("llll")}
+                </p>
+              </>
+            ) : (
+              "-"
+            )}
+          </div>
+        );
       case "createdAt":
         return (
           <div className="flex flex-col">
