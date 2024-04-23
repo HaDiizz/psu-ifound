@@ -420,7 +420,7 @@ export default function DashBoardTable({ posts, tableType, mutate }) {
           </div>
         );
       default:
-        return cellValue;
+        return cellValue || "-";
     }
   }, []);
 

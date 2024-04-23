@@ -36,6 +36,7 @@ import {
 } from "@/utils/data";
 import moment from "moment";
 import Image from "next/image";
+import { campusData } from "@/utils/constants";
 
 const INITIAL_VISIBLE_COLUMNS = [
   "image",
@@ -149,6 +150,17 @@ export default function TableDrawer({
             </p>
           </div>
         );
+      case "updatedAt":
+        return (
+          <div className="flex flex-col">
+            <p className="text-bold text-small capitalize">
+              {moment(data.updatedAt).fromNow()}
+            </p>
+            <p className="text-bold text-tiny capitalize text-default-400">
+              {moment(data.updatedAt).format("llll")}
+            </p>
+          </div>
+        );
       case "image":
         return (
           <div
@@ -189,6 +201,16 @@ export default function TableDrawer({
         return (
           <div className="flex flex-col">
             <p className="text-bold text-small capitalize">{data.title}</p>
+          </div>
+        );
+      case "campus":
+        return (
+          <div className="flex flex-col">
+            <p className="text-bold text-small capitalize">
+              {campusData
+                .find((campus) => campus.campId === data.campId)
+                .campNameEng.split("Prince of Songkla University ")[1] || "-"}
+            </p>
           </div>
         );
       case "status":
@@ -237,7 +259,7 @@ export default function TableDrawer({
           </div>
         );
       default:
-        return cellValue;
+        return cellValue || "-";
     }
   }, []);
 
