@@ -76,6 +76,14 @@ export default function DashBoardTable({ posts, tableType, mutate }) {
     direction: "descending",
   });
 
+  const insertIndex = columns.findIndex((column) => column.uid === "createdAt");
+  const newColumns = [...columns];
+  newColumns.splice(insertIndex, 0, {
+    name: "COMPLETED AT",
+    uid: "completedAt",
+    sortable: true,
+  });
+
   const handleDeletePost = async () => {
     let result;
     if (tableType === "lost") {
@@ -98,9 +106,9 @@ export default function DashBoardTable({ posts, tableType, mutate }) {
   const hasSearchFilter = Boolean(filterValue);
 
   const headerColumns = useMemo(() => {
-    if (visibleColumns === "all") return columns;
+    if (visibleColumns === "all") return newColumns;
 
-    return columns.filter((column) =>
+    return newColumns.filter((column) =>
       Array.from(visibleColumns).includes(column.uid)
     );
   }, [visibleColumns]);
@@ -508,7 +516,7 @@ export default function DashBoardTable({ posts, tableType, mutate }) {
                 selectionMode="multiple"
                 onSelectionChange={setVisibleColumns}
               >
-                {columns.map((column) => (
+                {newColumns.map((column) => (
                   <DropdownItem key={column.uid} className="capitalize">
                     {capitalize(column.name)}
                   </DropdownItem>
