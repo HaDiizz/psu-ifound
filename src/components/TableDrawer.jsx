@@ -93,6 +93,11 @@ export default function TableDrawer({
             .toLowerCase()
             .includes(filterValue.toLowerCase()) ||
           report.user.email.toLowerCase().includes(filterValue.toLowerCase()) ||
+          campusData
+            .find((campus) => campus.campId === report.campId)
+            .campNameEng.split("Prince of Songkla University ")[1]
+            .toLowerCase()
+            .includes(filterValue.toLowerCase()) ||
           report.title.toLowerCase().includes(filterValue.toLowerCase()) ||
           report.detail.toLowerCase().includes(filterValue.toLowerCase()) ||
           report.location.toLowerCase().includes(filterValue.toLowerCase()) ||

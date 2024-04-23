@@ -126,6 +126,13 @@ export default function DashBoardTable({ posts, tableType, mutate }) {
             .toLowerCase()
             .includes(filterValue.toLowerCase()) ||
           post.user.email.toLowerCase().includes(filterValue.toLowerCase()) ||
+          campusData
+            .find((campus) => campus.campId === post.campId)
+            .campNameEng.split("Prince of Songkla University ")[1]
+            .toLowerCase()
+            .includes(filterValue.toLowerCase()) ||
+          (post.isPublish ? "published" : "unpublished") ===
+            filterValue.toLowerCase() ||
           post.title.toLowerCase().includes(filterValue.toLowerCase()) ||
           post.detail.toLowerCase().includes(filterValue.toLowerCase()) ||
           post.location.toLowerCase().includes(filterValue.toLowerCase()) ||
