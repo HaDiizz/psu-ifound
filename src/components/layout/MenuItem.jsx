@@ -22,11 +22,24 @@ const MenuItem = ({ menu }) => {
     return () => window.removeEventListener("resize", updatePlacement);
   }, []);
   return (
-    <Tooltip content={menu.name} placement={placement} offset={15}>
+    <Tooltip
+      content={menu.name}
+      placement={placement}
+      offset={15}
+      className={`${
+        menu.id === "issue" || menu.id === "manage_file"
+          ? "hidden laptop:flex"
+          : ""
+      }`}
+    >
       <Link
         href={menu.url}
         className={`w-10 h-10 rounded-full flex items-center justify-center cursor-pointer group hover:bg-blue-500 relative ${
           pathname === `${menu.url}` && "bg-blue-500 text-white"
+        } ${
+          menu.id === "issue" || menu.id === "manage_file"
+            ? "hidden laptop:flex"
+            : ""
         }`}
       >
         <menu.icon

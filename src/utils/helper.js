@@ -4,7 +4,9 @@ import {
   MapPinned,
   FileSearch,
   FileJson,
+  ShieldAlert,
 } from "lucide-react";
+
 export const SideBarMenus = [
   {
     id: "dashboard",
@@ -35,5 +37,11 @@ export const SideBarMenus = [
     name: "Manage File",
     url: "/admin/file",
     icon: FileJson,
+  },
+  {
+    id: "issue",
+    name: "Issue",
+    url: "/admin/issue",
+    icon: ShieldAlert,
   },
 ];
