@@ -5,6 +5,10 @@ import {
   FileSearch,
   FileJson,
   ShieldAlert,
+  FileWarning,
+  ClipboardMinus,
+  UsersRound,
+  MessagesSquare,
 } from "lucide-react";
 
 export const SideBarMenus = [
@@ -43,5 +47,32 @@ export const SideBarMenus = [
     name: "Issue",
     url: "/admin/issue",
     icon: ShieldAlert,
+  },
+];
+
+export const IssueMenuItems = [
+  {
+    id: "report",
+    name: "Report",
+    url: "/admin/issue/report",
+    icon: FileWarning,
+  },
+  {
+    id: "post",
+    name: "Post",
+    url: "/admin/issue/post",
+    icon: ClipboardMinus,
+  },
+  {
+    id: "user",
+    name: "User",
+    url: "/admin/issue/user",
+    icon: UsersRound,
+  },
+  {
+    id: "comment",
+    name: "Comment",
+    url: "/admin/issue/comment",
+    icon: MessagesSquare,
   },
 ];

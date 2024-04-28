@@ -19,7 +19,7 @@ const moderationSchema = new Schema(
       type: String,
       required: true,
       default: "PENDING",
-      enum: ["PENDING", "CHECKED"],
+      enum: ["PENDING", "IN_PROGRESS", "RESOLVED", "REJECTED"],
     },
     reportedBy: { type: mongoose.Types.ObjectId, ref: "user" },
     category: Object,
