@@ -29,10 +29,14 @@ import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import { statusReportColorMap } from "@/utils/data";
 import Image from "next/image";
+import { MdReportProblem, MdCheckCircle } from "react-icons/md";
+import { useState } from "react";
+import ReportIssueModal from "./ReportIssueModal";
 
 const DetailModal = ({ isOpen, onClose, itemId }) => {
   const { data, isLoading, mutate } = useSWR(`/report/${itemId}`);
   const { data: session } = useSession();
+  const [isOpenReportModal, setIsOpenReportModal] = useState(false);
 
   const handleClaimItem = async () => {
     await onClose();
@@ -48,6 +52,12 @@ const DetailModal = ({ isOpen, onClose, itemId }) => {
   };
   return (
     <>
+      <ReportIssueModal
+        isOpen={isOpenReportModal}
+        setIsOpen={setIsOpenReportModal}
+        itemId={itemId}
+        category={"REPORT"}
+      />
       <Modal
         classNames={{
           base: "dark:bg-[#0F1729]",
@@ -131,7 +141,6 @@ const DetailModal = ({ isOpen, onClose, itemId }) => {
                                   <User
                                     avatarProps={{
                                       radius: "lg",
-                                      // src: data?.user?.picture,
                                       size: "sm",
                                     }}
                                     description={data.user.email}
@@ -166,30 +175,52 @@ const DetailModal = ({ isOpen, onClose, itemId }) => {
                   </>
                 )}
               </>
-              <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
-                  Close
-                </Button>
-                {isLoading ? null : data?.status !== "claimed" ? (
-                  data?.userList.some(
-                    (user) => user._id === session?.user?.id
-                  ) ? (
-                    <Button color="success" variant="light">
-                      You have been claimed
+              <ModalFooter className="flex justify-between items-center">
+                {!isLoading && (
+                  <>
+                    <Button
+                      size="sm"
+                      color="danger"
+                      aria-label="Report problem"
+                      startContent={<MdReportProblem />}
+                      onPress={() => {
+                        setIsOpenReportModal(true);
+                        onClose();
+                      }}
+                    >
+                      Report Problem
                     </Button>
-                  ) : data?.user?._id === session?.user?.id ? null : (
-                    <Popover placement="top-start" backdrop="blur">
-                      <PopoverTrigger>
-                        <Button color="warning" variant="light">
-                          Claim
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent>
-                        <ClaimItem handleClaimItem={handleClaimItem} />
-                      </PopoverContent>
-                    </Popover>
-                  )
-                ) : null}
+                    <div>
+                      <Button color="primary" variant="light" onPress={onClose}>
+                        Close
+                      </Button>
+                      {data?.status !== "claimed" ? (
+                        data?.userList.some(
+                          (user) => user._id === session?.user?.id
+                        ) ? (
+                          <Button
+                            color="success"
+                            variant="light"
+                            endContent={<MdCheckCircle size={20} />}
+                          >
+                            Claimed
+                          </Button>
+                        ) : data?.user?._id === session?.user?.id ? null : (
+                          <Popover placement="top-start" backdrop="blur">
+                            <PopoverTrigger>
+                              <Button color="warning" variant="light">
+                                Claim
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent>
+                              <ClaimItem handleClaimItem={handleClaimItem} />
+                            </PopoverContent>
+                          </Popover>
+                        )
+                      ) : null}
+                    </div>
+                  </>
+                )}
               </ModalFooter>
             </>
           )}

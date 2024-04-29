@@ -13,6 +13,7 @@ import User from "@/models/user";
 import Location from "@/models/location";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import Moderation from "@/models/moderation";
 
 export const addReport = async (formData) => {
   const session = await getServerSession(authOptions);
@@ -584,4 +585,43 @@ export const backToHome = () => {
   cookies().delete("__Host-next-auth.csrf-token");
   cookies().delete("__Secure-next-auth.session-token");
   redirect("/");
+};
+
+export const addReportProblem = async (formData) => {
+  const session = await getServerSession(authOptions);
+  const { title, detail, type, otherType, itemId, category } = formData;
+  try {
+    if (!session) {
+      return { error: true, message: "Unauthorized." };
+    }
+    await connectDB();
+    if (!title || !detail || !type) {
+      return { error: true, message: "Fields are required." };
+    }
+    if (type === "Other" && !otherType) {
+      return { error: true, message: "Other type is required." };
+    }
+    // const isDuplicate = await Moderation.findOne({
+    //   itemId: itemId,
+    //   reportedBy: session.user.id,
+    // });
+    // if (isDuplicate) {
+    //   return { error: true, message: "You have been reported." };
+    // }
+
+    const moderation = await new Moderation({
+      title,
+      detail,
+      type: type === "Other" ? otherType : type,
+      itemId,
+      category,
+      status: "PENDING",
+      reportedBy: session.user.id,
+    });
+    await moderation.save();
+    return { success: true, message: "Reported successful" };
+  } catch (err) {
+    console.log(err);
+    return { error: true, message: "Something went wrong, try again later." };
+  }
 };

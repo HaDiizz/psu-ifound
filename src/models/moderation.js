@@ -10,7 +10,7 @@ const moderationSchema = new Schema(
       type: String,
       required: true,
     },
-    type: {
+    category: {
       type: String,
       required: true,
       enum: ["REPORT", "POST", "USER", "COMMENT"],
@@ -22,7 +22,11 @@ const moderationSchema = new Schema(
       enum: ["PENDING", "IN_PROGRESS", "RESOLVED", "REJECTED"],
     },
     reportedBy: { type: mongoose.Types.ObjectId, ref: "user" },
-    category: Object,
+    type: {
+      type: String,
+      required: true,
+    },
+    itemId: { type: mongoose.Types.ObjectId },
   },
   { timestamps: true }
 );
