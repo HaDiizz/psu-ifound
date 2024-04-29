@@ -1,10 +1,20 @@
 import moment from "moment";
 import Image from "next/image";
-import { Chip } from "@nextui-org/react";
+import { Button, Chip } from "@nextui-org/react";
+import { MdReportProblem } from "react-icons/md";
+import { useState } from "react";
+import ReportIssueModal from "./ReportIssueModal";
 
 const DetailSection = ({ post }) => {
+  const [isOpenReportModal, setIsOpenReportModal] = useState(false);
   return (
     <>
+      <ReportIssueModal
+        isOpen={isOpenReportModal}
+        setIsOpen={setIsOpenReportModal}
+        itemId={post._id}
+        category={"POST"}
+      />
       <div className="pt-7 pb-5">
         <h1 className="leading-none font-bold break-words">{post.title}</h1>
       </div>
@@ -72,6 +82,17 @@ const DetailSection = ({ post }) => {
                   {post.status !== "notfound" ? "Found" : "Not Found"}
                 </Chip>
               </span>
+            </div>
+            <div className="flex place-content-end">
+              <Button
+                size="sm"
+                color="danger"
+                aria-label="Report problem"
+                startContent={<MdReportProblem />}
+                onPress={() => setIsOpenReportModal(true)}
+              >
+                Report Problem
+              </Button>
             </div>
           </div>
         </div>

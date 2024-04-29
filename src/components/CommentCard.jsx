@@ -15,8 +15,11 @@ import { FaEllipsisVertical } from "react-icons/fa6";
 import { deleteComment } from "@/lib/actions";
 import toast from "react-hot-toast";
 import { useSession } from "next-auth/react";
+import ReportIssueModal from "./ReportIssueModal";
+import { MdDelete, MdReportProblem } from "react-icons/md";
 
 const CommentCard = ({ postId, comment, commentId, campusId, commentRef }) => {
+  const [isOpenReportModal, setIsOpenReportModal] = useState(false);
   const { data: session } = useSession();
   const [onReply, setOnReply] = useState(false);
 
@@ -41,6 +44,12 @@ const CommentCard = ({ postId, comment, commentId, campusId, commentRef }) => {
 
   return (
     <>
+      <ReportIssueModal
+        isOpen={isOpenReportModal}
+        setIsOpen={setIsOpenReportModal}
+        itemId={commentId}
+        category={"COMMENT"}
+      />
       <div
         className="flex flex-col md:flex-row justify-between border-b-2 dark:border-slate-600/20 pb-3 mb-3"
         ref={commentRef}
@@ -69,9 +78,16 @@ const CommentCard = ({ postId, comment, commentId, campusId, commentRef }) => {
                 </DropdownTrigger>
                 <DropdownMenu>
                   <DropdownItem
+                    startContent={<MdReportProblem size={18} />}
+                    onClick={() => setIsOpenReportModal(true)}
+                  >
+                    Report Problem
+                  </DropdownItem>
+                  <DropdownItem
+                    className="text-[#F31260]"
                     description="Permanently delete the comment"
                     color="danger"
-                    className="text-red-500"
+                    startContent={<MdDelete size={18} />}
                     onClick={() => handleDelete()}
                   >
                     Delete
