@@ -57,6 +57,7 @@ const DetailModal = ({ isOpen, onClose, itemId }) => {
         setIsOpen={setIsOpenReportModal}
         itemId={itemId}
         category={"REPORT"}
+        campId={data?.campId}
       />
       <Modal
         classNames={{

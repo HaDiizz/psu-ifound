@@ -28,9 +28,21 @@ export const userColumns = [
   { name: "YEAR", uid: "yearStatus", sortable: true },
   { name: "MAJOR", uid: "majorNameThai", sortable: true },
   { name: "DEPARTMENT", uid: "deptNameThai", sortable: true },
-  { name: "CAMPUS", uid: "campusNameThai", sortable: true },
+  { name: "CAMPUS", uid: "campusNameThai" },
   { name: "CREATED AT", uid: "createdAt", sortable: true },
   { name: "UPDATED AT", uid: "updatedAt", sortable: true },
+];
+
+export const issueColumn = [
+  { name: "REPORTED BY", uid: "name" },
+  { name: "TITLE", uid: "title", sortable: true },
+  { name: "DETAIL", uid: "detail", sortable: true },
+  { name: "TYPE", uid: "type", sortable: true },
+  { name: "STATUS", uid: "status", sortable: true },
+  { name: "CAMPUS", uid: "campus" },
+  { name: "CREATED AT", uid: "createdAt", sortable: true },
+  { name: "UPDATED AT", uid: "updatedAt", sortable: true },
+  { name: "ACTIONS", uid: "actions" },
 ];
 
 export const roleUserOptions = [
@@ -41,6 +53,20 @@ export const roleUserOptions = [
 export const roleUserColorMap = {
   admin: "danger",
   user: "success",
+};
+
+export const issueStatusOptions = [
+  { name: "PENDING", uid: "PENDING" },
+  { name: "IN PROGRESS", uid: "IN_PROGRESS" },
+  { name: "RESOLVED", uid: "RESOLVED" },
+  { name: "REJECTED", uid: "REJECTED" },
+];
+
+export const issueStatusColorMap = {
+  PENDING: "warning",
+  IN_PROGRESS: "primary",
+  RESOLVED: "success",
+  REJECTED: "danger",
 };
 
 export const statusUserOptions = [

@@ -14,7 +14,7 @@ import FormButton from "./FormButton";
 import { addReportProblem } from "@/lib/actions";
 import toast from "react-hot-toast";
 
-const ReportIssueModal = ({ isOpen, setIsOpen, itemId, category }) => {
+const ReportIssueModal = ({ isOpen, setIsOpen, itemId, category, campId }) => {
   const [selectedType, setSelectedType] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [form, setForm] = useState({
@@ -53,6 +53,7 @@ const ReportIssueModal = ({ isOpen, setIsOpen, itemId, category }) => {
       otherType: form.otherType,
       itemId,
       category,
+      campId,
     });
     if (result?.success) {
       toast.success(`${result?.message}`);

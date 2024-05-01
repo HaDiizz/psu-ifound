@@ -327,3 +327,11 @@ nav {
   line-height: 25px !important;
   font-size: 15px !important;
 }
+
+.text_report_problem {
+  color: #f31260 !important;
+}
+
+.text_report_problem:hover {
+  color: #f31260 !important;
+}

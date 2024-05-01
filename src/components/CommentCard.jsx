@@ -49,6 +49,7 @@ const CommentCard = ({ postId, comment, commentId, campusId, commentRef }) => {
         setIsOpen={setIsOpenReportModal}
         itemId={commentId}
         category={"COMMENT"}
+        campId={campusId}
       />
       <div
         className="flex flex-col md:flex-row justify-between border-b-2 dark:border-slate-600/20 pb-3 mb-3"
@@ -68,21 +69,22 @@ const CommentCard = ({ postId, comment, commentId, campusId, commentRef }) => {
               {moment(comment.createdAt).format("llll")}
             </p>
           </div>
-          {session && session.user.id === comment.user._id && (
-            <div className="relative flex justify-end items-center gap-2">
-              <Dropdown className="bg-background border-1 border-default-200">
-                <DropdownTrigger>
-                  <Button isIconOnly radius="full" size="md" variant="light">
-                    <FaEllipsisVertical className="text-default-400" />
-                  </Button>
-                </DropdownTrigger>
-                <DropdownMenu>
-                  <DropdownItem
-                    startContent={<MdReportProblem size={18} />}
-                    onClick={() => setIsOpenReportModal(true)}
-                  >
-                    Report Problem
-                  </DropdownItem>
+          <div className="relative flex justify-end items-center gap-2">
+            <Dropdown className="bg-background border-1 border-default-200">
+              <DropdownTrigger>
+                <Button isIconOnly radius="full" size="md" variant="light">
+                  <FaEllipsisVertical className="text-default-400" />
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu>
+                <DropdownItem
+                  startContent={<MdReportProblem size={18} />}
+                  onClick={() => setIsOpenReportModal(true)}
+                  className="text_report_problem"
+                >
+                  Report Problem
+                </DropdownItem>
+                {session && session.user.id === comment.user._id && (
                   <DropdownItem
                     className="text-[#F31260]"
                     description="Permanently delete the comment"
@@ -92,10 +94,10 @@ const CommentCard = ({ postId, comment, commentId, campusId, commentRef }) => {
                   >
                     Delete
                   </DropdownItem>
-                </DropdownMenu>
-              </Dropdown>
-            </div>
-          )}
+                )}
+              </DropdownMenu>
+            </Dropdown>
+          </div>
         </div>
       </div>
       <div className="border-b-2 dark:border-slate-600/20 pb-3 mb-3 flex flex-col gap-y-4">

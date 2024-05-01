@@ -1,28 +1,21 @@
 "use server";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import BackButton from "@/components/BackButton";
-import DisplayModeration from "@/components/dashboard/DisplayModeration";
-import { axios } from "@/lib/axios";
 import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
-import { headers } from "next/headers";
+import IssueDetail from "@/components/dashboard/IssueDetail";
 
-const Page = async () => {
+const Page = async ({ params }) => {
   const session = await getServerSession(authOptions);
   if (session && session.user.role !== "admin") {
     redirect("/");
   }
 
-  const response = await axios.get(`/issue/post`, headers());
-
   return (
     <>
+      <h1 className="text-default-500 pb-2 font-bold">Report Issue List</h1>
       <BackButton />
-      <DisplayModeration
-        moderationType="post"
-        data={response?.data?.items}
-        stats={response?.data?.stats}
-      />
+      <IssueDetail postId={params.postId} />
     </>
   );
 };

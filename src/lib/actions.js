@@ -589,7 +589,7 @@ export const backToHome = () => {
 
 export const addReportProblem = async (formData) => {
   const session = await getServerSession(authOptions);
-  const { title, detail, type, otherType, itemId, category } = formData;
+  const { title, detail, type, otherType, itemId, category, campId } = formData;
   try {
     if (!session) {
       return { error: true, message: "Unauthorized." };
@@ -617,9 +617,37 @@ export const addReportProblem = async (formData) => {
       category,
       status: "PENDING",
       reportedBy: session.user.id,
+      campId,
     });
     await moderation.save();
     return { success: true, message: "Reported successful" };
+  } catch (err) {
+    console.log(err);
+    return { error: true, message: "Something went wrong, try again later." };
+  }
+};
+
+export const updateIssueStatus = async ({ itemId, status }) => {
+  const session = await getServerSession(authOptions);
+  try {
+    await connectDB();
+    if (!session) throw new Error("Unauthorized.");
+    if (session && session.user.role !== "admin")
+      throw new Error("Permission denied.");
+    if (!["IN_PROGRESS", "PENDING", "RESOLVED", "REJECTED"].includes(status)) {
+      return { error: true, message: "Invalid status type." };
+    }
+    const item = await Moderation.findById(itemId);
+    const checkItem = await item._doc;
+    if (!checkItem) throw new Error("Item not found.");
+    item.status = status;
+    await item.save();
+    return {
+      success: true,
+      message: `Updated status to ${
+        status === "IN_PROGRESS" ? "IN PROGRESS" : status
+      } successful.`,
+    };
   } catch (err) {
     console.log(err);
     return { error: true, message: "Something went wrong, try again later." };

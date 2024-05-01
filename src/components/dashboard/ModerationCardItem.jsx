@@ -1,5 +1,6 @@
 "use client";
-import { Button, User } from "@nextui-org/react";
+import { campusData } from "@/utils/constants";
+import { Button, User, Link } from "@nextui-org/react";
 
 const ModerationCardItem = ({ item }) => {
   return (
@@ -9,36 +10,40 @@ const ModerationCardItem = ({ item }) => {
           <tbody>
             <tr>
               <td>Post</td>
-              <td className="text-pretty">
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Id,
-                doloribus?
-              </td>
+              <td className="text-pretty">{item.title}</td>
             </tr>
             <tr>
               <td>Total</td>
-              <td>14</td>
+              <td>{item.totalReports}</td>
             </tr>
             <tr>
               <td>Campus</td>
-              <td>Hat Yai</td>
+              <td>
+                {campusData
+                  .find((campus) => campus.campId === item.campId)
+                  .campNameEng.split("Prince of Songkla University ")[1] || "-"}
+              </td>
             </tr>
             <tr>
-              <td>Reported By</td>
+              <td>Owner</td>
               <td>
                 <User
-                  description={"test@email.com"}
-                  name={"Nattapol Singhad"}
+                  description={item.owner.email}
+                  name={item.owner.fullName}
                   avatarProps={{
                     size: "sm",
+                    src: `${item.owner.picture}`,
                   }}
                 >
-                  {"Dis Nattapol"}
+                  {item.owner.username}
                 </User>
               </td>
             </tr>
           </tbody>
         </table>
-        <Button>See more</Button>
+        <Button href={`/admin/issue/post/${item._id}`} as={Link}>
+          See more
+        </Button>
       </div>
     </div>
   );

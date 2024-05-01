@@ -2,6 +2,10 @@ import mongoose, { Schema, models } from "mongoose";
 
 const moderationSchema = new Schema(
   {
+    campId: {
+      type: String,
+      default: "",
+    },
     title: {
       type: String,
       required: true,

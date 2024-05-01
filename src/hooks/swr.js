@@ -40,3 +40,7 @@ export const useLocations = (campusId) => {
 export const useLocation = (locationId) => {
   return useSWR(`/location/${locationId}`);
 };
+
+export const useGetPostIssues = (postId) => {
+  return useSWR(`/issue/post/${postId}`);
+};

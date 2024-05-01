@@ -14,6 +14,7 @@ const DetailSection = ({ post }) => {
         setIsOpen={setIsOpenReportModal}
         itemId={post._id}
         category={"POST"}
+        campId={post?.campId}
       />
       <div className="pt-7 pb-5">
         <h1 className="leading-none font-bold break-words">{post.title}</h1>
