@@ -45,6 +45,11 @@ export const issueColumn = [
   { name: "ACTIONS", uid: "actions" },
 ];
 
+export const issueFilterOptions = [
+  { name: "Non-Deleted", uid: "non-deleted" },
+  { name: "Deleted", uid: "deleted" },
+];
+
 export const roleUserOptions = [
   { name: "User", uid: "user" },
   { name: "Admin", uid: "admin" },

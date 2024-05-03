@@ -19,6 +19,7 @@ import {
   Select,
   SelectItem,
   Spinner,
+  useDisclosure,
 } from "@nextui-org/react";
 import { FaChevronDown, FaEye } from "react-icons/fa";
 import { useCallback, useMemo, useState } from "react";
@@ -34,6 +35,7 @@ import toast from "react-hot-toast";
 import Link from "next/link";
 import { campusData } from "@/utils/constants";
 import { updateIssueStatus } from "@/lib/actions";
+import CommentIssueModal from "./CommentIssueModal";
 
 const INITIAL_VISIBLE_COLUMNS = [
   "name",
@@ -47,8 +49,15 @@ const INITIAL_VISIBLE_COLUMNS = [
   "updatedAt",
 ];
 
-export default function IssueDetailTable({ dataItems, mutate, isLoading }) {
+export default function IssueDetailTable({
+  dataItems,
+  mutate,
+  isLoading,
+  category,
+}) {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [page, setPage] = useState(1);
+  const [commentId, setCommentId] = useState("");
   const [filterValue, setFilterValue] = useState("");
   const [selectedKeys, setSelectedKeys] = useState(new Set([]));
   const [visibleColumns, setVisibleColumns] = useState(
@@ -125,8 +134,8 @@ export default function IssueDetailTable({ dataItems, mutate, isLoading }) {
     });
   }, [sortDescriptor, items]);
 
-  const handleUpdateIssueStatus = async (itemId, status) => {
-    const result = await updateIssueStatus({ itemId, status });
+  const handleUpdateIssueStatus = async (issueId, status) => {
+    const result = await updateIssueStatus({ issueId, status });
     if (result?.success) {
       mutate();
       toast.success(`${result?.message}`);
@@ -187,7 +196,7 @@ export default function IssueDetailTable({ dataItems, mutate, isLoading }) {
           <div className="flex flex-col">
             <p className="text-bold text-small capitalize">
               {campusData
-                .find((campus) => campus.campId === data.campId)
+                .find((campus) => campus?.campId === data?.campId)
                 .campNameEng.split("Prince of Songkla University ")[1] || "-"}
             </p>
           </div>
@@ -287,7 +296,12 @@ export default function IssueDetailTable({ dataItems, mutate, isLoading }) {
               ) : (
                 <Button
                   isIconOnly
-                  className="text-lg text-default-400 cursor-pointer active:opacity-50"
+                  color="warning"
+                  className="text-lg cursor-pointer active:opacity-50 text-white"
+                  onPress={() => {
+                    setCommentId(data.itemId);
+                    onOpen();
+                  }}
                 >
                   <FaEye size={20} />
                 </Button>
@@ -464,6 +478,14 @@ export default function IssueDetailTable({ dataItems, mutate, isLoading }) {
 
   return (
     <>
+      {category === "comment" && (
+        <CommentIssueModal
+          isOpen={isOpen}
+          onOpenChange={onOpenChange}
+          commentId={commentId}
+          mutate={mutate}
+        />
+      )}
       <Table
         fullWidth={true}
         aria-label="issue table"
@@ -485,6 +507,13 @@ export default function IssueDetailTable({ dataItems, mutate, isLoading }) {
               key={column.uid}
               align={column.uid === "actions" ? "center" : "start"}
               allowsSorting={column.sortable}
+              width={
+                column.uid === "status" ||
+                column.uid === "updatedAt" ||
+                column.uid === "createdAt"
+                  ? 140
+                  : 50
+              }
             >
               {column.name}
             </TableColumn>

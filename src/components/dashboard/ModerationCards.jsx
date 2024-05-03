@@ -1,12 +1,18 @@
 "use client";
 import ModerationCardItem from "./ModerationCardItem";
 
-const ModerationCards = ({ data }) => {
+const ModerationCards = ({ data, moderationType }) => {
   return (
     <>
       <div className="grid md:grid-cols-12 grid-cols-1 gap-10 pb-[7rem]">
         {data?.length > 0 ? (
-          data.map((item) => <ModerationCardItem key={item._id} item={item} />)
+          data.map((item) => (
+            <ModerationCardItem
+              key={item._id}
+              item={item}
+              moderationType={moderationType}
+            />
+          ))
         ) : (
           <span className="text-default-400 text-lg text-center col-span-1 md:col-span-12">
             - No data -

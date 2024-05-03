@@ -3,8 +3,8 @@ import { NextResponse } from "next/server";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth/next";
 import Moderation from "@/models/moderation";
-import Post from "@/models/post";
 import User from "@/models/user";
+import Report from "@/models/report";
 
 export const dynamic = "force-dynamic";
 
@@ -25,7 +25,7 @@ export const GET = async (request) => {
     const aggregateResult = await Moderation.aggregate([
       {
         $match: {
-          category: "POST",
+          category: "REPORT",
         },
       },
       {
@@ -48,19 +48,19 @@ export const GET = async (request) => {
       },
     ]);
 
-    const postGrouping = await Promise.all(
+    const reportGrouping = await Promise.all(
       aggregateResult.map(async (item) => {
-        const post = await Post.findById(item._id).populate({
+        const report = await Report.findById(item._id).populate({
           path: "user",
           model: User,
           select: "picture username fullName email",
         });
-        if (post) {
+        if (report) {
           return {
             _id: item._id,
-            title: post.title,
-            campId: post.campId,
-            owner: post.user,
+            title: report.title,
+            campId: report.campId,
+            owner: report.user,
             totalReports: item.totalReports,
             totalPending: item.totalPending,
             totalInProgress: item.totalInProgress,
@@ -90,16 +90,16 @@ export const GET = async (request) => {
       })
     );
 
-    postGrouping.sort((a, b) => b.totalReports - a.totalReports);
+    reportGrouping.sort((a, b) => b.totalReports - a.totalReports);
 
     const [count, statusCounts] = await Promise.all([
       Moderation.countDocuments({
-        category: "POST",
+        category: "REPORT",
       }),
       Moderation.aggregate([
         {
           $match: {
-            category: "POST",
+            category: "REPORT",
           },
         },
         {
@@ -112,10 +112,10 @@ export const GET = async (request) => {
     ]);
     return NextResponse.json({
       stats: [...statusCounts, { _id: "TOTAL", count }],
-      items: postGrouping,
+      items: reportGrouping,
     });
   } catch (err) {
     console.log(err);
-    throw new Error("Failed to fetch post issues!" + err);
+    throw new Error("Failed to fetch report issues!" + err);
   }
 };

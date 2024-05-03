@@ -41,6 +41,10 @@ export const useLocation = (locationId) => {
   return useSWR(`/location/${locationId}`);
 };
 
-export const useGetPostIssues = (postId) => {
-  return useSWR(`/issue/post/${postId}`);
+export const useGetPostIssues = (itemId, category) => {
+  return useSWR(`/issue/${category}/${itemId}`);
+};
+
+export const useGetComment = (commentId) => {
+  return useSWR(`/comment/${commentId}`, { refreshInterval: 1000 });
 };

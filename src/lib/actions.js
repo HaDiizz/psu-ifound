@@ -239,6 +239,7 @@ export const deleteComment = async (formData) => {
     if (!session) {
       return { error: true, message: "Unauthorized." };
     }
+    await connectDB();
     const comment = await Comment.findOneAndDelete({
       _id: commentId,
       user: session.user.id,
@@ -627,7 +628,7 @@ export const addReportProblem = async (formData) => {
   }
 };
 
-export const updateIssueStatus = async ({ itemId, status }) => {
+export const updateIssueStatus = async ({ issueId, status }) => {
   const session = await getServerSession(authOptions);
   try {
     await connectDB();
@@ -637,7 +638,7 @@ export const updateIssueStatus = async ({ itemId, status }) => {
     if (!["IN_PROGRESS", "PENDING", "RESOLVED", "REJECTED"].includes(status)) {
       return { error: true, message: "Invalid status type." };
     }
-    const item = await Moderation.findById(itemId);
+    const item = await Moderation.findById(issueId);
     const checkItem = await item._doc;
     if (!checkItem) throw new Error("Item not found.");
     item.status = status;
@@ -647,6 +648,42 @@ export const updateIssueStatus = async ({ itemId, status }) => {
       message: `Updated status to ${
         status === "IN_PROGRESS" ? "IN PROGRESS" : status
       } successful.`,
+    };
+  } catch (err) {
+    console.log(err);
+    return { error: true, message: "Something went wrong, try again later." };
+  }
+};
+
+export const deleteCommentAndUpdateIssueStatus = async (formData) => {
+  const session = await getServerSession(authOptions);
+  const { commentId, status } = formData;
+  try {
+    if (!session) throw new Error("Unauthorized.");
+    if (session && session.user.role !== "admin")
+      throw new Error("Permission denied.");
+    if (!["RESOLVED"].includes(status)) {
+      return { error: true, message: "Invalid status type." };
+    }
+    await connectDB();
+    const comment = await Comment.findOneAndDelete({
+      _id: commentId,
+    });
+
+    await Post.findOneAndUpdate(
+      { _id: comment.postId },
+      {
+        $pull: { comments: commentId },
+      }
+    );
+    await Moderation.updateMany(
+      { itemId: commentId },
+      { $set: { status: status } }
+    );
+
+    return {
+      success: true,
+      message: `Deleted comment and update Issue status to ${status} successful`,
     };
   } catch (err) {
     console.log(err);

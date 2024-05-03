@@ -15,9 +15,7 @@ const ConfirmDelete = ({ handleDelete, title, isOpen, onClose }) => {
           <>
             <ModalHeader className="flex flex-col gap-1">Confirm</ModalHeader>
             <ModalBody>
-              <div
-                className="grid"
-              >
+              <div className="grid">
                 <div>
                   <div className="text-sm font-semibold pt-2">
                     Are you sure you want to delete
@@ -31,7 +29,7 @@ const ConfirmDelete = ({ handleDelete, title, isOpen, onClose }) => {
               <Button color="default" variant="light" onPress={onClose}>
                 Close
               </Button>
-              <Button color="danger" variant="ghost" onPress={handleDelete}>
+              <Button color="danger" onPress={handleDelete}>
                 Delete
               </Button>
             </ModalFooter>

@@ -13,9 +13,9 @@ const Page = async ({ params }) => {
 
   return (
     <>
-      <h1 className="text-default-500 pb-2 font-bold">Post Issue List</h1>
+      <h1 className="text-default-500 pb-2 font-bold">Report Issue List</h1>
       <BackButton />
-      <IssueDetail itemId={params.postId} category="post" />
+      <IssueDetail itemId={params.reportId} category="report" />
     </>
   );
 };

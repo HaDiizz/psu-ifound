@@ -1,14 +1,25 @@
 "use client";
 import ModerationStatCard from "@/components/dashboard/ModerationStatCard";
 import ModerationCards from "./ModerationCards";
-import { Input, Spinner } from "@nextui-org/react";
+import {
+  Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+  Input,
+  Spinner,
+} from "@nextui-org/react";
 import { CiSearch } from "react-icons/ci";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { campusData } from "@/utils/constants";
+import { FaChevronDown } from "react-icons/fa";
+import { issueFilterOptions } from "@/utils/data";
+import { capitalize } from "@/utils/capitalize";
 
 const DisplayModeration = ({ moderationType, data, stats }) => {
   const [filterValue, setFilterValue] = useState("");
-  const [dataFilter, setDataFilter] = useState([]);
+  const [filterStatusValue, setFIlterStatusValue] = useState(["non-deleted"]);
   const [isLoading, setIsLoading] = useState(true);
   const [statusValues, setStatusValues] = useState({
     total: 0,
@@ -59,26 +70,44 @@ const DisplayModeration = ({ moderationType, data, stats }) => {
   }, [stats]);
 
   useEffect(() => {
-    setDataFilter(data);
     setIsLoading(false);
   }, [data]);
 
-  useEffect(() => {
-    const filterItem = data.filter((item) => {
-      return (
-        item.title.toLowerCase().includes(filterValue.toLowerCase()) ||
-        campusData
-          .find((campus) => campus.campId === item.campId)
-          .campNameEng.split("Prince of Songkla University ")[1]
-          .toLowerCase()
-          .includes(filterValue.toLowerCase()) ||
-        item.owner.fullName.toLowerCase().includes(filterValue.toLowerCase()) ||
-        item.owner.username.toLowerCase().includes(filterValue.toLowerCase()) ||
-        item.owner.email.toLowerCase().includes(filterValue.toLowerCase())
+  const hasSearchFilter = Boolean(filterValue);
+
+  const filteredItems = useMemo(() => {
+    let filteredIssues = [...data];
+
+    if (hasSearchFilter) {
+      filteredIssues = filteredIssues.filter((item) => {
+        return (
+          item?.title?.toLowerCase().includes(filterValue.toLowerCase()) ||
+          campusData
+            .find((campus) => campus?.campId === item?.campId)
+            ?.campNameEng.split("Prince of Songkla University ")[1]
+            .toLowerCase()
+            .includes(filterValue.toLowerCase()) ||
+          item?.owner?.fullName
+            .toLowerCase()
+            .includes(filterValue.toLowerCase()) ||
+          item?.owner?.username
+            .toLowerCase()
+            .includes(filterValue.toLowerCase()) ||
+          item?.owner?.email.toLowerCase().includes(filterValue.toLowerCase())
+        );
+      });
+    }
+    if (
+      filterStatusValue !== "all" &&
+      Array.from(filteredIssues).length !== issueFilterOptions.length
+    ) {
+      filteredIssues = filteredIssues.filter((issue) =>
+        Array.from(filterStatusValue).includes(issue.status)
       );
-    });
-    setDataFilter(filterItem);
-  }, [filterValue, data]);
+    }
+
+    return filteredIssues;
+  }, [filterValue, filterStatusValue, data, hasSearchFilter]);
 
   return (
     <>
@@ -91,7 +120,7 @@ const DisplayModeration = ({ moderationType, data, stats }) => {
         totalRejected={statusValues.rejected}
       />
       <div className="pt-[5.5rem]">
-        <div className="pb-[3.5rem]">
+        <div className="pb-[3.5rem] flex flex-col md:flex-row justify-between gap-4">
           <Input
             isClearable
             className="w-full sm:max-w-[44%]"
@@ -102,13 +131,40 @@ const DisplayModeration = ({ moderationType, data, stats }) => {
             onValueChange={(input) => setFilterValue(input)}
             variant="underlined"
           />
+          <Dropdown>
+            <DropdownTrigger className="hidden sm:flex">
+              <Button
+                endContent={<FaChevronDown className="text-small" />}
+                variant="flat"
+              >
+                Status
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu
+              disallowEmptySelection
+              aria-label="Table Columns"
+              closeOnSelect={false}
+              selectedKeys={filterStatusValue}
+              selectionMode="multiple"
+              onSelectionChange={setFIlterStatusValue}
+            >
+              {issueFilterOptions.map((item) => (
+                <DropdownItem key={item.uid} className="capitalize">
+                  {capitalize(item.name)}
+                </DropdownItem>
+              ))}
+            </DropdownMenu>
+          </Dropdown>
         </div>
         {isLoading ? (
           <div className="flex justify-center pt-7">
             <Spinner label="Loading..." />
           </div>
         ) : (
-          <ModerationCards data={dataFilter} />
+          <ModerationCards
+            data={filteredItems}
+            moderationType={moderationType}
+          />
         )}
       </div>
     </>

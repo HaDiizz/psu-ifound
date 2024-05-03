@@ -7,7 +7,6 @@ import {
   ShieldAlert,
   FileWarning,
   ClipboardMinus,
-  UsersRound,
   MessagesSquare,
 } from "lucide-react";
 
@@ -62,12 +61,6 @@ export const IssueMenuItems = [
     name: "Post",
     url: "/admin/issue/post",
     icon: ClipboardMinus,
-  },
-  {
-    id: "user",
-    name: "User",
-    url: "/admin/issue/user",
-    icon: UsersRound,
   },
   {
     id: "comment",
