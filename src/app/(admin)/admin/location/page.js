@@ -11,7 +11,7 @@ const Page = async () => {
     redirect("/");
   }
   return (
-    <>
+    <div className="pb-[6.5rem] laptop:pb-5">
       <h1 className="text-default-500 pb-2 font-bold">Select Campus</h1>
       <div className="grid grid-cols-12 gap-4 place-items-center">
         {campusData.map((campus) => (
@@ -29,7 +29,7 @@ const Page = async () => {
           </Link>
         ))}
       </div>
-    </>
+    </div>
   );
 };
 

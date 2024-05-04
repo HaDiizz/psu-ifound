@@ -11,12 +11,12 @@ const Page = async () => {
     redirect("/");
   }
   return (
-    <>
+    <div className="pb-[4rem] laptop:pb-0">
       <h1 className="text-default-500 pb-2 font-bold">
         Manage GeoJSON Polygon Files
       </h1>
       <FileCard />
-    </>
+    </div>
   );
 };
 

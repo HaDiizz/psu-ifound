@@ -11,13 +11,13 @@ const Page = async ({ params }) => {
     redirect("/");
   }
   return (
-    <>
+    <div className="pb-[5rem] laptop:pb-4">
       <h1 className="text-default-500 pb-2 font-bold">Location List</h1>
       <BackButton />
       <div className="pt-5">
         <LocationTable campusId={params.campusId} />
       </div>
-    </>
+    </div>
   );
 };
 

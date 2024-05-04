@@ -12,11 +12,11 @@ const Page = async ({ params }) => {
   }
 
   return (
-    <>
+    <div className="pb-[6rem] laptop:pb-4">
       <h1 className="text-default-500 pb-2 font-bold">Report Issue List</h1>
       <BackButton />
       <IssueDetail itemId={params.reportId} category="report" />
-    </>
+    </div>
   );
 };
 

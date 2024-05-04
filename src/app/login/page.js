@@ -4,7 +4,7 @@ import Image from "next/image";
 const Page = () => {
   return (
     <div className="flex justify-center h-screen pt-[5rem] items-center">
-      <div className="card bg-card w-[90%] md:w-[40%] h-[75%] md:h-[65%] lg:h-[56%] rounded-lg shadow-lg">
+      <div className="card bg-card w-[90%] md:w-[40%] h-[75%] md:h-[65%] lg:h-[56%] rounded-lg shadow-lg flex flex-col justify-center items-center">
         <div className="text-center pt-[2.5rem] flex flex-col justify-center gap-5">
           <div className="flex justify-center">
             <Image

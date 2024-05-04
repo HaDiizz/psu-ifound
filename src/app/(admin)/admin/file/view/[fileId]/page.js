@@ -16,9 +16,9 @@ const Page = async ({ params }) => {
     redirect("/");
   }
   return (
-    <>
+    <div className="pb-[5rem] laptop:pb-7">
       <DisplayFileDetail fileId={params.fileId} />
-    </>
+    </div>
   );
 };
 

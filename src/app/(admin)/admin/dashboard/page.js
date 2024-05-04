@@ -16,7 +16,7 @@ const Page = async () => {
     redirect("/");
   }
   return (
-    <div className="pb-5">
+    <div className="pb-[6rem] md:pb-5">
       <DisplayDashBoard />
     </div>
   );

@@ -11,10 +11,10 @@ const Page = async () => {
     redirect("/");
   }
   return (
-    <>
+    <div className="pb-[5rem] laptop:pb-0">
       <h1 className="text-default-500 pb-2 font-bold">Reports</h1>
       <TabDashBoardSection />
-    </>
+    </div>
   );
 };
 

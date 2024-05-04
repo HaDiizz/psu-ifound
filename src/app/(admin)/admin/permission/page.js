@@ -10,10 +10,10 @@ const Page = async () => {
     redirect("/");
   }
   return (
-    <>
+    <div className="pb-[5rem] laptop:pb-4">
       <h1 className="text-default-500 pb-2 font-bold">User Permission</h1>
       <UserPermissionTable />
-    </>
+    </div>
   );
 };
 

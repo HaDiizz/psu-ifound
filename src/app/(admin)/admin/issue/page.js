@@ -12,7 +12,7 @@ const Page = async () => {
     redirect("/");
   }
   return (
-    <>
+    <div className="pb-[4rem] laptop:pb-0">
       <h1 className="text-default-500 pb-2 font-bold">Issues</h1>
       <div className="grid grid-cols-12 pt-[2rem] justify-items-center gap-5 pb-[4rem]">
         {IssueMenuItems.map((item) => (
@@ -30,7 +30,7 @@ const Page = async () => {
           </Link>
         ))}
       </div>
-    </>
+    </div>
   );
 };
 
