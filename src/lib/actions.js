@@ -174,10 +174,10 @@ export const deletePost = async (postId) => {
         user: session.user.id,
       });
     }
-    await Comment.deleteMany({ _id: { $in: post.comments } });
     if (!post) {
       throw new Error("Post not found.");
     }
+    await Comment.deleteMany({ _id: { $in: post.comments } });
     await deleteImage(post.image.public_id);
     revalidatePath(`/${post.campId}/explore/lost`);
     revalidatePath(`/history`);
@@ -657,14 +657,12 @@ export const updateIssueStatus = async ({ issueId, status }) => {
 
 export const deleteCommentAndUpdateIssueStatus = async (formData) => {
   const session = await getServerSession(authOptions);
-  const { commentId, status } = formData;
+  const { commentId } = formData;
   try {
     if (!session) throw new Error("Unauthorized.");
     if (session && session.user.role !== "admin")
       throw new Error("Permission denied.");
-    if (!["RESOLVED"].includes(status)) {
-      return { error: true, message: "Invalid status type." };
-    }
+
     await connectDB();
     const comment = await Comment.findOneAndDelete({
       _id: commentId,
@@ -678,12 +676,83 @@ export const deleteCommentAndUpdateIssueStatus = async (formData) => {
     );
     await Moderation.updateMany(
       { itemId: commentId },
-      { $set: { status: status } }
+      { $set: { status: "RESOLVED" } }
     );
 
     return {
       success: true,
-      message: `Deleted comment and update Issue status to ${status} successful`,
+      message: `Deleted comment and update Issue status to RESOLVED successful`,
+    };
+  } catch (err) {
+    console.log(err);
+    return { error: true, message: "Something went wrong, try again later." };
+  }
+};
+
+export const deletePostAndUpdateIssueStatus = async (formData) => {
+  const session = await getServerSession(authOptions);
+  const { postId } = formData;
+  try {
+    if (!session) throw new Error("Unauthorized.");
+    if (session && session.user.role !== "admin")
+      throw new Error("Permission denied.");
+
+    await connectDB();
+
+    let post = await Post.findOneAndDelete({
+      _id: postId,
+    });
+    if (!post) {
+      throw new Error("Post not found.");
+    }
+    await Comment.deleteMany({ _id: { $in: post.comments } });
+    await deleteImage(post.image.public_id);
+
+    await Moderation.updateMany(
+      { itemId: postId },
+      { $set: { status: "RESOLVED" } }
+    );
+    revalidatePath(`/${post.campId}/explore/lost`);
+    revalidatePath(`/history`);
+    return {
+      success: true,
+      message: `Deleted post and update Issue status to RESOLVED successful`,
+    };
+  } catch (err) {
+    console.log(err);
+    return { error: true, message: "Something went wrong, try again later." };
+  }
+};
+
+export const deleteReportAndUpdateIssueStatus = async (formData) => {
+  const session = await getServerSession(authOptions);
+  const { reportId } = formData;
+  try {
+    if (!session) throw new Error("Unauthorized.");
+    if (session && session.user.role !== "admin")
+      throw new Error("Permission denied.");
+
+    await connectDB();
+
+    let report = await Report.findOneAndDelete({
+      _id: reportId,
+    });
+    if (!report) {
+      throw new Error("Report not found.");
+    }
+    await deleteImage(report.image.public_id);
+
+    await Moderation.updateMany(
+      { itemId: reportId },
+      { $set: { status: "RESOLVED" } }
+    );
+
+    revalidatePath(`/${report.campId}/explore/found`);
+    revalidatePath(`/history`);
+
+    return {
+      success: true,
+      message: `Deleted report and update Issue status to RESOLVED successful`,
     };
   } catch (err) {
     console.log(err);

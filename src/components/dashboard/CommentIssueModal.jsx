@@ -28,7 +28,6 @@ export default function CommentIssueModal({
   const handleDeleteComment = async () => {
     const result = await deleteCommentAndUpdateIssueStatus({
       commentId,
-      status: "RESOLVED",
     });
     setIsOpenConfirmDeleteModal(false);
     if (result?.success) {
