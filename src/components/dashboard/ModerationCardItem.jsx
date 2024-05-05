@@ -12,7 +12,18 @@ const ModerationCardItem = ({ item, moderationType }) => {
             <div className="h-full flex justify-center items-center">
               <div className="flex flex-col justify-center items-center gap-y-3">
                 <span className="text-red-500 font-bold text-2xl">DELETED</span>
-                <span className="text-small text-default-400">
+                <span
+                  className={`text-small font-semibold uppercase ${
+                    item.totalReports === item.totalResolved
+                      ? "text-green-500"
+                      : "text-red-400"
+                  }`}
+                >
+                  {item.totalReports === item.totalResolved
+                    ? "Completed"
+                    : "Incomplete"}
+                </span>
+                <span className="text-tiny text-default-400">
                   There are {item.totalReports} issue reports
                 </span>
               </div>

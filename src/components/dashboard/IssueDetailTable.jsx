@@ -478,7 +478,7 @@ export default function IssueDetailTable({
 
   return (
     <>
-      {category === "comment" && (
+      {category === "comment" && commentId && (
         <CommentIssueModal
           isOpen={isOpen}
           onOpenChange={onOpenChange}

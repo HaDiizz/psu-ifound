@@ -1,6 +1,5 @@
 "use server";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import BackButton from "@/components/BackButton";
 import DisplayModeration from "@/components/dashboard/DisplayModeration";
 import { axios } from "@/lib/axios";
 import { getServerSession } from "next-auth/next";
@@ -17,7 +16,6 @@ const Page = async () => {
 
   return (
     <>
-      <BackButton />
       <DisplayModeration
         moderationType="comment"
         data={response?.data?.items}

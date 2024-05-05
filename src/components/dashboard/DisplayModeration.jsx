@@ -119,8 +119,8 @@ const DisplayModeration = ({ moderationType, data, stats }) => {
         totalResolved={statusValues.resolved}
         totalRejected={statusValues.rejected}
       />
-      <div className="pt-[5.5rem]">
-        <div className="pb-[3.5rem] flex flex-col md:flex-row justify-between gap-4">
+      <div className="pt-[4.5rem]">
+        <div className="pb-[2.5rem] flex flex-col md:flex-row justify-between gap-4">
           <Input
             isClearable
             className="w-full sm:max-w-[44%]"

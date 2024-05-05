@@ -13,7 +13,7 @@ const ModerationStatCard = ({
   totalRejected,
 }) => {
   return (
-    <div className="grid grid-cols-1 gap-4 px-4 mt-8 laptop:grid-cols-5 sm:px-8 pt-5">
+    <div className="grid grid-cols-1 gap-4 px-4 laptop:grid-cols-5 sm:px-8 pt-5">
       <div className="flex items-center rounded-md overflow-hidden border border-gray-200 shadow-md dark:bg-slate-800 dark:border-slate-700">
         <div className="p-6 text-white bg-indigo-400">
           <TbReportSearch size={30} />
