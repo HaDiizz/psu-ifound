@@ -57,6 +57,7 @@ const userSchema = new Schema(
       type: String,
       default: "",
     },
+    claimedList: [{ type: mongoose.Types.ObjectId, ref: "claimed_list" }],
   },
   { timestamps: true }
 );

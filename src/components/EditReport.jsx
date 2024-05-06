@@ -328,6 +328,7 @@ const EditReport = ({ report, campusId }) => {
               defaultValue={report?.subLocation}
               className="dark:text-white"
               label="Sub Location"
+              placeholder="Building/Floor/Room"
               variant="bordered"
               isInvalid={errors.subLocation?.message}
               errorMessage={errors.subLocation?.message}

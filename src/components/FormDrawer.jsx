@@ -2,7 +2,14 @@
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
-import { Input, Select, SelectItem, Button, Tooltip, Textarea } from "@nextui-org/react";
+import {
+  Input,
+  Select,
+  SelectItem,
+  Button,
+  Tooltip,
+  Textarea,
+} from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import { addReport } from "@/lib/actions";
 import FormButton from "./FormButton";
@@ -161,6 +168,7 @@ export default function FormDrawer({ open, setOpen, form, campusId, setForm }) {
                   defaultValue=""
                   className="dark:text-white"
                   label="Sub Location"
+                  placeholder="Building/Floor/Room"
                   variant="bordered"
                   isInvalid={errors.subLocation?.message}
                   errorMessage={errors.subLocation?.message}

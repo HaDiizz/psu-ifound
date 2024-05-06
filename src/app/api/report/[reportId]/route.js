@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
 import User from "@/models/user";
+import ClaimedList from "@/models/claimedList";
 
 export const dynamic = "force-dynamic";
 
@@ -43,6 +44,12 @@ export const PUT = async (request, context) => {
       );
     }
     const report = await Report.findById(reportId);
+    const user = await User.findById(session.user.id);
+    const newClaim = await ClaimedList.create({
+      user: user._id,
+      report: report._id,
+    });
+
     if (report.user.toString() === session.user.id.toString()) {
       return NextResponse.json(
         { message: "You can not claim your own report." },
@@ -55,8 +62,13 @@ export const PUT = async (request, context) => {
         { status: 400 }
       );
     }
+
     report.userList.push(session.user.id);
+    user.claimedList.push(newClaim._id);
+
     await report.save();
+    await user.save();
+
     return NextResponse.json({
       message: "You have been claimed the item successful.",
     });

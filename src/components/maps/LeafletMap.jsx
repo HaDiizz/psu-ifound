@@ -154,7 +154,9 @@ const LeafletMap = (params) => {
         setItemId={setItemId}
         handleOpenDetailModal={handleOpenDetailModal}
       />
-      <DetailModal isOpen={isOpen} onClose={onClose} itemId={itemId} />
+      {itemId && (
+        <DetailModal isOpen={isOpen} onClose={onClose} itemId={itemId} />
+      )}
     </>
   );
 };

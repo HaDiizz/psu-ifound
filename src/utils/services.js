@@ -9,8 +9,10 @@ export const findOneUserByEmail = async ({ email }) => {
     if (!user) {
       return {};
     }
-    user = user._doc;
-    return { user: { ...user, _id: user._id.toString() } };
+    user = await user.toObject();
+    user._id = user._id.toString();
+    user.claimedList = user.claimedList.map((item) => item.toString());
+    return { user };
   } catch (error) {
     return { error: "Failed to find the user service. " + error };
   }

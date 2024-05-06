@@ -25,22 +25,14 @@ import { useCallback, useMemo, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { capitalize } from "@/utils/capitalize";
 import {
-  columns,
-  statusPostOptions,
+  reportColumns,
   statusReportOptions,
-  statusPostColorMap,
   statusReportColorMap,
 } from "@/utils/data";
 import moment from "moment";
-import { AiFillEdit } from "react-icons/ai";
-import { MdDelete } from "react-icons/md";
-import { useSession } from "next-auth/react";
-import { deletePost, deleteReport } from "@/lib/actions";
-import ConfirmDelete from "./ConfirmDelete";
-import toast from "react-hot-toast";
-import Link from "next/link";
-import { campusData } from "@/utils/constants";
 import Image from "next/image";
+import { campusData } from "@/utils/constants";
+import DetailModal from "./DetailModal";
 
 const INITIAL_VISIBLE_COLUMNS = [
   "image",
@@ -50,18 +42,13 @@ const INITIAL_VISIBLE_COLUMNS = [
   "status",
   "actions",
   "createdAt",
-  "updatedAt",
-  "campus",
-  "isPublish",
 ];
 
-export default function HistoryTable({ posts, tableType }) {
-  const { data: session } = useSession();
-  const [postId, setPostId] = useState("");
-  const [postTitle, setPostTitle] = useState("");
-  const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
+export default function ClaimedListTable({ claimedList }) {
   const [previewImage, setPreviewImage] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [itemId, setItemId] = useState("");
+  const [isOpenDetailModal, setIsOpenDetailModal] = useState(false);
   const [page, setPage] = useState(1);
   const [filterValue, setFilterValue] = useState("");
   const [selectedKeys, setSelectedKeys] = useState(new Set([]));
@@ -71,77 +58,62 @@ export default function HistoryTable({ posts, tableType }) {
   const [statusFilter, setStatusFilter] = useState("all");
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [sortDescriptor, setSortDescriptor] = useState({
-    column: "updatedAt",
+    column: "createdAt",
     direction: "descending",
   });
-
-  const handleDeletePost = async () => {
-    let result;
-    setIsOpenDeleteModal(false);
-    if (tableType === "lost") {
-      result = await deletePost(postId);
-    } else if (tableType === "found") {
-      result = await deleteReport(postId);
-    }
-    if (result?.success) {
-      toast.success(`${result?.message}`);
-      return;
-    }
-
-    if (result?.error) {
-      toast.error(`${result?.message}`);
-      return;
-    }
-  };
 
   const hasSearchFilter = Boolean(filterValue);
 
   const headerColumns = useMemo(() => {
-    if (visibleColumns === "all") return columns;
+    if (visibleColumns === "all") return reportColumns;
 
-    return columns.filter((column) =>
+    return reportColumns.filter((column) =>
       Array.from(visibleColumns).includes(column.uid)
     );
   }, [visibleColumns]);
 
   const filteredItems = useMemo(() => {
-    let filteredPosts = [...posts];
+    let filteredReports = [...claimedList];
 
     if (hasSearchFilter) {
-      filteredPosts = filteredPosts.filter(
-        (post) =>
-          post.user.fullName
+      filteredReports = filteredReports.filter(
+        (item) =>
+          item.report.user.fullName
             .toLowerCase()
             .includes(filterValue.toLowerCase()) ||
-          post.user.username
+          item.report.user.username
             .toLowerCase()
             .includes(filterValue.toLowerCase()) ||
-          post.user.email.toLowerCase().includes(filterValue.toLowerCase()) ||
+          item.report.user.email
+            .toLowerCase()
+            .includes(filterValue.toLowerCase()) ||
+          item.report.title.toLowerCase().includes(filterValue.toLowerCase()) ||
           campusData
-            .find((campus) => campus.campId === post.campId)
+            .find((campus) => campus.campId === item.report.campId)
             .campNameEng.split("Prince of Songkla University ")[1]
             .toLowerCase()
             .includes(filterValue.toLowerCase()) ||
-          (post.isPublish ? "published" : "unpublished") ===
-            filterValue.toLowerCase() ||
-          post.title.toLowerCase().includes(filterValue.toLowerCase()) ||
-          post.detail.toLowerCase().includes(filterValue.toLowerCase()) ||
-          post.location.toLowerCase().includes(filterValue.toLowerCase()) ||
-          post.subLocation.toLowerCase().includes(filterValue.toLowerCase())
+          item.report.detail
+            .toLowerCase()
+            .includes(filterValue.toLowerCase()) ||
+          item.report.location
+            .toLowerCase()
+            .includes(filterValue.toLowerCase()) ||
+          item.report.subLocation
+            .toLowerCase()
+            .includes(filterValue.toLowerCase())
       );
     }
     if (
       statusFilter !== "all" &&
-      (tableType === "lost"
-        ? Array.from(statusFilter).length !== statusPostOptions.length
-        : Array.from(statusFilter).length !== statusReportOptions.length)
+      Array.from(statusFilter).length !== statusReportOptions.length
     ) {
-      filteredPosts = filteredPosts.filter((post) =>
-        Array.from(statusFilter).includes(post.status)
+      filteredReports = filteredReports.filter((item) =>
+        Array.from(statusFilter).includes(item.report.status)
       );
     }
-    return filteredPosts;
-  }, [posts, filterValue, statusFilter]);
+    return filteredReports;
+  }, [claimedList, filterValue, statusFilter]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -168,17 +140,17 @@ export default function HistoryTable({ posts, tableType }) {
   };
 
   const renderCell = useCallback((data, columnKey) => {
-    const cellValue = data[columnKey];
+    const cellValue = data.report[columnKey];
 
     switch (columnKey) {
       case "createdAt":
         return (
           <div className="flex flex-col">
             <p className="text-bold text-small capitalize">
-              {moment(data.createdAt).fromNow()}
+              {moment(data.report.createdAt).fromNow()}
             </p>
             <p className="text-bold text-tiny capitalize text-default-400">
-              {moment(data.createdAt).format("llll")}
+              {moment(data.report.createdAt).format("llll")}
             </p>
           </div>
         );
@@ -186,17 +158,17 @@ export default function HistoryTable({ posts, tableType }) {
         return (
           <div className="flex flex-col">
             <p className="text-bold text-small capitalize">
-              {moment(data.updatedAt).fromNow()}
+              {moment(data.report.updatedAt).fromNow()}
             </p>
             <p className="text-bold text-tiny capitalize text-default-400">
-              {moment(data.updatedAt).format("llll")}
+              {moment(data.report.updatedAt).format("llll")}
             </p>
           </div>
         );
       case "image":
         return (
           <div
-            onClick={() => handlePreviewImage(data.image.url)}
+            onClick={() => handlePreviewImage(data.report.image.url)}
             className="flex justify-center items-center overflow-hidden rounded-lg cursor-pointer"
             style={{ width: "80px", height: "90px" }}
           >
@@ -205,25 +177,28 @@ export default function HistoryTable({ posts, tableType }) {
               className="object-cover w-full h-full rounded-md"
               width={100}
               height={100}
-              src={data.image.url}
+              src={data.report.image.url}
               alt="thumbnail"
             />
           </div>
         );
       case "name":
         return (
-          <User description={data.user.email} name={data.user.fullName}>
-            {data.user.username}
+          <User
+            description={data.report.user.email}
+            name={data.report.user.fullName}
+          >
+            {data.report.user.username}
           </User>
         );
       case "location":
         return (
           <div className="flex flex-col">
             <p className="text-bold text-small capitalize">
-              {data.location || "-"}
+              {data.report.location || "-"}
             </p>
             <p className="text-bold text-tiny capitalize text-default-400">
-              {data.subLocation || "-"}
+              {data.report.subLocation || "-"}
             </p>
           </div>
         );
@@ -231,7 +206,7 @@ export default function HistoryTable({ posts, tableType }) {
         return (
           <div className="flex flex-col">
             <p className="text-bold text-small capitalize">
-              {data.title || "-"}
+              {data.report.title || "-"}
             </p>
           </div>
         );
@@ -240,7 +215,7 @@ export default function HistoryTable({ posts, tableType }) {
           <div className="flex flex-col">
             <p className="text-bold text-small capitalize">
               {campusData
-                .find((campus) => campus.campId === data.campId)
+                .find((campus) => campus.campId === data.report.campId)
                 .campNameEng.split("Prince of Songkla University ")[1] || "-"}
             </p>
           </div>
@@ -249,69 +224,32 @@ export default function HistoryTable({ posts, tableType }) {
         return (
           <Chip
             className="capitalize border-none gap-1 text-default-600"
-            color={
-              tableType === "lost"
-                ? statusPostColorMap[data.status]
-                : statusReportColorMap[data.status]
-            }
+            color={statusReportColorMap[data.report.status]}
             size="sm"
             variant="dot"
           >
-            {tableType === "lost"
-              ? statusPostOptions.find((option) => option.uid === cellValue)
-                  .name
-              : statusReportOptions.find((option) => option.uid === cellValue)
-                  .name}
-          </Chip>
-        );
-      case "isPublish":
-        return (
-          <Chip
-            className="capitalize border-none gap-1 text-white"
-            color={data.isPublish ? "success" : "danger"}
-            size="sm"
-          >
-            {data.isPublish ? "Published" : "Unpublished"}
+            {
+              statusReportOptions.find((option) => option.uid === cellValue)
+                .name
+            }
           </Chip>
         );
       case "actions":
         return (
           <div className="relative flex items-center gap-2">
-            {tableType === "lost" && (
-              <Tooltip content="View">
-                <Link
-                  className="text-lg text-default-400 cursor-pointer active:opacity-50"
-                  href={`/${data.campId}/explore/lost/detail/${data._id}`}
-                >
-                  <FaEye size={20} />
-                </Link>
-              </Tooltip>
-            )}
-            {session &&
-              data.user._id.toString() === session.user.id.toString() && (
-                <>
-                  <Tooltip content="Edit">
-                    <Link
-                      className="text-lg text-default-400 cursor-pointer active:opacity-50"
-                      href={`/${data.campId}/explore/${tableType}/edit/${data._id}`}
-                    >
-                      <AiFillEdit size={20} />
-                    </Link>
-                  </Tooltip>
-                  <Tooltip content="Delete" color="danger">
-                    <span
-                      className="text-lg text-red-500 cursor-pointer active:opacity-50"
-                      onClick={async () => {
-                        await setPostId(data?._id);
-                        await setPostTitle(data?.title);
-                        await setIsOpenDeleteModal(true);
-                      }}
-                    >
-                      <MdDelete size={20} />
-                    </span>
-                  </Tooltip>
-                </>
-              )}
+            <Tooltip content="View">
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  setItemId(data.report._id);
+                  setIsOpenDetailModal(true);
+                }}
+                isIconOnly
+                className="text-lg text-default-400 cursor-pointer active:opacity-50"
+              >
+                <FaEye size={20} />
+              </Button>
+            </Tooltip>
           </div>
         );
       default:
@@ -353,7 +291,7 @@ export default function HistoryTable({ posts, tableType }) {
   const topContent = useMemo(() => {
     return (
       <div className="flex flex-col gap-4">
-        <div className="flex flex-col md:flex-row justify-between gap-3 items-end">
+        <div className="flex justify-between gap-3 items-end options_top_table">
           <Input
             isClearable
             className="w-full sm:max-w-[44%]"
@@ -363,7 +301,7 @@ export default function HistoryTable({ posts, tableType }) {
             onClear={() => onClear()}
             onValueChange={onSearchChange}
           />
-          <div className="flex gap-3">
+          <div className="flex gap-3 filter_right">
             <Dropdown>
               <DropdownTrigger className="hidden sm:flex">
                 <Button
@@ -381,17 +319,11 @@ export default function HistoryTable({ posts, tableType }) {
                 selectionMode="multiple"
                 onSelectionChange={setStatusFilter}
               >
-                {tableType === "lost"
-                  ? statusPostOptions?.map((status) => (
-                      <DropdownItem key={status.uid} className="capitalize">
-                        {capitalize(status.name)}
-                      </DropdownItem>
-                    ))
-                  : statusReportOptions?.map((status) => (
-                      <DropdownItem key={status.uid} className="capitalize">
-                        {capitalize(status.name)}
-                      </DropdownItem>
-                    ))}
+                {statusReportOptions.map((status) => (
+                  <DropdownItem key={status.uid} className="capitalize">
+                    {capitalize(status.name)}
+                  </DropdownItem>
+                ))}
               </DropdownMenu>
             </Dropdown>
             <Dropdown>
@@ -411,7 +343,7 @@ export default function HistoryTable({ posts, tableType }) {
                 selectionMode="multiple"
                 onSelectionChange={setVisibleColumns}
               >
-                {columns.map((column) => (
+                {reportColumns.map((column) => (
                   <DropdownItem key={column.uid} className="capitalize">
                     {capitalize(column.name)}
                   </DropdownItem>
@@ -422,7 +354,7 @@ export default function HistoryTable({ posts, tableType }) {
         </div>
         <div className="flex justify-between items-center">
           <span className="text-default-400 text-small">
-            Total {posts.length} items
+            Total {claimedList.length} items
           </span>
           <label className="flex items-center text-default-400 text-small">
             Rows per page:
@@ -443,7 +375,7 @@ export default function HistoryTable({ posts, tableType }) {
     statusFilter,
     visibleColumns,
     onRowsPerPageChange,
-    posts.length,
+    claimedList.length,
     onSearchChange,
     hasSearchFilter,
   ]);
@@ -489,6 +421,13 @@ export default function HistoryTable({ posts, tableType }) {
 
   return (
     <>
+      {itemId && (
+        <DetailModal
+          isOpen={isOpenDetailModal}
+          onClose={() => setIsOpenDetailModal(false)}
+          itemId={itemId}
+        />
+      )}
       <Modal
         placement="center"
         hideCloseButton
@@ -520,7 +459,7 @@ export default function HistoryTable({ posts, tableType }) {
       </Modal>
       <Table
         fullWidth={true}
-        aria-label="post table"
+        aria-label="claimed list table"
         className="dark:text-white"
         isHeaderSticky
         bottomContent={bottomContent}
@@ -554,12 +493,6 @@ export default function HistoryTable({ posts, tableType }) {
           )}
         </TableBody>
       </Table>
-      <ConfirmDelete
-        title={postTitle}
-        isOpen={isOpenDeleteModal}
-        onClose={() => setIsOpenDeleteModal(false)}
-        handleDelete={handleDeletePost}
-      />
     </>
   );
 }

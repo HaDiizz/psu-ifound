@@ -14,6 +14,7 @@ import Location from "@/models/location";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Moderation from "@/models/moderation";
+import ClaimedList from "@/models/claimedList";
 
 export const addReport = async (formData) => {
   const session = await getServerSession(authOptions);
@@ -360,7 +361,17 @@ export const deleteReport = async (reportId) => {
     if (!report) {
       throw new Error("Report not found.");
     }
+    report = await report._doc;
+    const claimedListItems = await ClaimedList.find({ report: report._id });
+    await ClaimedList.deleteMany({ report: report._id });
+    const claimedListIds = claimedListItems.map((item) => item._id);
+
+    await User.updateMany(
+      { claimedList: { $in: claimedListIds } },
+      { $pull: { claimedList: { $in: claimedListIds } } }
+    );
     await deleteImage(report.image.public_id);
+
     revalidatePath(`/${report.campId}/explore/found`);
     revalidatePath(`/history`);
     return { success: true, message: "Deleted successful" };

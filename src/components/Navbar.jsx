@@ -126,6 +126,11 @@ function NavbarFixed({ session, handleOpen }) {
                   </Link>
                 </DropdownItem>
               )}
+              <DropdownItem key="claimedList">
+                <Link className="w-full" href={"/claimed"}>
+                  <div>Claimed List</div>
+                </Link>
+              </DropdownItem>
               <DropdownItem key="history">
                 <Link className="w-full" href={"/history"}>
                   <div>History</div>
@@ -204,11 +209,6 @@ function NavbarScroll({ isScrolling, session, handleOpen }) {
                       {session.user.email}
                     </p>
                   </DropdownItem>
-                  <DropdownItem key="history">
-                    <Link className="w-full" href={"/history"}>
-                      <div>History</div>
-                    </Link>
-                  </DropdownItem>
                   {session.user.role === "admin" && (
                     <DropdownItem key="dashboard">
                       <Link className="w-full" href={"/admin/dashboard"}>
@@ -216,6 +216,16 @@ function NavbarScroll({ isScrolling, session, handleOpen }) {
                       </Link>
                     </DropdownItem>
                   )}
+                  <DropdownItem key="claimedList">
+                    <Link className="w-full" href={"/claimed"}>
+                      <div>Claimed List</div>
+                    </Link>
+                  </DropdownItem>
+                  <DropdownItem key="history">
+                    <Link className="w-full" href={"/history"}>
+                      <div>History</div>
+                    </Link>
+                  </DropdownItem>
                   <DropdownItem
                     className="text-red-500"
                     key="logout"

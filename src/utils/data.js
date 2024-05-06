@@ -14,6 +14,20 @@ export const columns = [
   { name: "ACTIONS", uid: "actions" },
 ];
 
+export const reportColumns = [
+  { name: "IMAGE", uid: "image" },
+  { name: "NAME", uid: "name" },
+  { name: "TITLE", uid: "title", sortable: true },
+  { name: "DETAIL", uid: "detail", sortable: true },
+  { name: "CONTACT", uid: "contact", sortable: true },
+  { name: "LOCATION", uid: "location", sortable: true },
+  { name: "SUB LOCATION", uid: "subLocation", sortable: true },
+  { name: "STATUS", uid: "status", sortable: true },
+  { name: "CAMPUS", uid: "campus" },
+  { name: "CLAIMED AT", uid: "createdAt", sortable: true },
+  { name: "ACTIONS", uid: "actions" },
+];
+
 export const userColumns = [
   { name: "PICTURE", uid: "picture" },
   { name: "NAME", uid: "name" },
