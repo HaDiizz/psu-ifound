@@ -751,11 +751,21 @@ export const deleteReportAndUpdateIssueStatus = async (formData) => {
     if (!report) {
       throw new Error("Report not found.");
     }
+    report = await report._doc;
     await deleteImage(report.image.public_id);
 
     await Moderation.updateMany(
       { itemId: reportId },
       { $set: { status: "RESOLVED" } }
+    );
+
+    const claimedListItems = await ClaimedList.find({ report: report._id });
+    await ClaimedList.deleteMany({ report: report._id });
+    const claimedListIds = claimedListItems.map((item) => item._id);
+
+    await User.updateMany(
+      { claimedList: { $in: claimedListIds } },
+      { $pull: { claimedList: { $in: claimedListIds } } }
     );
 
     revalidatePath(`/${report.campId}/explore/found`);
