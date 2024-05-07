@@ -59,6 +59,7 @@ const LeafletMapContent = (params) => {
         lat: form.lat,
         lng: form.lng,
         locationId: params.location._id,
+        campId: params.campusId,
       });
       await params.mutate();
     } else {

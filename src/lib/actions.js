@@ -481,7 +481,10 @@ export const addLocation = async (formData) => {
     if (!locationName || !lat || !lng || !campId) {
       return { error: true, message: "Fields are required." };
     }
-    const isDuplicateName = await Location.findOne({ name: locationName });
+    const isDuplicateName = await Location.findOne({
+      name: locationName,
+      campId: campId,
+    });
     if (isDuplicateName) {
       return { error: true, message: "Location name is duplicated." };
     }
@@ -524,7 +527,13 @@ export const deleteLocation = async (locationId) => {
   }
 };
 
-export const updateLocation = async ({ locationId, name, lat, lng }) => {
+export const updateLocation = async ({
+  locationId,
+  name,
+  lat,
+  lng,
+  campId,
+}) => {
   const session = await getServerSession(authOptions);
   try {
     await connectDB();
@@ -534,7 +543,10 @@ export const updateLocation = async ({ locationId, name, lat, lng }) => {
     if (!name || !lat || !lng) {
       return { error: true, message: "Fields are required." };
     }
-    const isDuplicateName = await Location.findOne({ name: name });
+    const isDuplicateName = await Location.findOne({
+      name: name,
+      campId: campId,
+    });
     if (isDuplicateName && String(isDuplicateName._id) !== locationId) {
       return { error: true, message: "Location name is duplicated." };
     }

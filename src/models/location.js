@@ -5,7 +5,6 @@ const locationSchema = new Schema(
     name: {
       type: String,
       required: true,
-      unique: true
     },
     campId: {
       type: String,
