@@ -23,6 +23,7 @@ export const reportColumns = [
   { name: "LOCATION", uid: "location", sortable: true },
   { name: "SUB LOCATION", uid: "subLocation", sortable: true },
   { name: "STATUS", uid: "status", sortable: true },
+  { name: "OWNER", uid: "owner" },
   { name: "CAMPUS", uid: "campus" },
   { name: "CLAIMED AT", uid: "createdAt", sortable: true },
   { name: "ACTIONS", uid: "actions" },

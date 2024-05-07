@@ -23,8 +23,9 @@ export const GET = async () => {
       path: "report",
       model: Report,
       populate: {
-        path: "user",
+        path: "user owner",
         model: User,
+        select: "_id picture username fullName email",
       },
     });
     return NextResponse.json(claimedList);

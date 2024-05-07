@@ -11,6 +11,7 @@ const Page = async () => {
     redirect("/");
   }
   const { data } = await axios(`/claimed-list`, headers());
+
   return (
     <div className="container pt-[5rem]">
       <h1 className="text-default-500 pb-2 font-bold">Your Claimed List</h1>

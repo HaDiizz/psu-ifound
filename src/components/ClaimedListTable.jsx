@@ -20,7 +20,12 @@ import {
   ModalContent,
   useDisclosure,
 } from "@nextui-org/react";
-import { FaChevronDown, FaEye } from "react-icons/fa";
+import {
+  FaCheckCircle,
+  FaChevronDown,
+  FaEye,
+  FaTimesCircle,
+} from "react-icons/fa";
 import { useCallback, useMemo, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { capitalize } from "@/utils/capitalize";
@@ -33,6 +38,7 @@ import moment from "moment";
 import Image from "next/image";
 import { campusData } from "@/utils/constants";
 import DetailModal from "./DetailModal";
+import { useSession } from "next-auth/react";
 
 const INITIAL_VISIBLE_COLUMNS = [
   "image",
@@ -42,9 +48,11 @@ const INITIAL_VISIBLE_COLUMNS = [
   "status",
   "actions",
   "createdAt",
+  "owner",
 ];
 
 export default function ClaimedListTable({ claimedList }) {
+  const { data: session } = useSession();
   const [previewImage, setPreviewImage] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [itemId, setItemId] = useState("");
@@ -223,16 +231,59 @@ export default function ClaimedListTable({ claimedList }) {
       case "status":
         return (
           <Chip
-            className="capitalize border-none gap-1 text-default-600"
+            className="capitalize border-none gap-1 text-white"
             color={statusReportColorMap[data.report.status]}
             size="sm"
-            variant="dot"
           >
             {
               statusReportOptions.find((option) => option.uid === cellValue)
                 .name
             }
           </Chip>
+        );
+      case "owner":
+        return (
+          <div className="flex flex-col gap-y-2">
+            {data.report.owner ? (
+              <>
+                <div className="flex flex-col gap-y-1">
+                  <p className="text-bold text-small capitalize">
+                    {data?.report?.owner?.fullName.length > 20
+                      ? `${data?.report?.owner?.fullName.slice(0, 20)}...`
+                      : data?.report?.owner?.fullName || "-"}
+                  </p>
+                  <p className="text-bold text-tiny text-default-400">
+                    (
+                    {data?.report?.owner?.email.length > 20
+                      ? `${data?.report?.owner?.email.slice(0, 20)}...`
+                      : data?.report?.owner?.email || "-"}
+                    )
+                  </p>
+                </div>
+                <Chip
+                  className={`capitalize border-none gap-1 text-bold text-[10px] ${
+                    data.report.owner._id === session.user._id
+                      ? "text-green-500 bg-green-100"
+                      : "text-red-500 bg-red-100"
+                  }`}
+                  size="sm"
+                  startContent={
+                    data.report.owner._id === session.user._id ? (
+                      <FaCheckCircle size={18} />
+                    ) : (
+                      <FaTimesCircle size={18} />
+                    )
+                  }
+                >
+                  {data.report.owner._id === session.user._id
+                    ? "Claim success"
+                    : "Claim fail"}
+                </Chip>
+              </>
+            ) : (
+              "-"
+            )}
+          </div>
         );
       case "actions":
         return (
