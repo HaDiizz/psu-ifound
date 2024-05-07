@@ -28,16 +28,19 @@ const Page = async ({ params }) => {
         <BackButton />
         <div className="flex gap-x-3">
           {session?.user.role === "admin" && (
-            <DeleteButton
-              itemId={response?.data?._id}
-              itemTitle={response?.data?.title}
-              issueType="report"
-            />
+            <>
+              <DeleteButton
+                itemId={response?.data?._id}
+                itemTitle={response?.data?.title}
+                issueType="report"
+              />
+            </>
           )}
           <PublishSelection
             itemId={response?.data?._id}
             isPublish={response?.data?.isPublish}
             tableType={"found"}
+            isAdmin={session?.user.role === "admin"}
           />
         </div>
       </div>

@@ -11,7 +11,7 @@ import {
 import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
 
-const PublishSelection = ({ itemId, isPublish, tableType }) => {
+const PublishSelection = ({ itemId, isPublish, tableType, isAdmin }) => {
   const [selectedKeys, setSelectedKeys] = useState(
     new Set([isPublish ? "Published" : "Unpublished"])
   );
@@ -41,28 +41,37 @@ const PublishSelection = ({ itemId, isPublish, tableType }) => {
 
   return (
     <div className="flex justify-start">
-      <Dropdown>
-        <DropdownTrigger>
-          <Button
-            className="text-white"
-            color={selectedValue === "Published" ? "success" : "danger"}
+      {isAdmin ? (
+        <Dropdown>
+          <DropdownTrigger>
+            <Button
+              className="text-white"
+              color={selectedValue === "Published" ? "success" : "danger"}
+            >
+              {selectedValue}
+            </Button>
+          </DropdownTrigger>
+          <DropdownMenu
+            aria-label="Publish status selection"
+            variant="flat"
+            disallowEmptySelection
+            selectionMode="single"
+            selectedKeys={selectedKeys}
+            onSelectionChange={setSelectedKeys}
+            onAction={(key) => handleUpdateIsPublish(key)}
           >
-            {selectedValue}
-          </Button>
-        </DropdownTrigger>
-        <DropdownMenu
-          aria-label="Publish status selection"
-          variant="flat"
-          disallowEmptySelection
-          selectionMode="single"
-          selectedKeys={selectedKeys}
-          onSelectionChange={setSelectedKeys}
-          onAction={(key) => handleUpdateIsPublish(key)}
+            <DropdownItem key="Published">Published</DropdownItem>
+            <DropdownItem key="Unpublished">Unpublished</DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
+      ) : (
+        <Button
+          className="text-white"
+          color={selectedValue === "Published" ? "success" : "danger"}
         >
-          <DropdownItem key="Published">Published</DropdownItem>
-          <DropdownItem key="Unpublished">Unpublished</DropdownItem>
-        </DropdownMenu>
-      </Dropdown>
+          {selectedValue}
+        </Button>
+      )}
     </div>
   );
 };

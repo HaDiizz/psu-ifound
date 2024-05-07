@@ -99,7 +99,7 @@ const DisplayModeration = ({ moderationType, data, stats }) => {
     }
     if (
       filterStatusValue !== "all" &&
-      Array.from(filteredIssues).length !== issueFilterOptions.length
+      Array.from(filterStatusValue).length !== issueFilterOptions.length
     ) {
       filteredIssues = filteredIssues.filter((issue) =>
         Array.from(filterStatusValue).includes(issue.status)
