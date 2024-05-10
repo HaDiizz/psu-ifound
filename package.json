@@ -16,6 +16,7 @@
     "@mui/material": "^5.15.12",
     "@nextui-org/react": "^2.2.10",
     "@turf/turf": "^6.5.0",
+    "@vercel/analytics": "^1.2.2",
     "axios": "^1.6.7",
     "cloudinary": "^2.0.3",
     "codemirror": "^5.61.1",

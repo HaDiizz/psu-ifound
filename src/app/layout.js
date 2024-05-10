@@ -8,6 +8,7 @@ import { Toaster } from "react-hot-toast";
 import ProgressLoader from "@/components/ProgressLoader";
 import NextTopLoader from "nextjs-toploader";
 import ErrorBanned from "@/components/ErrorBanned";
+import { Analytics } from "@vercel/analytics/react";
 const Navbar = dynamic(() => import("@/components/Navbar"), {
   ssr: false,
 });
@@ -113,6 +114,7 @@ export default async function RootLayout({ children }) {
             </Providers>
           </>
         )}
+        <Analytics />
       </body>
     </html>
   );
